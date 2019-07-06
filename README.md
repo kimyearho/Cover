@@ -1,4 +1,6 @@
-# cover
+# Cover - Youtube music
+
+![IMAGE](https://i.imgur.com/nUPOHeL.png)
 
 ## Project setup
 ```

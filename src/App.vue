@@ -1,5 +1,7 @@
 <template>
   <v-app>
+
+    <!-- 컴포넌트화 시킬것 -->
     <v-toolbar dark color="indigo auto">
       <v-toolbar-side-icon></v-toolbar-side-icon>
       <v-autocomplete
@@ -12,12 +14,16 @@
         solo-inverted
       ></v-autocomplete>
     </v-toolbar>
+
+    <!-- 콘텐츠 -->
     <v-content>
       <router-view></router-view>
     </v-content>
+
+    <!-- 컴포넌트화 시킬것 -->
     <v-footer app>
-      <v-bottom-nav :value="true" absolute>
-        <v-btn color="pink" flat value="recent">
+      <v-bottom-nav :active.sync="bottomNav" :value="true" absolute>
+        <v-btn color="pink" flat value="search">
           <span>Search</span>
           <v-icon>history</v-icon>
         </v-btn>
@@ -41,7 +47,7 @@ export default {
   name: "App",
   data() {
     return {
-      //
+      bottomNav: "search"
     };
   }
 };

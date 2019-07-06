@@ -6,7 +6,8 @@ import { getField } from "vuex-map-fields";
 const state = {
   searchList: [],
   scrollPos: 0,
-  nextToken: null
+  nextToken: null,
+  searchText: "top music"
 };
 
 const getters = {
@@ -14,6 +15,9 @@ const getters = {
 };
 
 const mutations = {
+  SET_SEARCH_TEXT(state, payload) {
+    state.searchText = payload;
+  },
   SET_SCROLL(state, payload) {
     state.scrollPos = payload;
   },
@@ -21,7 +25,7 @@ const mutations = {
     state.searchList = payload;
   },
   SET_NEXTLOAD(state, { vm, data }) {
-    state.searchList = vm.$lodash.concat(state.searchList, data);
+    state.searchList = vm._.concat(state.searchList, data);
   },
   SET_NEXT_TOKEN(state, payload) {
     state.nextToken = payload;
@@ -29,10 +33,10 @@ const mutations = {
 };
 
 const actions = {
-  getApiSearch({ commit, dispatch }, { vm, text }) {
+  getApiSearch({ commit, dispatch, state }, { vm, text }) {
     const queryParams = {
       part: "snippet",
-      q: text,
+      q: text ? text : state.searchText,
       type: "video,playlist,channel",
       maxResults: "50",
       safeSearch: "strict",
@@ -48,7 +52,7 @@ const actions = {
           videoItem.channelId = item.id.channelId;
           videoItem.playlistId = item.id.playlistId;
           videoItem.videoId = item.id.videoId;
-          videoItem.etag = item.etag
+          videoItem.etag = item.etag;
           array.push(videoItem);
         });
         dispatch("getVideoDuration", { vm: vm, data: array, mode: "s" });
@@ -56,10 +60,10 @@ const actions = {
     });
   },
 
-  getApiNextloadSearch({ commit, dispatch }, { vm, text }) {
+  getApiNextloadSearch({ commit, dispatch, state }, { vm, text }) {
     const queryParams = {
       part: "snippet",
-      q: text,
+      q: text ? text : state.searchText,
       type: "video,playlist,channel",
       maxResults: "50",
       safeSearch: "strict",
@@ -77,6 +81,7 @@ const actions = {
           videoItem.channelId = item.id.channelId;
           videoItem.playlistId = item.id.playlistId;
           videoItem.videoId = item.id.videoId;
+          videoItem.etag = item.etag;
           array.push(videoItem);
         });
         dispatch("getVideoDuration", { vm: vm, data: array, mode: "n" });
@@ -104,7 +109,7 @@ const actions = {
       if (mode === "s") {
         commit("SET_SEARCH_LIST", array);
       } else {
-        commit("SET_NEXTLOAD", array);
+        commit("SET_NEXTLOAD", { vm: vm, data: array });
       }
     });
   }

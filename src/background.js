@@ -23,7 +23,6 @@ function createWindow() {
   win = new BrowserWindow({
     width: 420,
     height: 650,
-    title: "Cover - Youtube Music",
     resizable: false,
     maximizable: false,
     transparent: true,

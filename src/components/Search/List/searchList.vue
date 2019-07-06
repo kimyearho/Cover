@@ -1,16 +1,21 @@
   <template>
   <v-card>
     <v-list subheader>
+      <!-- 부제목 -->
       <v-subheader class="subheader">
         <v-icon>search</v-icon>
         <span>Youtube Search list</span>
       </v-subheader>
+
+      <!-- 검색목록 템플릿 -->
       <template v-for="(item, index) in list">
         <v-list-tile :key="item.etag" avatar @click="detail(item)">
+          <!-- 썸네일 -->
           <v-list-tile-avatar>
             <img :src="item.thumbnails.default.url" />
           </v-list-tile-avatar>
 
+          <!-- 제목 및 라벨 -->
           <v-list-tile-content>
             <v-list-tile-title class="font-14" v-html="item.title"></v-list-tile-title>
             <v-list-tile-sub-title v-if="item.duration" class="font-12">{{ item.duration }}</v-list-tile-sub-title>
@@ -25,12 +30,15 @@
             <v-list-tile-sub-title v-else-if="item.channelId" class="font-12 label-channel">Channel</v-list-tile-sub-title>
           </v-list-tile-content>
 
+          <!-- 확장메뉴 -->
           <v-list-tile-action>
             <v-btn icon>
               <v-icon>more_vert</v-icon>
             </v-btn>
           </v-list-tile-action>
         </v-list-tile>
+
+        <!-- 구분선 -->
         <v-divider v-if="index + 1 < list.length" :key="index"></v-divider>
       </template>
     </v-list>
@@ -38,6 +46,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { mapFields } from "vuex-map-fields";
 import searchMixin from "../Mixin/mixin";
 export default {
@@ -49,16 +58,19 @@ export default {
   computed: {
     ...mapFields({
       list: "searchList",
-      isNextToken: "nextToken",
       loadScrollPos: "scrollPos"
     })
   },
   mounted() {
-    this.getList();
+    this.get();
   },
   methods: {
-    getList() {
-      this.$store.dispatch("getApiSearch", { vm: this, text: "top music" });
+    ...mapActions({
+      getList: "getApiSearch"
+    }),
+    get() {
+      const params = { vm: this, text: "" };
+      this.getList(params);
     },
     detail(data) {
       console.log(data);

@@ -1,7 +1,7 @@
 const BASE_URL = "https://www.googleapis.com/youtube/v3";
 const API_KEY = "AIzaSyAcNGab-jHH_79rEhgFFFy_4oS46yUMNds";
 
-import { getField } from "vuex-map-fields";
+import { getField, updateField } from "vuex-map-fields";
 
 const state = {
   searchList: [],
@@ -15,6 +15,7 @@ const getters = {
 };
 
 const mutations = {
+  updateField,
   SET_SEARCH_TEXT(state, payload) {
     state.searchText = payload;
   },
@@ -33,10 +34,10 @@ const mutations = {
 };
 
 const actions = {
-  getApiSearch({ commit, dispatch, state }, { vm, text }) {
+  getApiSearch({ commit, dispatch, state }, { vm }) {
     const queryParams = {
       part: "snippet",
-      q: text ? text : state.searchText,
+      q: state.searchText,
       type: "video,playlist,channel",
       maxResults: "50",
       safeSearch: "strict",
@@ -60,10 +61,10 @@ const actions = {
     });
   },
 
-  getApiNextloadSearch({ commit, dispatch, state }, { vm, text }) {
+  getApiNextloadSearch({ commit, dispatch, state }, { vm }) {
     const queryParams = {
       part: "snippet",
-      q: text ? text : state.searchText,
+      q: state.searchText,
       type: "video,playlist,channel",
       maxResults: "50",
       safeSearch: "strict",

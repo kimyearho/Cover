@@ -40,8 +40,7 @@ export default {
       setTimeout(() => {
         this.$store
           .dispatch("getApiNextloadSearch", {
-            vm: this,
-            text: ""
+            vm: this
           })
           .then(() => {
             this.loading = false;

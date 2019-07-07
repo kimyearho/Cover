@@ -4,15 +4,7 @@
     <!-- 컴포넌트화 시킬것 -->
     <v-toolbar dark color="indigo auto">
       <v-toolbar-side-icon></v-toolbar-side-icon>
-      <v-autocomplete
-        cache-items
-        class="mx-3"
-        flat
-        hide-no-data
-        hide-details
-        label="Search"
-        solo-inverted
-      ></v-autocomplete>
+      <auto-complate />
     </v-toolbar>
 
     <!-- 콘텐츠 -->
@@ -43,8 +35,13 @@
 </template>
 
 <script>
+import AutoComplate from './components/Commons/AutoComplate/autoSearch'
+
 export default {
   name: "App",
+  components: {
+    AutoComplate
+  },
   data() {
     return {
       bottomNav: "search"

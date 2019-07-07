@@ -69,7 +69,7 @@ export default {
       getList: "getApiSearch"
     }),
     get() {
-      const params = { vm: this, text: "" };
+      const params = { vm: this };
       this.getList(params);
     },
     detail(data) {

@@ -32,7 +32,7 @@
 
           <!-- 확장메뉴 -->
           <v-list-tile-action>
-            <v-btn icon>
+            <v-btn icon @click.stop="menu(item)">
               <v-icon>more_vert</v-icon>
             </v-btn>
           </v-list-tile-action>
@@ -73,7 +73,10 @@ export default {
       this.getList(params);
     },
     detail(data) {
-      console.log(data);
+      console.log("상세 => " + data);
+    },
+    menu(data) {
+      console.log("메뉴 => " + data)
     }
   }
 };

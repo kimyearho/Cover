@@ -32,9 +32,7 @@
 
           <!-- 확장메뉴 -->
           <v-list-tile-action>
-            <v-btn icon @click.stop="menu(item)">
-              <v-icon>more_vert</v-icon>
-            </v-btn>
+            <video-menu />
           </v-list-tile-action>
         </v-list-tile>
 
@@ -48,10 +46,14 @@
 <script>
 import { mapActions } from "vuex";
 import { mapFields } from "vuex-map-fields";
-import searchMixin from "../Mixin/mixin";
+import SearchMixin from "../Mixin/mixin";
+import VideoMenu from "../../Commons/Menu/videoMenu";
 export default {
   name: "List",
-  mixins: [searchMixin],
+  mixins: [SearchMixin],
+  components: {
+    VideoMenu
+  },
   data() {
     return {};
   },
@@ -74,9 +76,6 @@ export default {
     },
     detail(data) {
       console.log("상세 => " + data);
-    },
-    menu(data) {
-      console.log("메뉴 => " + data)
     }
   }
 };

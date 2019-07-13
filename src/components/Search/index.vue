@@ -1,22 +1,18 @@
 <template>
-  <v-app>
-    <v-layout row class="maxHeight" ref="vlayout">
-      <v-flex xs12 sm6 offset-sm3>
-        <cover-list />
-        <v-btn
-          block
-          :loading="loadMoreLoading"
-          :disabled="loadMoreLoading"
-          color="primary"
-          @click="loadMore"
-        >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
-      </v-flex>
-    </v-layout>
-  </v-app>
+  <v-flex ref="block" xs12 sm6 offset-sm3 class="maxHeight" @scroll="handleScroll">
+    <cover-list />
+    <v-btn
+      block
+      :loading="loadMoreLoading"
+      :disabled="loadMoreLoading"
+      color="primary"
+      @click="loadMore"
+    >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
+  </v-flex>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import searchMixin from "./Mixin/mixin";
 import CoverList from "./List/searchList";
 
@@ -28,22 +24,39 @@ export default {
   },
   data() {
     return {
+      pos: 0,
       loadMoreLoading: false,
       containerLoader: false
     };
   },
   computed: {
     ...mapGetters({
+      scrollPos: "GET_SCROLL",
       isNextToken: "GET_NEXT_TOKEN"
     })
   },
+  mounted() {
+    this.$refs.block.scrollTo(0, this.scrollPos);
+  },
+  beforeMount() {
+    window.addEventListener("scroll", this.handleScroll);
+  },
+  beforeDestroy() {
+    this.$store.commit("SET_SCROLL", this.pos);
+    window.removeEventListener("scroll", this.handleScroll);
+  },
   methods: {
+    ...mapActions({
+      loadMoreSearch: "getApiNextloadSearch"
+    }),
+    handleScroll() {
+      this.pos = this.$refs.block.scrollTop;
+    },
     loadMore() {
       this.loadMoreLoading = true;
       setTimeout(() => {
-        this.$store.dispatch("getApiNextloadSearch", {
-          vm: this
-        });
+        const param = { vm: this };
+        this.loadMoreSearch(param);
       }, 1000);
     }
   }

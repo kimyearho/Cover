@@ -1,5 +1,5 @@
 const BASE_URL = "https://www.googleapis.com/youtube/v3";
-const API_KEY = "AIzaSyAcNGab-jHH_79rEhgFFFy_4oS46yUMNds";
+const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
 
 const state = {
   searchList: [],
@@ -11,19 +11,19 @@ const state = {
 
 const getters = {
   GET_SEARCH_TEXT() {
-    return state.searchText
+    return state.searchText;
   },
   GET_SCROLL() {
-    return state.scrollPos
+    return state.scrollPos;
   },
   GET_SEARCH_LIST() {
-    return state.searchList
+    return state.searchList;
   },
   GET_NEXT_TOKEN() {
-    return state.nextToken
+    return state.nextToken;
   },
   GET_IS_LOADING() {
-    return state.isLoading
+    return state.isLoading;
   }
 };
 
@@ -44,7 +44,7 @@ const mutations = {
     state.nextToken = payload;
   },
   SET_IS_LOADING(state, payload) {
-    state.isLoading = payload
+    state.isLoading = payload;
   }
 };
 
@@ -54,11 +54,11 @@ const actions = {
       part: "snippet",
       q: state.searchText,
       type: "video,playlist,channel",
-      maxResults: "50",
+      maxResults: "25",
       safeSearch: "strict",
       key: API_KEY
     };
-    commit('SET_IS_LOADING', true)
+    commit("SET_IS_LOADING", true);
     vm.axios.get(`${BASE_URL}/search`, { params: queryParams }).then(res => {
       if (res.status === 200) {
         if (res.data.nextPageToken)
@@ -82,7 +82,7 @@ const actions = {
       part: "snippet",
       q: state.searchText,
       type: "video,playlist,channel",
-      maxResults: "50",
+      maxResults: "25",
       safeSearch: "strict",
       pageToken: state.nextToken,
       key: API_KEY
@@ -125,10 +125,10 @@ const actions = {
       });
       if (mode === "s") {
         commit("SET_SEARCH_LIST", array);
-        commit('SET_IS_LOADING', false)
+        commit("SET_IS_LOADING", false);
       } else {
         commit("SET_NEXTLOAD", { vm: vm, data: array });
-        vm.loadMoreLoading = false
+        vm.loadMoreLoading = false;
       }
     });
   }

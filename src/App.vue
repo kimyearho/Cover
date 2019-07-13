@@ -1,7 +1,6 @@
 <template>
   <v-app>
-
-     <!-- 컴포넌트화 시킬것 -->
+    <!-- 컴포넌트화 시킬것 -->
     <v-toolbar dark color="indigo auto">
       <v-toolbar-side-icon></v-toolbar-side-icon>
       <auto-complate />
@@ -15,12 +14,12 @@
     <!-- 컴포넌트화 시킬것 -->
     <v-footer app>
       <v-bottom-nav :active.sync="bottomNav" :value="true" absolute>
-        <v-btn color="pink" flat value="search">
+        <v-btn color="pink" flat value="search" @click="route('search')">
           <span>Search</span>
           <v-icon>history</v-icon>
         </v-btn>
 
-        <v-btn color="pink" flat value="favorites">
+        <v-btn color="pink" flat value="favorites" @click="route('favorites')">
           <span>Favorites</span>
           <v-icon>favorite</v-icon>
         </v-btn>
@@ -38,13 +37,23 @@
 import AutoComplate from "@/components/Commons/AutoComplate/autoComplate";
 export default {
   name: "App",
-   components: {
+  components: {
     AutoComplate
   },
   data() {
     return {
       bottomNav: "search"
     };
+  },
+  methods: {
+    route(name) {
+      this.bottomNav = name;
+      if (name === "search") {
+        this.$router.push("searchList");
+      } else if (name === "favorites") {
+        this.$router.push("sample");
+      }
+    }
   }
 };
 </script>

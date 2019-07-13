@@ -8,8 +8,8 @@
       </v-subheader>
 
       <!-- 검색목록 템플릿 -->
-      <template v-for="(item, index) in list">
-        <v-list-tile :key="item.etag" avatar @click="detail(item)">
+      <template v-for="(item, index, index1) in list">
+        <v-list-tile :key="index1" avatar @click="detail(item)">
           <!-- 썸네일 -->
           <v-list-tile-avatar>
             <img :src="item.thumbnails.default.url" />
@@ -67,8 +67,7 @@ export default {
   computed: {
     ...mapGetters({
       list: "GET_SEARCH_LIST",
-      isLoading: "GET_IS_LOADING",
-      loadScrollPos: "GET_SCROLL"
+      isLoading: "GET_IS_LOADING"
     }),
     isLoading: {
       get() {
@@ -87,8 +86,14 @@ export default {
       getList: "getApiSearch"
     }),
     get() {
-      const params = { vm: this };
-      this.getList(params);
+      // 처음 조회
+      if(this.list.length === 0) {
+        const params = { vm: this };
+        this.getList(params);
+      } else {
+        // 처음조회가 아닐때
+        this.$store.commit('SET_SEARCH_LIST', this.list);
+      }
     },
     detail(data) {
       console.log("상세 => " + data);
@@ -98,6 +103,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.maxHeight {
+  max-height: 490px;
+  overflow-y: scroll;
+}
 .subheader {
   color: #ffffff !important;
   background: #d81b60;

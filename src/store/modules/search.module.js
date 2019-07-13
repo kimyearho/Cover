@@ -1,21 +1,33 @@
 const BASE_URL = "https://www.googleapis.com/youtube/v3";
 const API_KEY = "AIzaSyAcNGab-jHH_79rEhgFFFy_4oS46yUMNds";
 
-import { getField, updateField } from "vuex-map-fields";
-
 const state = {
   searchList: [],
   scrollPos: 0,
   nextToken: null,
-  searchText: "top music"
+  searchText: "top music",
+  isLoading: false
 };
 
 const getters = {
-  getField
+  GET_SEARCH_TEXT() {
+    return state.searchText
+  },
+  GET_SCROLL() {
+    return state.scrollPos
+  },
+  GET_SEARCH_LIST() {
+    return state.searchList
+  },
+  GET_NEXT_TOKEN() {
+    return state.nextToken
+  },
+  GET_IS_LOADING() {
+    return state.isLoading
+  }
 };
 
 const mutations = {
-  updateField,
   SET_SEARCH_TEXT(state, payload) {
     state.searchText = payload;
   },
@@ -30,6 +42,9 @@ const mutations = {
   },
   SET_NEXT_TOKEN(state, payload) {
     state.nextToken = payload;
+  },
+  SET_IS_LOADING(state, payload) {
+    state.isLoading = payload
   }
 };
 
@@ -43,6 +58,7 @@ const actions = {
       safeSearch: "strict",
       key: API_KEY
     };
+    commit('SET_IS_LOADING', true)
     vm.axios.get(`${BASE_URL}/search`, { params: queryParams }).then(res => {
       if (res.status === 200) {
         if (res.data.nextPageToken)
@@ -53,7 +69,7 @@ const actions = {
           videoItem.channelId = item.id.channelId;
           videoItem.playlistId = item.id.playlistId;
           videoItem.videoId = item.id.videoId;
-          videoItem.etag = item.etag;
+          videoItem.etag = item.etag.replace(/\"/gi, "");
           array.push(videoItem);
         });
         dispatch("getVideoDuration", { vm: vm, data: array, mode: "s" });
@@ -82,7 +98,7 @@ const actions = {
           videoItem.channelId = item.id.channelId;
           videoItem.playlistId = item.id.playlistId;
           videoItem.videoId = item.id.videoId;
-          videoItem.etag = item.etag;
+          videoItem.etag = item.etag.replace(/\"/gi, "");
           array.push(videoItem);
         });
         dispatch("getVideoDuration", { vm: vm, data: array, mode: "n" });
@@ -109,8 +125,10 @@ const actions = {
       });
       if (mode === "s") {
         commit("SET_SEARCH_LIST", array);
+        commit('SET_IS_LOADING', false)
       } else {
         commit("SET_NEXTLOAD", { vm: vm, data: array });
+        vm.loadMoreLoading = false
       }
     });
   }

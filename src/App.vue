@@ -1,7 +1,7 @@
 <template>
   <v-app>
 
-    <!-- 컴포넌트화 시킬것 -->
+     <!-- 컴포넌트화 시킬것 -->
     <v-toolbar dark color="indigo auto">
       <v-toolbar-side-icon></v-toolbar-side-icon>
       <auto-complate />
@@ -35,11 +35,10 @@
 </template>
 
 <script>
-import AutoComplate from './components/Commons/AutoComplate/autoSearch'
-
+import AutoComplate from "@/components/Commons/AutoComplate/autoComplate";
 export default {
   name: "App",
-  components: {
+   components: {
     AutoComplate
   },
   data() {

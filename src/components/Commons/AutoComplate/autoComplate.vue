@@ -15,18 +15,22 @@
     solo-inverted
     @keyup.enter="handleKeyupSelect"
   ></v-autocomplete>
+  
 </template>
 
 <script>
 const path =
   "https://suggestqueries.google.com/complete/search?ds=yt&client=youtube&q=";
 
-import { mapActions } from "vuex";
-import { mapFields } from "vuex-map-fields";
+import { mapActions, mapGetters } from "vuex";
 import searchMixin from "../../Search/Mixin/mixin";
+import Loading from "vue-loading-overlay";
 export default {
   name: "AutoSearch",
   mixins: [searchMixin],
+  components: {
+    Loading
+  },
   data() {
     return {
       loading: false,
@@ -36,17 +40,22 @@ export default {
     };
   },
   computed: {
-    ...mapFields({ select: "searchText" })
+    select: {
+      get() {
+        return this.$store.getters.GET_SEARCH_TEXT;
+      },
+      set(val) {
+        this.$store.commit("SET_SEARCH_TEXT", val);
+      }
+    }
   },
   watch: {
     select(newval) {
       if (newval) {
-        this.loading = true;
         this.isStart = true;
         const params = { vm: this, text: this.select };
         this.getList(params).then(() => {
           this.isStart = false;
-          this.loading = false;
         });
       }
     },
@@ -59,7 +68,6 @@ export default {
       getList: "getApiSearch"
     }),
     querySelections(v) {
-      this.loading = true;
       const url = path.concat(v);
       this.axios.jsonp(url).then(res => {
         let value = this._.map(res[1], item => {
@@ -70,20 +78,17 @@ export default {
         if (value) {
           this.items = this._.map(value, "name");
         }
-        this.loading = false;
       });
     },
     handleKeyupSelect() {
       if (!this.isStart) {
         if (this.search) {
-          this.loading = true;
           this.$set(this, "select", this.search);
           //
           const params = { vm: this, text: this.select };
           this.getList(params);
           //
           this.$refs.auto.isMenuActive = false;
-          this.loading = false;
         }
       }
     }

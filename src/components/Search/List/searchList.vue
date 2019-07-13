@@ -32,7 +32,7 @@
 
           <!-- 확장메뉴 -->
           <v-list-tile-action>
-            <video-menu />
+            <video-menu :videoData="item" />
           </v-list-tile-action>
         </v-list-tile>
 
@@ -40,28 +40,44 @@
         <v-divider v-if="index + 1 < list.length" :key="index"></v-divider>
       </template>
     </v-list>
+    <!-- 로딩 -->
+    <loading :active.sync="isLoading" :is-full-page="true" loader="bars" color="#007bff" />
   </v-card>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { mapFields } from "vuex-map-fields";
+import { mapActions, mapGetters } from "vuex";
+import Loading from "vue-loading-overlay";
 import SearchMixin from "../Mixin/mixin";
 import VideoMenu from "../../Commons/Menu/videoMenu";
 export default {
   name: "List",
   mixins: [SearchMixin],
   components: {
-    VideoMenu
+    VideoMenu,
+    Loading
   },
   data() {
-    return {};
+    return {
+      modal: {
+        menu: false
+      }
+    };
   },
   computed: {
-    ...mapFields({
-      list: "searchList",
-      loadScrollPos: "scrollPos"
-    })
+    ...mapGetters({
+      list: "GET_SEARCH_LIST",
+      isLoading: "GET_IS_LOADING",
+      loadScrollPos: "GET_SCROLL"
+    }),
+    isLoading: {
+      get() {
+        return this.$store.getters.GET_IS_LOADING;
+      },
+      set(val) {
+        this.$store.commit("SET_IS_LOADING", val);
+      }
+    }
   },
   mounted() {
     this.get();

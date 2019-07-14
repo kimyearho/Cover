@@ -15,6 +15,8 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import lodash from "lodash";
 import moment from 'moment'
+import VuePageTransition from 'vue-page-transition'
+Vue.use(VuePageTransition)
 Vue.use(Loading);
 Vue.use(Vuetify);
 Vue.use(VueScrollTo);

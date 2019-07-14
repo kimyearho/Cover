@@ -13,12 +13,20 @@ const router = new VueRouter({
     {
       path: "/searchList",
       name: "searchList",
-      component: require("@/components/Search/index").default
+      component: require("@/components/Search/index").default,
+      meta: { transition: 'overlay-left' }
     },
     {
       path: "/sample",
       name: "sample",
-      component: require("@/components/Sample/index").default
+      component: require("@/components/Sample/index").default,
+      meta: { transition: 'overlay-right' }
+    },
+    {
+      path: "/sample2",
+      name: "sample2",
+      component: require("@/components/Sample/index2").default,
+      meta: { transition: 'overlay-left-right' }
     }
   ]
 });

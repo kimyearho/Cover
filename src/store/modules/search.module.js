@@ -69,7 +69,6 @@ const actions = {
           videoItem.channelId = item.id.channelId;
           videoItem.playlistId = item.id.playlistId;
           videoItem.videoId = item.id.videoId;
-          videoItem.etag = item.etag.replace(/\"/gi, "");
           array.push(videoItem);
         });
         dispatch("getVideoDuration", { vm: vm, data: array, mode: "s" });
@@ -98,7 +97,6 @@ const actions = {
           videoItem.channelId = item.id.channelId;
           videoItem.playlistId = item.id.playlistId;
           videoItem.videoId = item.id.videoId;
-          videoItem.etag = item.etag.replace(/\"/gi, "");
           array.push(videoItem);
         });
         dispatch("getVideoDuration", { vm: vm, data: array, mode: "n" });

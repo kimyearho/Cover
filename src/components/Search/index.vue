@@ -1,14 +1,16 @@
 <template>
-  <v-flex ref="block" xs12 sm6 offset-sm3 class="maxHeight" @scroll="handleScroll">
-    <cover-list />
-    <v-btn
-      block
-      :loading="loadMoreLoading"
-      :disabled="loadMoreLoading"
-      color="primary"
-      @click="loadMore"
-    >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
-  </v-flex>
+  <v-layout row>
+    <v-flex xs12 sm6 offset-sm3 ref="block" class="maxHeight" @scroll="handleScroll">
+      <cover-list />
+      <v-btn
+        block
+        :loading="loadMoreLoading"
+        :disabled="loadMoreLoading"
+        color="primary"
+        @click="loadMore"
+      >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>

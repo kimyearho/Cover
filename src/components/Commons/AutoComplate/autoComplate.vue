@@ -24,13 +24,9 @@ const path =
 
 import { mapActions, mapGetters } from "vuex";
 import searchMixin from "../../Search/Mixin/mixin";
-import Loading from "vue-loading-overlay";
 export default {
   name: "AutoSearch",
   mixins: [searchMixin],
-  components: {
-    Loading
-  },
   data() {
     return {
       loading: false,

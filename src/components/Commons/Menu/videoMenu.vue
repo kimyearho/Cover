@@ -8,17 +8,20 @@
       </template>
       <v-list>
         <v-subheader>Open in</v-subheader>
-        <v-list-tile v-for="tile in tiles" :key="tile.title" @click="sheet = false">
-          <v-list-tile-avatar>
-            <v-avatar size="32px" tile>
-              <img
-                :src="`https://cdn.vuetifyjs.com/images/bottom-sheets/${tile.img}`"
-                :alt="tile.title"
-              />
-            </v-avatar>
-          </v-list-tile-avatar>
-          <v-list-tile-title>{{ tile.title }}</v-list-tile-title>
-        </v-list-tile>
+        <template v-for="(tile, index, index2) in tiles">
+          <v-list-tile :key="index2" @click="menuItem(tile)">
+            <v-list-tile-avatar>
+              <v-avatar size="32px" tile>
+                <img
+                  :src="`https://cdn.vuetifyjs.com/images/bottom-sheets/${tile.img}`"
+                  :alt="tile.title"
+                />
+              </v-avatar>
+            </v-list-tile-avatar>
+            <v-list-tile-title>{{ tile.title }}</v-list-tile-title>
+          </v-list-tile>
+          <v-divider v-if="index + 1 < tiles.length" :key="index"></v-divider>
+        </template>
       </v-list>
     </v-bottom-sheet>
   </div>
@@ -44,7 +47,12 @@ export default {
       ]
     };
   },
-  methods: {}
+  methods: {
+    menuItem(data) {
+      console.log(data)
+      // this.sheet = !this.sheet
+    }
+  }
 };
 </script>
 

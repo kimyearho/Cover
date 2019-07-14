@@ -8,7 +8,9 @@
 
     <!-- 콘텐츠 -->
     <v-content>
-      <router-view></router-view>
+      <vue-page-transition>
+        <router-view></router-view>
+      </vue-page-transition>
     </v-content>
 
     <!-- 컴포넌트화 시킬것 -->
@@ -24,8 +26,8 @@
           <v-icon>favorite</v-icon>
         </v-btn>
 
-        <v-btn color="pink" flat value="nearby">
-          <span>Setting</span>
+        <v-btn color="pink" flat value="setting" @click="route('setting')">
+          <span>Sample</span>
           <v-icon>place</v-icon>
         </v-btn>
       </v-bottom-nav>
@@ -52,6 +54,8 @@ export default {
         this.$router.push("searchList");
       } else if (name === "favorites") {
         this.$router.push("sample");
+      } else if(name === "setting") {
+        this.$router.push('sample2')
       }
     }
   }

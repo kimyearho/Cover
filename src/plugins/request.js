@@ -5,6 +5,7 @@ NProgress.configure({ showSpinner: false })
 
 
 const service = axios.create({
+  baseURL: 'https://www.googleapis.com/youtube/v3',
   timeout: 5000,
   headers: {
     'Accept-Version': 1,

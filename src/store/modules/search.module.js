@@ -1,4 +1,3 @@
-const BASE_URL = "https://www.googleapis.com/youtube/v3";
 const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
 
 const state = {
@@ -59,7 +58,7 @@ const actions = {
       key: API_KEY
     };
     commit("SET_IS_LOADING", true);
-    vm.axios.get(`${BASE_URL}/search`, { params: queryParams }).then(res => {
+    vm.axios.get(`/search`, { params: queryParams }).then(res => {
       if (res.status === 200) {
         if (res.data.nextPageToken)
           commit("SET_NEXT_TOKEN", res.data.nextPageToken);
@@ -87,7 +86,7 @@ const actions = {
       key: API_KEY
     };
 
-    vm.axios.get(`${BASE_URL}/search`, { params: queryParams }).then(res => {
+    vm.axios.get(`/search`, { params: queryParams }).then(res => {
       if (res.status === 200) {
         if (res.data.nextPageToken)
           commit("SET_NEXT_TOKEN", res.data.nextPageToken);
@@ -106,7 +105,7 @@ const actions = {
 
   getVideoDuration({ commit }, { vm, data, mode }) {
     const videoIds = vm._.map(data, "videoId");
-    const url = `${BASE_URL}/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
+    const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
     let array = [];
     vm.axios.get(url).then(res => {
       vm._.forEach(data, item => {

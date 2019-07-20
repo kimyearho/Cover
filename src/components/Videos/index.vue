@@ -1,14 +1,15 @@
 <template>
-  <div>
-    <play-list />
-  </div>
+  <v-layout row>
+    <v-flex xs12 sm6 offset-sm3>
+      <play-list />
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
-import draggable from "vuedraggable";
-import PlayList from "../Videos/List/Playlist/index";
+import PlayList from "./List/Playlist/index";
 export default {
-  name: "Playlist",
+  name: "Videos",
   components: {
     PlayList
   },
@@ -17,6 +18,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

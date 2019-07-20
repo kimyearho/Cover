@@ -67,7 +67,7 @@ export default {
 
 <style lang="css" scoped>
 .maxHeight {
-  max-height: 490px;
+  max-height: 500px;
   overflow-y: scroll;
 }
 </style>

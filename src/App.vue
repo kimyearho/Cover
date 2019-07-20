@@ -55,7 +55,7 @@ export default {
       } else if (name === "favorites") {
         this.$router.push("sample");
       } else if(name === "setting") {
-        this.$router.push('sample2')
+        this.$router.push('playList')
       }
     }
   }

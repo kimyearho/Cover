@@ -14,19 +14,19 @@ const router = new VueRouter({
       path: "/searchList",
       name: "searchList",
       component: require("@/components/Search/index").default,
-      meta: { transition: 'overlay-left' }
+      meta: { transition: 'overlay-right-full' }
     },
     {
       path: "/sample",
       name: "sample",
       component: require("@/components/Sample/index").default,
-      meta: { transition: 'overlay-right' }
+      meta: { transition: 'overlay-left-full' }
     },
     {
-      path: "/sample2",
-      name: "sample2",
-      component: require("@/components/Sample/index2").default,
-      meta: { transition: 'overlay-left-right' }
+      path: "/playList",
+      name: "playList",
+      component: require("@/components/Videos/index").default,
+      meta: { transition: 'overlay-down-full' }
     }
   ]
 });

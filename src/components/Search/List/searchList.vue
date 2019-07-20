@@ -90,10 +90,7 @@ export default {
       if(this.list.length === 0) {
         const params = { vm: this };
         this.getList(params);
-      } else {
-        // 처음조회가 아닐때
-        this.$store.commit('SET_SEARCH_LIST', this.list);
-      }
+      } 
     },
     detail(data) {
       console.log("상세 => " + data);
@@ -103,10 +100,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.maxHeight {
-  max-height: 490px;
-  overflow-y: scroll;
-}
 .subheader {
   color: #ffffff !important;
   background: #d81b60;

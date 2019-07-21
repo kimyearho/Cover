@@ -26,9 +26,14 @@
           <v-icon>favorite</v-icon>
         </v-btn>
 
+        <v-btn color="pink" flat value="library">
+          <span>Library</span>
+          <v-icon>video_library</v-icon>
+        </v-btn>
+
         <v-btn color="pink" flat value="setting" @click="route('setting')">
-          <span>Sample</span>
-          <v-icon>place</v-icon>
+          <span>Setting</span>
+          <v-icon>settings</v-icon>
         </v-btn>
       </v-bottom-nav>
     </v-footer>

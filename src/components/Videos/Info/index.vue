@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-img src="https://i.ytimg.com/vi/YU9kUGcJY60/maxresdefault.jpg" height="190px">
+    <v-img :src="infos.thumbnails.high.url" height="190px">
       <span class="avatar-right">
         <v-list-tile-avatar color="grey darken-3">
           <v-img
@@ -12,14 +12,25 @@
     </v-img>
 
     <v-card-title primary-title style="padding:10px !important;">
-      <div class="headline">Shingeki no Kyojin (Attack on Titan) Season 3</div>
-      <span class="grey--text">1,000 miles of wonder</span>
+      <div class="headline">{{ infos.title }}</div>
+      <span class="grey--text">{{ infos.channelTitle }}</span>
     </v-card-title>
   </div>
 </template>
 
 <script>
-export default {};
+import { mapGetters } from "vuex";
+
+export default {
+  name: "VideoInfo",
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapGetters({ infos: "GET_PLAYLIST_INFO" })
+  },
+  methods: {}
+};
 </script>
 
 <style lang="css" scoped>
@@ -32,6 +43,10 @@ export default {};
   margin-top: 10px;
 }
 .headline {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 17px !important;
   line-height: 32px !important;
 }

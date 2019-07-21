@@ -1,6 +1,13 @@
 const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
 
 const state = {
+  playlistInfo: {
+    id: "",
+    title: "",
+    channelTitle: "",
+    description: "",
+    thumbnails: null
+  },
   playList: {
     id: "",
     list: [],
@@ -17,6 +24,9 @@ const getters = {
   },
   GET_PLAYLIST_TOKEN: state => {
     return state.playList.nextToken;
+  },
+  GET_PLAYLIST_INFO: state => {
+    return state.playlistInfo;
   }
 };
 
@@ -35,11 +45,17 @@ const mutations = {
   },
   SET_PLAYLIST_NEXTLOAD(state, { vm, data }) {
     state.playList.list = vm._.concat(state.playList.list, data);
+  },
+  SET_PLAYLIST_INFO(state, payload) {
+    state.playlistInfo.id = payload.playlistId;
+    state.playlistInfo.title = payload.title;
+    state.playlistInfo.channelTitle = payload.channelTitle;
+    state.playlistInfo.description = payload.description;
+    state.playlistInfo.thumbnails = payload.thumbnails;
   }
 };
 
 const actions = {
-
   getPlaylist({ commit, dispatch }, { vm, playlistId }) {
     commit("SET_PLAYLIST_ID", playlistId);
     const params = {
@@ -87,7 +103,7 @@ const actions = {
       dispatch("getPlaylistVideoDuration", { vm: vm, data: array, mode: "n" });
     });
   },
-  
+
   getPlaylistVideoDuration({ commit }, { vm, data, mode }) {
     const videoIds = vm._.map(data, "videoId");
     const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;

@@ -103,6 +103,7 @@ export default {
       }
     },
     detail(data) {
+      this.$store.commit('SET_PLAYLIST_INFO', data)
       this.$router.push({
         name: "playList",
         params: {

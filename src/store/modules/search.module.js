@@ -4,7 +4,7 @@ const state = {
   searchList: [],
   scrollPos: 0,
   nextToken: null,
-  searchText: "top music",
+  searchText: "audio library",
   isLoading: false
 };
 

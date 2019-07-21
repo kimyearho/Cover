@@ -55,21 +55,21 @@ export default {
       loadMoreLoading: false
     };
   },
-  // watch: {
-  //   "$route.params.id": {
-  //     handler(val) {
-  //       if (!this.id) {
-  //         this.get();
-  //       } else {
-  //         if (this.id !== val) {
-  //           this.get();
-  //         } 
-  //       }
-  //     },
-  //     deep: true,
-  //     immediate: true
-  //   }
-  // },
+  watch: {
+    "$route.params.id": {
+      handler(val) {
+        if (!this.id) {
+          this.get();
+        } else {
+          if (this.id !== val) {
+            this.get();
+          } 
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   computed: {
     ...mapGetters({
       id: "GET_ID",

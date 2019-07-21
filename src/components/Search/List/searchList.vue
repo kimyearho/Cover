@@ -74,6 +74,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      id: "GET_ID",
       list: "GET_SEARCH_LIST",
       isNextToken: "GET_NEXT_TOKEN",
       isLoading: "GET_IS_LOADING"
@@ -93,6 +94,7 @@ export default {
   methods: {
     ...mapActions({
       getList: "getApiSearch",
+      getPlaylist: "getPlaylist",
       loadMoreSearch: "getApiNextloadSearch"
     }),
     get() {
@@ -102,14 +104,52 @@ export default {
         this.getList(params);
       }
     },
+
+    // 기본적인 방법
+    // detail(data) {
+    //   this.$store.commit("SET_PLAYLIST_INFO", data);
+    //   this.$router.push({
+    //     name: "playList",
+    //     params: {
+    //       id: data.playlistId
+    //     }
+    //   });
+    // },
+
+    /**
+     * 이 방법은 재생목록 페이지로 이동하기전에 먼저 데이터를 요청하는 방식
+     * 데이터 요청 후 Store 정보까지 세팅이 성공하면 재생목록 페이지로 이동한다.
+     * 따라서, 페이지에 이동하면 이미 데이터는 전부 준비되어 있는 상태가 됨.
+     * 일반적으로 컴포넌트로 이동하여 데이터를 요청하면 재생목록이 비어있다가 채워지는 현상이 있기 때문에,
+     * 로딩을 채워넣는것보단 이 방식도 괜찮을 것 같음.
+     * 단, router 에서 처리할 수 있는 방법이 있으면 그 방식도 괜찮을듯함.
+     */
     detail(data) {
-      this.$store.commit('SET_PLAYLIST_INFO', data)
-      this.$router.push({
-        name: "playList",
-        params: {
-          id: data.playlistId
-        }
-      });
+      if (this.id !== data.playlistId) {
+        // 재생목록아이디가 서로 다르면 처음 접속
+        this.$store.commit("SET_PLAYLIST_INFO", data);
+        const params = {
+          vm: this,
+          playlistId: data.playlistId
+        };
+        this.getPlaylist(params).then(() => {
+          // TODO: 페이지 이동하기전에 에러처리도 할 수 있을것 같다.
+          this.$router.push({
+            name: "playList",
+            params: {
+              id: data.playlistId
+            }
+          });
+        });
+      } else {
+        // 동일한 재생목록을 재조회시 즉시 이동
+        this.$router.push({
+          name: "playList",
+          params: {
+            id: data.playlistId
+          }
+        });
+      }
     },
     loadMore() {
       this.loadMoreLoading = true;

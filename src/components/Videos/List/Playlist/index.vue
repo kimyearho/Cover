@@ -26,6 +26,7 @@
       <v-btn
         block
         :loading="loadMoreLoading"
+        :disabled="loadMoreLoading"
         @click="loadMore"
         color="primary"
       >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
@@ -129,7 +130,7 @@ export default {
   padding: 0px !important;
 }
 .maxHeight {
-  max-height: 225px;
+  max-height: 310px;
   overflow-y: scroll;
 }
 .font-14 {

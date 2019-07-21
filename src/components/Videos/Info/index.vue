@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-img src="https://i.ytimg.com/vi/YU9kUGcJY60/maxresdefault.jpg" height="200px">
+    <v-img src="https://i.ytimg.com/vi/YU9kUGcJY60/maxresdefault.jpg" height="190px">
       <span class="avatar-right">
         <v-list-tile-avatar color="grey darken-3">
           <v-img

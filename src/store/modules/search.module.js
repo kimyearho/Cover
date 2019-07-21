@@ -34,10 +34,10 @@ const mutations = {
     state.scrollPos = payload;
   },
   SET_SEARCH_LIST(state, payload) {
-    state.searchList = payload;
+    state.searchList = Object.freeze(payload);
   },
   SET_NEXTLOAD(state, { vm, data }) {
-    state.searchList = vm._.concat(state.searchList, data);
+    state.searchList = Object.freeze(vm._.concat(state.searchList, data));
   },
   SET_NEXT_TOKEN(state, payload) {
     state.nextToken = payload;

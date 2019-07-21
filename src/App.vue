@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- 컴포넌트화 시킬것 -->
-    <v-toolbar dark color="indigo auto">
+    <v-toolbar dark color="indigo auto" class="toolbar">
       <v-toolbar-side-icon></v-toolbar-side-icon>
       <auto-complate />
     </v-toolbar>
@@ -14,7 +14,7 @@
     </v-content>
 
     <!-- 컴포넌트화 시킬것 -->
-    <v-footer app>
+    <v-footer>
       <v-bottom-nav :active.sync="bottomNav" :value="true" absolute>
         <v-btn color="pink" flat value="search" @click="route('search')">
           <span>Search</span>
@@ -51,11 +51,11 @@ export default {
     route(name) {
       this.bottomNav = name;
       if (name === "search") {
-        this.$router.push("searchList");
+        this.$router.push({ name: "searchList" });
       } else if (name === "favorites") {
-        this.$router.push("sample");
-      } else if(name === "setting") {
-        this.$router.push('playList')
+        this.$router.push({ name: "sample" });
+      } else if (name === "setting") {
+        // this.$router.push("playList");
       }
     }
   }
@@ -64,6 +64,7 @@ export default {
 
 <style scope>
 .v-toolbar__content {
+  height: 50px !important;
   padding: 0px 5px 0px 12px !important;
 }
 .v-toolbar .v-input {

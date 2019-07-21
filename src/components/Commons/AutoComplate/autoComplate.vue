@@ -6,8 +6,8 @@
     :items="items"
     :search-input.sync="search"
     cache-items
-    class="mx-3"
     flat
+    class="vauto"
     clearable
     hide-no-data
     hide-details
@@ -93,4 +93,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.vauto >>> .v-input__control {
+  min-height: 38px !important;
+}
 </style>

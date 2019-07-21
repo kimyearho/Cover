@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <video-info />
-    <v-divider inset></v-divider>
+    <v-divider></v-divider>
     <draggable v-model="playlist" class="maxHeight">
       <!-- 검색목록 템플릿 -->
       <template v-for="(item, index, index1) in playlist">
@@ -54,8 +54,24 @@ export default {
       loadMoreLoading: false
     };
   },
+  watch: {
+    "$route.params.id": {
+      handler(val) {
+        if (!this.id) {
+          this.get();
+        } else {
+          if (this.id !== val) {
+            this.get();
+          } 
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
   computed: {
     ...mapGetters({
+      id: "GET_ID",
       playlist: "GET_PLAY_LIST",
       isNextToken: "GET_PLAYLIST_TOKEN"
     }),
@@ -68,31 +84,26 @@ export default {
       }
     }
   },
-  mounted() {
-    this.get();
-  },
   methods: {
     ...mapActions({
       getPlaylist: "getPlaylist",
       getNextList: "getPlaylistNextSearch"
     }),
     get() {
-      if (this.playlist.length === 0) {
-        const params = {
-          vm: this,
-          playlistId: "PLzCxunOM5WFKZuBXTe8EobD6Dwi4qV-kO"
-        };
-        this.getPlaylist(params).then(() => {
-          console.log("Done!");
-        });
-      }
+      const params = {
+        vm: this,
+        playlistId: this.$route.params.id
+      };
+      this.getPlaylist(params).then(() => {
+        console.log("Done!");
+      });
     },
     loadMore() {
       this.loadMoreLoading = true;
       setTimeout(() => {
         const param = {
           vm: this,
-          playlistId: "PLzCxunOM5WFKZuBXTe8EobD6Dwi4qV-kO"
+          playlistId: this.$route.params.id
         };
         this.getNextList(param);
       }, 1000);
@@ -118,7 +129,7 @@ export default {
   padding: 0px !important;
 }
 .maxHeight {
-  max-height: 235px;
+  max-height: 225px;
   overflow-y: scroll;
 }
 .font-14 {

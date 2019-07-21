@@ -1,20 +1,14 @@
 <template>
   <v-layout row>
-    <v-flex xs12 sm6 offset-sm3 ref="block" class="maxHeight" @scroll="handleScroll">
+    <v-flex xs12 sm6 ref="block" class="maxHeight" @scroll="handleScroll">
       <cover-list />
-      <v-btn
-        block
-        :loading="loadMoreLoading"
-        :disabled="loadMoreLoading"
-        color="primary"
-        @click="loadMore"
-      >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
+      <v-img src="https://developers.google.com/youtube/images/developed-with-youtube-sentence-case-dark.png"></v-img>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import searchMixin from "./Mixin/mixin";
 import CoverList from "./List/searchList";
 
@@ -27,14 +21,12 @@ export default {
   data() {
     return {
       pos: 0,
-      loadMoreLoading: false,
       containerLoader: false
     };
   },
   computed: {
     ...mapGetters({
-      scrollPos: "GET_SCROLL",
-      isNextToken: "GET_NEXT_TOKEN"
+      scrollPos: "GET_SCROLL"
     })
   },
   mounted() {
@@ -48,26 +40,16 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
-    ...mapActions({
-      loadMoreSearch: "getApiNextloadSearch"
-    }),
     handleScroll() {
       this.pos = this.$refs.block.scrollTop;
     },
-    loadMore() {
-      this.loadMoreLoading = true;
-      setTimeout(() => {
-        const param = { vm: this };
-        this.loadMoreSearch(param);
-      }, 1000);
-    }
   }
 };
 </script>
 
 <style lang="css" scoped>
 .maxHeight {
-  max-height: 500px;
+  max-height: 572px;
   overflow-y: scroll;
 }
 </style>

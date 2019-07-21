@@ -32,8 +32,7 @@ function createWindow() {
     }
   });
 
-  // win.setMenu(null)
-
+  win.setMenu(null)
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);

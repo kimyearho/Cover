@@ -23,10 +23,10 @@ const router = new VueRouter({
       meta: { transition: 'overlay-left-full' }
     },
     {
-      path: "/playList",
+      path: "/playList/:id",
       name: "playList",
       component: require("@/components/Videos/index").default,
-      meta: { transition: 'overlay-down-full' }
+      meta: { transition: 'fade-in-up' }
     }
   ]
 });

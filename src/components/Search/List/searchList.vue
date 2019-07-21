@@ -1,6 +1,6 @@
   <template>
   <v-card>
-    <v-list subheader>
+    <v-list subheader class="pd-0">
       <!-- 부제목 -->
       <v-subheader class="subheader">
         <v-icon>search</v-icon>
@@ -39,6 +39,12 @@
         <!-- 구분선 -->
         <v-divider v-if="index + 1 < list.length" :key="index"></v-divider>
       </template>
+      <v-btn
+        block
+        :loading="loadMoreLoading"
+        @click="loadMore"
+        color="primary"
+      >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
     </v-list>
     <!-- 로딩 -->
     <loading :active.sync="isLoading" :is-full-page="true" loader="bars" color="#007bff" />
@@ -59,6 +65,7 @@ export default {
   },
   data() {
     return {
+      loadMoreLoading: false,
       modal: {
         menu: false
       }
@@ -67,6 +74,7 @@ export default {
   computed: {
     ...mapGetters({
       list: "GET_SEARCH_LIST",
+      isNextToken: "GET_NEXT_TOKEN",
       isLoading: "GET_IS_LOADING"
     }),
     isLoading: {
@@ -83,17 +91,30 @@ export default {
   },
   methods: {
     ...mapActions({
-      getList: "getApiSearch"
+      getList: "getApiSearch",
+      loadMoreSearch: "getApiNextloadSearch"
     }),
     get() {
       // 처음 조회
-      if(this.list.length === 0) {
+      if (this.list.length === 0) {
         const params = { vm: this };
         this.getList(params);
-      } 
+      }
     },
     detail(data) {
-      console.log("상세 => " + data);
+      this.$router.push({
+        name: "playList",
+        params: {
+          id: data.playlistId
+        }
+      });
+    },
+    loadMore() {
+      this.loadMoreLoading = true;
+      setTimeout(() => {
+        const param = { vm: this };
+        this.loadMoreSearch(param);
+      }, 1000);
     }
   }
 };
@@ -127,5 +148,8 @@ export default {
 .label-live {
   font-weight: 700;
   color: #e53935 !important;
+}
+.pd-0 {
+  padding: 0px;
 }
 </style>

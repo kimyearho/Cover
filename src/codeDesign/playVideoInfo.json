@@ -1,0 +1,30 @@
+{
+    "data": {
+        "coverData": {
+            "channelId": "UCht8qITGkBvXKsR1Byln-wA",
+            "playlistId": "PLzCxunOM5WFLOaTRCzeGrODz8TWaLrbhv",
+            "videoId": "MkNeIUgNPQ8",
+            "videoTitle": "Adventures - A Himitsu (No Copyright Music)"
+        },
+        "duration": "3:45",
+        "playTime": 0,
+        "thumbnails": {
+            "default": {
+                "height": 90,
+                "url": "https://i.ytimg.com/vi/MkNeIUgNPQ8/default.jpg",
+                "width": 120
+            },
+            "high": {
+                "height": 360,
+                "url": "https://i.ytimg.com/vi/MkNeIUgNPQ8/hqdefault.jpg",
+                "width": 480
+            },
+            "medium": {
+                "height": 180,
+                "url": "https://i.ytimg.com/vi/MkNeIUgNPQ8/mqdefault.jpg",
+                "width": 320
+            }
+        },
+        "videoIndex": 1
+    }
+}

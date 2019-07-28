@@ -58,13 +58,14 @@ const actions = {
       key: API_KEY
     };
     commit("SET_IS_LOADING", true);
-    vm.axios.get(`/search`, { params: queryParams }).then(res => {
+    return vm.axios.get(`/search`, { params: queryParams }).then(res => {
       if (res.status === 200) {
         if (res.data.nextPageToken)
           commit("SET_NEXT_TOKEN", res.data.nextPageToken);
         let array = [];
         vm._.forEach(res.data.items, item => {
           let videoItem = Object.assign({}, item.snippet);
+          videoItem.channel = videoItem.channelId;
           videoItem.channelId = item.id.channelId;
           videoItem.playlistId = item.id.playlistId;
           videoItem.videoId = item.id.videoId;
@@ -123,6 +124,7 @@ const actions = {
       if (mode === "s") {
         commit("SET_SEARCH_LIST", array);
         commit("SET_IS_LOADING", false);
+        vm.event.$emit("topList", { data: 0 });
       } else {
         commit("SET_NEXTLOAD", { vm: vm, data: array });
         vm.loadMoreLoading = false;

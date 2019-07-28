@@ -5,7 +5,7 @@
         <v-list-tile-avatar color="grey darken-3">
           <v-img
             class="elevation-6"
-            src="https://yt3.ggpht.com/a/AGF-l79D9c7DKrI3x1bxLUh8IJydUgEm6xSRk0mFaA=s48-c-k-c0xffffffff-no-rj-mo"
+            :src="channel.thumbnails.default.url"
           ></v-img>
         </v-list-tile-avatar>
       </span>
@@ -27,7 +27,10 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters({ infos: "GET_PLAYLIST_INFO" })
+    ...mapGetters({
+      channel: "GET_CHANNEL",
+      infos: "GET_PLAYLIST_INFO"
+    })
   },
   methods: {}
 };

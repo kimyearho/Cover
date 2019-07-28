@@ -2,7 +2,9 @@
   <v-layout row>
     <v-flex xs12 sm6 ref="block" class="maxHeight" @scroll="handleScroll">
       <cover-list />
-      <v-img src="https://developers.google.com/youtube/images/developed-with-youtube-sentence-case-dark.png"></v-img>
+      <v-img
+        src="https://developers.google.com/youtube/images/developed-with-youtube-sentence-case-dark.png"
+      ></v-img>
     </v-flex>
   </v-layout>
 </template>
@@ -20,8 +22,7 @@ export default {
   },
   data() {
     return {
-      pos: 0,
-      containerLoader: false
+      pos: 0
     };
   },
   computed: {
@@ -30,19 +31,28 @@ export default {
     })
   },
   mounted() {
-    this.$refs.block.scrollTo(0, this.scrollPos);
+    this.event.$on("topList", this.scrollTo);
+    this.scrollTo();
   },
   beforeMount() {
     window.addEventListener("scroll", this.handleScroll);
   },
   beforeDestroy() {
+    this.event.$off('topList')
     this.$store.commit("SET_SCROLL", this.pos);
     window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
+    scrollTo(pos) {
+      if (pos) {
+        this.$refs.block.scrollTo(0, pos);
+      } else {
+        this.$refs.block.scrollTo(0, this.scrollPos);
+      }
+    },
     handleScroll() {
       this.pos = this.$refs.block.scrollTop;
-    },
+    }
   }
 };
 </script>

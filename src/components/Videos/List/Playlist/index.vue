@@ -2,10 +2,10 @@
   <v-card>
     <video-info />
     <v-divider></v-divider>
-    <draggable v-model="playlist" class="maxHeight">
-      <!-- 검색목록 템플릿 -->
+    <!-- 검색목록 템플릿 -->
+    <v-list class="maxHeight">
       <template v-for="(item, index, index1) in playlist">
-        <v-list-tile :key="index1" avatar>
+        <v-list-tile :key="index1" avatar @click="openPlayer(item)">
           <!-- 썸네일 -->
           <v-list-tile-avatar>
             <img :src="item.thumbnails.default.url" />
@@ -30,7 +30,8 @@
         @click="loadMore"
         color="primary"
       >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
-    </draggable>
+    </v-list>
+    <playerbar :isVisible.sync="showPlayer" @playerClose="showPlayer = false" />
   </v-card>
 </template>
 
@@ -40,36 +41,24 @@ import draggable from "vuedraggable";
 import sMixin from "../../../Search/Mixin/mixin";
 import VideoInfo from "../../Info/index";
 import VideoMenu from "../../../Commons/Menu/videoMenu";
+import Playerbar from "../../../Playerbar/index";
 
 export default {
   name: "PlayList",
   mixins: [sMixin],
   components: {
-    VideoInfo,
     draggable,
-    VideoMenu
+    VideoInfo,
+    VideoMenu,
+    Playerbar
   },
   data() {
     return {
       show: false,
+      showPlayer: false,
       loadMoreLoading: false
     };
   },
-  // watch: {
-  //   "$route.params.id": {
-  //     handler(val) {
-  //       if (!this.id) {
-  //         this.get();
-  //       } else {
-  //         if (this.id !== val) {
-  //           this.get();
-  //         } 
-  //       }
-  //     },
-  //     deep: true,
-  //     immediate: true
-  //   }
-  // },
   computed: {
     ...mapGetters({
       id: "GET_ID",
@@ -98,6 +87,9 @@ export default {
       this.getPlaylist(params).then(() => {
         console.log("Done!");
       });
+    },
+    openPlayer() {
+      this.showPlayer = !this.showPlayer;
     },
     loadMore() {
       this.loadMoreLoading = true;

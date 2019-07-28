@@ -15,7 +15,6 @@
     solo-inverted
     @keyup.enter="handleKeyupSelect"
   ></v-autocomplete>
-  
 </template>
 
 <script>
@@ -52,6 +51,7 @@ export default {
         const params = { vm: this, text: this.select };
         this.getList(params).then(() => {
           this.isStart = false;
+          this.redirect()
         });
       }
     },
@@ -82,10 +82,20 @@ export default {
           this.$set(this, "select", this.search);
           //
           const params = { vm: this, text: this.select };
-          this.getList(params);
+          this.getList(params).then(() => {
+            this.redirect()
+          });
           //
           this.$refs.auto.isMenuActive = false;
         }
+      }
+    },
+    redirect() {
+      const route = this.$route;
+      if (route.name !== "searchList") {
+        this.$router.push({
+          name: "searchList"
+        });
       }
     }
   }

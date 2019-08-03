@@ -8,8 +8,8 @@
       </v-subheader>
 
       <!-- 검색목록 템플릿 -->
-      <template v-for="(item, index, index1) in list">
-        <v-list-tile :key="index1" avatar @click="detail(item)">
+      <template v-for="(item, index) in list">
+        <v-list-tile :key="index" avatar @click="detail(item)">
           <!-- 썸네일 -->
           <v-list-tile-avatar>
             <img :src="item.thumbnails.default.url" />
@@ -37,7 +37,7 @@
         </v-list-tile>
 
         <!-- 구분선 -->
-        <v-divider v-if="index + 1 < list.length" :key="index"></v-divider>
+        <v-divider v-if="index + 1 < list.length" :key="`item${index}`"></v-divider>
       </template>
       <v-btn
         block

@@ -8,17 +8,17 @@
       </template>
       <v-list>
         <v-subheader>Open in</v-subheader>
-        <template v-for="(tile, index, index2) in tiles">
-          <v-list-tile :key="index2" @click="menuItem(tile)">
+        <template v-for="(item, index, index2) in tiles">
+          <v-list-tile :key="index2" @click="menuItem(item)">
             <v-list-tile-avatar>
               <v-avatar size="32px" tile>
                 <img
-                  :src="`https://cdn.vuetifyjs.com/images/bottom-sheets/${tile.img}`"
-                  :alt="tile.title"
+                  :src="`https://cdn.vuetifyjs.com/images/bottom-sheets/${item.img}`"
+                  :alt="item.title"
                 />
               </v-avatar>
             </v-list-tile-avatar>
-            <v-list-tile-title>{{ tile.title }}</v-list-tile-title>
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
           </v-list-tile>
           <v-divider v-if="index + 1 < tiles.length" :key="index"></v-divider>
         </template>
@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     menuItem(data) {
-      console.log(data)
+      this.$log.info('Done!', data)
       // this.sheet = !this.sheet
     }
   }

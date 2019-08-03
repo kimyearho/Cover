@@ -6,3 +6,19 @@ html {
     --overlay-bg: #ffffff !important;
     --transition-duration: .25s !important;
 }
+
+.cursor {
+    cursor: pointer;
+}
+
+.font-13 {
+    font-size: 13px;
+}
+
+.font-14 {
+    font-size: 14px;
+}
+
+.font-12 {
+    font-size: 12px;
+}

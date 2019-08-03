@@ -1,3 +1,10 @@
+/*
+* title:
+* menu: 
+* description: 
+* author: 
+*/
+
 const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
 
 const state = {
@@ -10,6 +17,10 @@ const state = {
   },
   playList: {
     id: "",
+    list: [],
+    nextToken: ""
+  },
+  playerList: {
     list: [],
     nextToken: ""
   }
@@ -27,15 +38,18 @@ const getters = {
   },
   GET_PLAYLIST_INFO: state => {
     return state.playlistInfo;
+  },
+  GET_PLAYER_LIST: state => {
+    return state.playerList.list;
+  },
+  GET_PLAYERLIST_TOKEN: state => {
+    return state.playerList.nextToken;
   }
 };
 
 const mutations = {
   SET_PLAYLIST_ID(state, payload) {
     state.playList.id = payload;
-  },
-  SET_D_PLAY_LIST(state, payload) {
-    state.playList.list = Object.freeze(payload);
   },
   SET_PLAY_LIST(state, payload) {
     state.playList.list = Object.freeze(payload);
@@ -52,6 +66,9 @@ const mutations = {
     state.playlistInfo.channelTitle = payload.channelTitle;
     state.playlistInfo.description = payload.description;
     state.playlistInfo.thumbnails = payload.thumbnails;
+  },
+  SET_PLAYER_LIST(state, payload) {
+    state.playerList.list = payload;
   }
 };
 
@@ -128,6 +145,15 @@ const actions = {
         vm.loadMoreLoading = false;
       }
     });
+  },
+
+  getPlayerList({ commit, state }, { vm, position }) {
+    const playlist = state.playList.list;
+    const filterList = vm._.filter(playlist, item => {
+      return item.position >= position;
+    });
+    commit('SET_PLAYER_LIST', filterList)
+    return true
   }
 };
 

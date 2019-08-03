@@ -4,8 +4,8 @@
     <v-divider></v-divider>
     <!-- 검색목록 템플릿 -->
     <v-list class="maxHeight">
-      <template v-for="(item, index, index1) in playlist">
-        <v-list-tile :key="index1" avatar @click="openPlayer(item)">
+      <template v-for="(item, index) in playlist">
+        <v-list-tile :key="index" avatar @click="openPlayer(item)">
           <!-- 썸네일 -->
           <v-list-tile-avatar>
             <img :src="item.thumbnails.default.url" />
@@ -22,6 +22,7 @@
             <video-menu :videoData="item" />
           </v-list-tile-action>
         </v-list-tile>
+        <v-divider v-if="index + 1 < playlist.length" :key="`item${index}`"></v-divider>
       </template>
       <v-btn
         block
@@ -37,7 +38,6 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import draggable from "vuedraggable";
 import sMixin from "../../../Search/Mixin/mixin";
 import VideoInfo from "../../Info/index";
 import VideoMenu from "../../../Commons/Menu/videoMenu";
@@ -47,7 +47,6 @@ export default {
   name: "PlayList",
   mixins: [sMixin],
   components: {
-    draggable,
     VideoInfo,
     VideoMenu,
     Playerbar
@@ -64,20 +63,13 @@ export default {
       id: "GET_ID",
       playlist: "GET_PLAY_LIST",
       isNextToken: "GET_PLAYLIST_TOKEN"
-    }),
-    playlist: {
-      get() {
-        return this.$store.getters.GET_PLAY_LIST;
-      },
-      set(val) {
-        this.$store.commit("SET_D_PLAY_LIST", val);
-      }
-    }
+    })
   },
   methods: {
     ...mapActions({
       getPlaylist: "getPlaylist",
-      getNextList: "getPlaylistNextSearch"
+      getNextList: "getPlaylistNextSearch",
+      getPlayerList: "getPlayerList"
     }),
     get() {
       const params = {
@@ -85,11 +77,14 @@ export default {
         playlistId: this.$route.params.id
       };
       this.getPlaylist(params).then(() => {
-        console.log("Done!");
+        this.$log.info("Done!");
       });
     },
-    openPlayer() {
-      this.showPlayer = !this.showPlayer;
+    openPlayer(item) {
+      const params = { vm: this, position: item.position };
+      this.getPlayerList(params).then(() => {
+        this.showPlayer = true;
+      });
     },
     loadMore() {
       this.loadMoreLoading = true;
@@ -124,11 +119,5 @@ export default {
 .maxHeight {
   max-height: 310px;
   overflow-y: scroll;
-}
-.font-14 {
-  font-size: 14px;
-}
-.font-12 {
-  font-size: 12px;
 }
 </style>

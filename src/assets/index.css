@@ -22,3 +22,10 @@ html {
 .font-12 {
     font-size: 12px;
 }
+
+.playing-video-title {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -2,18 +2,15 @@
   <v-layout row justify-center>
     <v-dialog v-model="visible" transition="dialog-bottom-transition" scrollable persistent>
       <v-card>
-        <v-img src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg" height="200px"></v-img>
+        <v-img :src="playingVideo.thumbnails.high.url" height="200px"></v-img>
 
         <v-card-title primary-title>
-          <div>
-            <div class="headline">Top western road trips</div>
-            <span class="grey--text">1,000 miles of wonder</span>
-          </div>
+          <div class="playing-video-title">{{ playingVideo.coverData.videoTitle }}</div>
         </v-card-title>
 
         <v-card-actions>
           <v-btn flat>Share</v-btn>
-          <v-btn flat color="purple" @click="$emit('playerClose')">Explore</v-btn>
+          <v-btn flat color="purple" @click="$emit('playerClose')">Close</v-btn>
           <v-spacer></v-spacer>
           <v-btn icon @click="show = !show">
             <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
@@ -72,6 +69,7 @@ export default {
   computed: {
     ...mapGetters({
       id: "GET_ID",
+      playingVideo: "GET_PLAYING_VIDEO",
       playerList: "GET_PLAYER_LIST",
       isNextToken: "GET_PLAYERLIST_TOKEN"
     }),

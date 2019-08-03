@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <v-dialog v-model="visible" transition="dialog-bottom-transition" scrollable persistent>
       <v-card>
-        <v-img :src="playingVideo.thumbnails.high.url" height="200px"></v-img>
+        <v-img :src="playingVideo.thumbnails.high.url" class="thumb"></v-img>
 
         <v-card-title primary-title>
           <div class="playing-video-title">{{ playingVideo.coverData.videoTitle }}</div>
@@ -95,4 +95,8 @@ export default {
 </script>
 
 <style scoped>
+  .thumb {
+    height: 200px;
+    /* margin: 2px; */
+  }
 </style>

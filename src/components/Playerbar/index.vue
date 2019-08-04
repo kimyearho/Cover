@@ -49,7 +49,7 @@
 
         <v-divider></v-divider>
 
-        <draggable tag="v-list" v-model="playerList" handle=".handle">
+        <draggable tag="v-list" v-model="playerList" class="list-bg" handle=".handle">
           <template v-for="(item, index) in playerList">
             <v-list-tile :key="index" avatar @click="none">
               <!-- 썸네일 -->
@@ -130,6 +130,22 @@ export default {
   height: 200px;
   /* margin: 2px; */
 }
+.v-progress-linear {
+  background: transparent;
+  margin: unset;
+  overflow: unset;
+  width: 100%;
+  position: relative;
+}
+.v-progress-linear__background {
+  position: absolute;
+  /* top: 200px; */
+  left: 0;
+  bottom: 0;
+  -webkit-transition: 0.3s ease-in;
+  transition: 0.3s ease-in;
+  background: transparent;
+}
 .item-center {
   margin: 0 50px;
 }
@@ -152,20 +168,7 @@ export default {
   margin-bottom: 20px;
   font-size: 20px;
 }
-.v-progress-linear {
-  background: transparent;
-  margin: unset;
-  overflow: unset;
-  width: 100%;
-  position: relative;
-}
-.v-progress-linear__background {
-    position: absolute;
-    /* top: 200px; */
-    left: 0;
-    bottom: 0;
-    -webkit-transition: 0.3s ease-in;
-    transition: 0.3s ease-in;
-    background: transparent;
+.list-bg {
+  background: #f5f5f5;
 }
 </style>

@@ -1,7 +1,7 @@
 # vCover - Youtube music
 
 <p align="center">
-  <img src="https://i.imgur.com/BmINfTv.png" />
+  <img src="https://i.imgur.com/heVWcRW.png" />
   <img src="https://i.imgur.com/eUXfCJZ.png" />
 </p>
 

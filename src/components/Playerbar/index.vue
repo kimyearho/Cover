@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="visible" transition="dialog-bottom-transition" scrollable persistent>
+    <v-dialog class="playerbarDialog" v-model="visible" transition="dialog-bottom-transition" scrollable persistent>
       <v-card>
         <v-img :src="playingVideo.thumbnails.high.url" class="thumb"></v-img>
 

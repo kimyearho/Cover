@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- 컴포넌트화 시킬것 -->
-    <v-toolbar dark color="indigo auto" class="toolbar">
+    <v-toolbar dark color="primary" class="toolbar">
       <v-toolbar-side-icon></v-toolbar-side-icon>
       <auto-complate />
     </v-toolbar>

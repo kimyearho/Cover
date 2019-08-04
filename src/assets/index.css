@@ -33,3 +33,19 @@ html {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* ::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #ddd;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.14); 
+} */

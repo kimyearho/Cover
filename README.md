@@ -1,7 +1,9 @@
 # Cover - Youtube music
 
-![IMAGE](https://i.imgur.com/BmINfTv.png)
-![IMAGE](https://i.imgur.com/eUXfCJZ.png)
+<p align="center">
+  <img src="https://i.imgur.com/BmINfTv.png" />
+  <img src="https://i.imgur.com/eUXfCJZ.png" />
+</p>
 
 ## Project setup
 ```

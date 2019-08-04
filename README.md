@@ -1,5 +1,6 @@
 # Cover - Youtube music
 
+![IMAGE](https://i.imgur.com/Mt1m4Ga.png)
 ![IMAGE](https://i.imgur.com/eUXfCJZ.png)
 
 ## Project setup

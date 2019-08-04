@@ -4,9 +4,39 @@
       <v-card>
         <v-img :src="playingVideo.thumbnails.high.url" class="thumb"></v-img>
 
+        <v-progress-linear color="error" height="3" value="50"></v-progress-linear>
+
         <v-card-title primary-title>
           <div class="playing-video-title">{{ playingVideo.coverData.videoTitle }}</div>
         </v-card-title>
+
+        <v-list>
+          <v-list-tile class="item-center">
+            <v-list-tile-action class="paly-icon-margin">
+              <v-btn icon>
+                <v-icon class="font-40">fast_rewind</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+
+            <v-list-tile-action class="paly-icon-margin">
+              <v-btn icon>
+                <v-icon class="font-40">pause</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+
+            <v-list-tile-action class="paly-icon-margin">
+              <v-btn icon>
+                <v-icon class="font-40">fast_forward</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
+
+        <v-card-actions class="volume-slider">
+          <v-icon class="volume-down">volume_down</v-icon>
+          <v-slider class="margin-0" v-model="max"></v-slider>
+          <v-icon class="volume-up">volume_up</v-icon>
+        </v-card-actions>
 
         <v-card-actions>
           <v-btn flat>Share</v-btn>
@@ -63,7 +93,8 @@ export default {
   data() {
     return {
       visible: false,
-      show: true
+      show: true,
+      max: 50
     };
   },
   computed: {
@@ -95,8 +126,46 @@ export default {
 </script>
 
 <style scoped>
-  .thumb {
-    height: 200px;
-    /* margin: 2px; */
-  }
+.thumb {
+  height: 200px;
+  /* margin: 2px; */
+}
+.item-center {
+  margin: 0 50px;
+}
+.paly-icon-margin {
+  margin: 0 15px;
+}
+.margin-0 {
+  margin-top: 0;
+}
+.volume-slider {
+  margin: 0 30px;
+}
+.volume-down {
+  margin-right: 10px;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+.volume-up {
+  margin-left: 10px;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+.v-progress-linear {
+  background: transparent;
+  margin: unset;
+  overflow: unset;
+  width: 100%;
+  position: relative;
+}
+.v-progress-linear__background {
+    position: absolute;
+    /* top: 200px; */
+    left: 0;
+    bottom: 0;
+    -webkit-transition: 0.3s ease-in;
+    transition: 0.3s ease-in;
+    background: transparent;
+}
 </style>

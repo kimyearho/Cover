@@ -23,6 +23,10 @@ html {
     font-size: 12px;
 }
 
+.font-40 {
+    font-size: 40px;
+}
+
 .playing-video-title {
     font-size: 15px;
     white-space: nowrap;

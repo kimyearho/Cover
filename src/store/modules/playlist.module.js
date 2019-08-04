@@ -150,7 +150,7 @@ const actions = {
   getPlayerList({ commit, state }, { vm, position }) {
     const playlist = state.playList.list;
     const filterList = vm._.filter(playlist, item => {
-      return item.position >= position;
+      return item.position > position;
     });
     commit('SET_PLAYER_LIST', filterList)
     return true

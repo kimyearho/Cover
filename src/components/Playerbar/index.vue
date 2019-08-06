@@ -49,7 +49,7 @@
 
         <v-divider></v-divider>
 
-        <draggable tag="v-list" v-model="playerList" class="list-bg" handle=".handle">
+        <draggable tag="v-list" v-model="playerList" class="list-bg" handle=".handle" @end="endDrag">
           <template v-for="(item, index) in playerList">
             <v-list-tile :key="index" avatar @click="none">
               <!-- 썸네일 -->
@@ -119,7 +119,10 @@ export default {
     }
   },
   methods: {
-    none() {}
+    none() {},
+    endDrag(value) {
+      console.log(value)
+    }
   },
   mounted() {}
 };

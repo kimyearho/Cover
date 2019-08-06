@@ -13,7 +13,8 @@ const state = {
       videoId: "",
       videoTitle: ""
     },
-    thumbnails: {},
+    thumbnails: null,
+    playTime: 0,
     position: 0,
     duration: 0
   }

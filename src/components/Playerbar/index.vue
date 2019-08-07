@@ -1,6 +1,12 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog class="playerbarDialog" v-model="visible" transition="dialog-bottom-transition" scrollable persistent>
+    <v-dialog
+      class="playerbarDialog"
+      v-model="visible"
+      transition="dialog-bottom-transition"
+      scrollable
+      persistent
+    >
       <v-card>
         <v-img :src="playingVideo.thumbnails.high.url" class="thumb"></v-img>
 
@@ -49,7 +55,13 @@
 
         <v-divider></v-divider>
 
-        <draggable tag="v-list" v-model="playerList" class="list-bg" handle=".handle" @end="endDrag">
+        <draggable
+          tag="v-list"
+          v-model="playerList"
+          class="list-bg"
+          handle=".handle"
+          @end="endDrag"
+        >
           <template v-for="(item, index) in playerList">
             <v-list-tile :key="index" avatar @click="none">
               <!-- 썸네일 -->
@@ -60,7 +72,10 @@
               <!-- 제목 및 라벨 -->
               <v-list-tile-content class="cursor">
                 <v-list-tile-title class="font-13" v-html="item.title"></v-list-tile-title>
-                <v-list-tile-sub-title v-if="item.duration" class="font-12">{{ item.duration }}</v-list-tile-sub-title>
+                <v-list-tile-sub-title
+                  v-if="item.duration"
+                  class="font-12"
+                >{{ item.duration }} / {{ item.listIndex }}</v-list-tile-sub-title>
               </v-list-tile-content>
 
               <!-- 확장메뉴 -->
@@ -121,7 +136,15 @@ export default {
   methods: {
     none() {},
     endDrag(value) {
-      console.log(value)
+      const playerList = this.playerList;
+      const list = this._.chain(playerList)
+        .forEach((item, index) => {
+          item.listIndex = index + 1;
+        })
+        .value();
+      if (list.length > 0) {
+        this.$store.commit("SET_PLAYER_LIST", list);
+      }
     }
   },
   mounted() {}

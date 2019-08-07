@@ -15,7 +15,7 @@ const state = {
     },
     thumbnails: null,
     playTime: 0,
-    position: 0,
+    playIndex: 0,
     duration: 0
   }
 };
@@ -31,7 +31,6 @@ const mutations = {
     state.playingVideoInfo.coverData.videoId = payload.videoId
     state.playingVideoInfo.coverData.videoTitle = payload.title
     state.playingVideoInfo.thumbnails = payload.thumbnails
-    state.playingVideoInfo.position = payload.position
     state.playingVideoInfo.duration = payload.duration
   }
 };

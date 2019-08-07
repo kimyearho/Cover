@@ -1,9 +1,9 @@
 /*
-* title:
-* menu: 
-* description: 
-* author: 
-*/
+ * title:
+ * menu:
+ * description:
+ * author:
+ */
 
 const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
 
@@ -149,11 +149,20 @@ const actions = {
 
   getPlayerList({ commit, state }, { vm, position }) {
     const playlist = state.playList.list;
-    const filterList = vm._.filter(playlist, item => {
-      return item.position > position;
-    });
-    commit('SET_PLAYER_LIST', filterList)
-    return true
+    /**
+     * 사용자가 선택한 비디오의 순번보다 높은 비디오를 필터링한뒤,
+     * 필터링된 데이터에 index를 부여한다. 시작은 1부터
+     */
+    const list = vm._.chain(playlist)
+      .filter(item => {
+        return item.position > position;
+      })
+      .forEach((item, index) => {
+        item.listIndex = index + 1;
+      })
+      .value();
+    commit("SET_PLAYER_LIST", list);
+    return true;
   }
 };
 

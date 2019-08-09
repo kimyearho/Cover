@@ -2,10 +2,9 @@
   <v-layout row justify-center>
     <v-dialog
       class="playerbarDialog"
-      ref="dialog"
+      ref="bar"
       v-model="visible"
       transition="dialog-bottom-transition"
-      scrollable
       persistent
     >
       <v-card>
@@ -151,17 +150,13 @@ export default {
       setting: "playingVideoSetting",
       listUpdate: "getUpdatePlaybackWithList"
     }),
-    onScroll(e) {
-      console.log(e)
-    },
     playVideo(item) {
-       this.setting({ data: item }).then(() => {
-         this.listUpdate({ vm: this, listIndex: item.listIndex })
-          .then(() => {
-            console.log('done!')
-            this.$refs.dialog.scrollTop = 0
-          })
+      this.setting({ data: item }).then(() => {
+        this.listUpdate({ vm: this, listIndex: item.listIndex }).then(() => {
+          // 재생 플레이어 최상단으로 이동
+          this.$refs.bar.$refs.dialog.scrollTop = 0
         });
+      });
     },
     endDrag(value) {
       console.log(value);

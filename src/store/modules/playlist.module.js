@@ -78,7 +78,7 @@ const actions = {
     const params = {
       part: "snippet",
       playlistId: playlistId,
-      maxResults: 25,
+      maxResults: 30,
       key: API_KEY
     };
     return vm.axios
@@ -105,7 +105,7 @@ const actions = {
     const queryParams = {
       part: "snippet",
       playlistId: playlistId,
-      maxResults: 25,
+      maxResults: 30,
       pageToken: state.playList.nextToken,
       key: API_KEY
     };

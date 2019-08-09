@@ -18,7 +18,7 @@ const state = {
     playIndex: 0,
     duration: 0
   }
-};
+}
 const getters = {
   GET_PLAYING_VIDEO: state => {
     return state.playingVideoInfo;

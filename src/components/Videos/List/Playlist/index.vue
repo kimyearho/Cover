@@ -69,7 +69,7 @@ export default {
     ...mapActions({
       getPlaylist: "getPlaylist",
       getNextList: "getPlaylistNextSearch",
-      getPlayerList: "getPlayerList",
+      getPlaybackWaitList: "getPlaybackWaitList",
       setting: "playingVideoSetting"
     }),
     get() {
@@ -83,7 +83,7 @@ export default {
     },
     openPlayer(item) {
       const params = { vm: this, position: item.position };
-      this.getPlayerList(params).then(() => {
+      this.getPlaybackWaitList(params).then(() => {
         this.setting({ data: item }).then(() => {
           this.showPlayer = true;
         });

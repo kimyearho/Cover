@@ -21,7 +21,7 @@
 const path =
   "https://suggestqueries.google.com/complete/search?ds=yt&client=youtube&q=";
 
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import searchMixin from "../../Search/Mixin/mixin";
 export default {
   name: "AutoSearch",

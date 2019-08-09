@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import AutoComplate from "@/components/Commons/AutoComplate/autoComplate";
 
 export default {

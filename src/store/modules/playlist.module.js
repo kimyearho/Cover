@@ -20,7 +20,7 @@ const state = {
     list: [],
     nextToken: ""
   },
-  playerList: {
+  playbackWaitList: {
     list: [],
     nextToken: ""
   }
@@ -39,11 +39,11 @@ const getters = {
   GET_PLAYLIST_INFO: state => {
     return state.playlistInfo;
   },
-  GET_PLAYER_LIST: state => {
-    return state.playerList.list;
+  GET_PLAYBACK_WAIT_LIST: state => {
+    return state.playbackWaitList.list;
   },
-  GET_PLAYERLIST_TOKEN: state => {
-    return state.playerList.nextToken;
+  GET_PLAYBACK_WAIT_TOKEN: state => {
+    return state.playbackWaitList.nextToken;
   }
 };
 
@@ -67,8 +67,8 @@ const mutations = {
     state.playlistInfo.description = payload.description;
     state.playlistInfo.thumbnails = payload.thumbnails;
   },
-  SET_PLAYER_LIST(state, payload) {
-    state.playerList.list = payload;
+  SET_PLAYBACK_WAIT_LIST(state, payload) {
+    state.playbackWaitList.list = payload;
   }
 };
 
@@ -90,6 +90,7 @@ const actions = {
           let videoItem = Object.assign({}, item.snippet);
           videoItem.videoId = videoItem.resourceId.videoId;
           delete videoItem.resourceId;
+          delete videoItem.publishedAt;
           array.push(videoItem);
         });
         dispatch("getPlaylistVideoDuration", {
@@ -115,6 +116,7 @@ const actions = {
         let videoItem = Object.assign({}, item.snippet);
         videoItem.videoId = videoItem.resourceId.videoId;
         delete videoItem.resourceId;
+        delete videoItem.publishedAt;
         array.push(videoItem);
       });
       dispatch("getPlaylistVideoDuration", { vm: vm, data: array, mode: "n" });
@@ -147,12 +149,12 @@ const actions = {
     });
   },
 
-  getPlayerList({ commit, state }, { vm, position }) {
-    const playlist = state.playList.list;
+  getPlaybackWaitList({ commit, state }, { vm, position }) {
     /**
      * 사용자가 선택한 비디오의 순번보다 높은 비디오를 필터링한뒤,
      * 필터링된 데이터에 index를 부여한다. 시작은 1부터
      */
+    const playlist = state.playList.list;
     const list = vm._.chain(playlist)
       .filter(item => {
         return item.position > position;
@@ -161,9 +163,28 @@ const actions = {
         item.listIndex = index + 1;
       })
       .value();
-    commit("SET_PLAYER_LIST", list);
+    commit("SET_PLAYBACK_WAIT_LIST", list);
     return true;
+  },
+
+  getUpdatePlaybackWithList({ commit, state }, { vm, listIndex }) {
+    /**
+     * 사용자가 재생대기목록을 선택했을때 선택한 listIndex 보다 큰 순번만
+     * 필터링 되도록한다. 필터링 된 목록의 lintIndex를 1부터 다시 설정한다.
+     */
+    const playbackWithList = state.playbackWaitList.list;
+    const list = vm._.chain(playbackWithList)
+      .filter(item => {
+        return item.listIndex > listIndex;
+      })
+      .forEach((item, index) => {
+        item.listIndex = index + 1;
+      })
+      .value();
+    commit("SET_PLAYBACK_WAIT_LIST", list);
+    return true
   }
+
 };
 
 export default {

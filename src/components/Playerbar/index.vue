@@ -2,16 +2,16 @@
   <v-layout row justify-center>
     <v-dialog
       class="playerbarDialog"
+      ref="dialog"
       v-model="visible"
       transition="dialog-bottom-transition"
       scrollable
       persistent
     >
       <v-card>
-        <v-img :src="playingVideo.thumbnails.high.url" class="thumb"></v-img>
-
+        <v-img :src="getThumbnail" class="thumb"></v-img>
         <v-progress-linear color="error" height="3" value="50"></v-progress-linear>
-
+        <small class="total-play-time">{{ playingVideo.duration }}</small>
         <v-card-title primary-title>
           <div class="playing-video-title">{{ playingVideo.coverData.videoTitle }}</div>
         </v-card-title>
@@ -54,16 +54,20 @@
         </v-card-actions>
 
         <v-divider></v-divider>
+        <v-card-actions class="list-bg">
+          <v-card-text class="title font-weight-bold playback-list-pd">PLAYBACK WITH LIST</v-card-text>
+        </v-card-actions>
+        <v-divider></v-divider>
 
         <draggable
           tag="v-list"
-          v-model="playerList"
           class="list-bg"
+          v-model="playbackWaitList"
           handle=".handle"
           @end="endDrag"
         >
-          <template v-for="(item, index) in playerList">
-            <v-list-tile :key="index" avatar @click="none">
+          <template v-for="(item, index) in playbackWaitList">
+            <v-list-tile :key="index" avatar @click="playVideo(item)">
               <!-- 썸네일 -->
               <v-list-tile-avatar>
                 <img :src="item.thumbnails.default.url" />
@@ -91,7 +95,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import draggable from "vuedraggable";
 
 export default {
@@ -116,16 +120,25 @@ export default {
     ...mapGetters({
       id: "GET_ID",
       playingVideo: "GET_PLAYING_VIDEO",
-      playerList: "GET_PLAYER_LIST",
-      isNextToken: "GET_PLAYERLIST_TOKEN"
+      playbackWaitList: "GET_PLAYBACK_WAIT_LIST",
+      isNextToken: "GET_PLAYBACK_WAIT_TOKEN"
     }),
-    playerList: {
+    playbackWaitList: {
       get() {
-        return this.$store.getters.GET_PLAYER_LIST;
+        return this.$store.getters.GET_PLAYBACK_WAIT_LIST;
       },
       set(val) {
-        this.$store.commit("SET_PLAYER_LIST", val);
+        this.$store.commit("SET_PLAYBACK_WAIT_LIST", val);
       }
+    },
+    getThumbnail() {
+      let thumbnail = null;
+      if (this.playingVideo.thumbnails === null) {
+        thumbnail = "";
+      } else {
+        thumbnail = this.playingVideo.thumbnails.high.url;
+      }
+      return thumbnail;
     }
   },
   watch: {
@@ -134,16 +147,32 @@ export default {
     }
   },
   methods: {
-    none() {},
+    ...mapActions({
+      setting: "playingVideoSetting",
+      listUpdate: "getUpdatePlaybackWithList"
+    }),
+    onScroll(e) {
+      console.log(e)
+    },
+    playVideo(item) {
+       this.setting({ data: item }).then(() => {
+         this.listUpdate({ vm: this, listIndex: item.listIndex })
+          .then(() => {
+            console.log('done!')
+            this.$refs.dialog.scrollTop = 0
+          })
+        });
+    },
     endDrag(value) {
-      const playerList = this.playerList;
-      const list = this._.chain(playerList)
+      console.log(value);
+      const playbackWaitList = this.playbackWaitList;
+      const list = this._.chain(playbackWaitList)
         .forEach((item, index) => {
           item.listIndex = index + 1;
         })
         .value();
       if (list.length > 0) {
-        this.$store.commit("SET_PLAYER_LIST", list);
+        this.$store.commit("SET_PLAYBACK_WAIT_LIST", list);
       }
     }
   },
@@ -196,5 +225,17 @@ export default {
 }
 .list-bg {
   background: #f5f5f5;
+}
+.playback-list-pd {
+  padding: 0 78px;
+  font-size: 18px !important;
+}
+.total-play-time {
+  position: absolute;
+  top: 205px;
+  right: 2px;
+  font-weight: 400;
+  font-size: 12px;
+  color: #616161;
 }
 </style>

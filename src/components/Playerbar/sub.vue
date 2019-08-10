@@ -5,12 +5,12 @@
         <v-progress-linear :value="50" class="my-0" height="3"></v-progress-linear>
 
         <v-list>
-          <v-list-tile>
+          <v-list-tile @click="on">
             <v-list-tile-avatar>
               <img :src="getThumbnail" />
             </v-list-tile-avatar>
 
-            <v-list-tile-content @click="on">
+            <v-list-tile-content>
               <v-list-tile-title>{{ playingVideo.coverData.videoTitle }}</v-list-tile-title>
               <v-list-tile-sub-title>Fitz & The Trantrums</v-list-tile-sub-title>
             </v-list-tile-content>

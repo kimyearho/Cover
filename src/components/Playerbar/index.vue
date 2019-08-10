@@ -200,7 +200,7 @@ export default {
   margin: 0 50px;
 }
 .playerbarDialog {
-  z-index: 101;
+  z-index: 300;
 }
 .paly-icon-margin {
   margin: 0 15px;

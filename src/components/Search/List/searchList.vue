@@ -116,10 +116,12 @@ export default {
           playlistId: data.playlistId
         };
         this.getPlaylist(params).then(() => {
-          if(data.channel) {
+          if (data.channel) {
             this.getChannel({ vm: this, channelId: data.channel }).then(() => {
               this.routeDetail(data);
             });
+          } else {
+            this.routeDetail(data);
           }
         });
       } else {

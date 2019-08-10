@@ -1,0 +1,83 @@
+<template>
+  <div class="text-xs-center" v-if="playingVideo.coverData.videoId && !isPlayer">
+    <v-bottom-sheet persistent hide-overlay v-model="visible">
+      <v-card tile class="frame">
+        <v-progress-linear :value="50" class="my-0" height="3"></v-progress-linear>
+
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-avatar>
+              <img :src="getThumbnail" />
+            </v-list-tile-avatar>
+
+            <v-list-tile-content @click="on">
+              <v-list-tile-title>{{ playingVideo.coverData.videoTitle }}</v-list-tile-title>
+              <v-list-tile-sub-title>Fitz & The Trantrums</v-list-tile-sub-title>
+            </v-list-tile-content>
+
+            <v-spacer></v-spacer>
+
+            <v-list-tile-action :class="{ 'mx-5': $vuetify.breakpoint.mdAndUp }">
+              <v-btn icon>
+                <v-icon>pause</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+
+            <v-list-tile-action :class="{ 'mr-3': $vuetify.breakpoint.mdAndUp }">
+              <v-btn icon>
+                <v-icon>fast_forward</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
+      </v-card>
+    </v-bottom-sheet>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from "vuex";
+
+export default {
+  name: "SubPlayerBar",
+  data() {
+    return {
+      visible: true
+    };
+  },
+  computed: {
+    ...mapGetters({
+      playingVideo: "GET_PLAYING_VIDEO",
+      isPlayer: "GET_SHOW_PLAYER"
+    }),
+    getThumbnail() {
+      let thumbnail = null;
+      if (this.playingVideo.thumbnails === null) {
+        thumbnail = "";
+      } else {
+        thumbnail = this.playingVideo.thumbnails.medium.url;
+      }
+      return thumbnail;
+    }
+  },
+  methods: {
+    ...mapActions({
+      setPlayerSwitch: "playerSwitch"
+    }),
+    on() {
+      this.setPlayerSwitch({ flag: true });
+    }
+  }
+};
+</script>
+
+<style lang="css" scoped>
+.frame {
+  width: 100%;
+  position: absolute;
+  top: 556px;
+  border-bottom: 1px solid #ddd;
+  -webkit-box-shadow: unset;
+  box-shadow: unset;
+}
+</style>

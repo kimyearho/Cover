@@ -12,7 +12,7 @@
         <v-list-tile :key="index" avatar @click="detail(item)">
           <!-- 썸네일 -->
           <v-list-tile-avatar>
-            <img :src="item.thumbnails.default.url" />
+            <img :src="item.thumbnails.medium.url" />
           </v-list-tile-avatar>
 
           <!-- 제목 및 라벨 -->

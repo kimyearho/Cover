@@ -37,21 +37,42 @@
         </v-btn>
       </v-bottom-nav>
     </v-footer>
+
+    <sub-playerbar />
+    <playerbar :isVisible.sync="isPlayer" @playerClose="setPlayerSwitch({ flag: false })" />
   </v-app>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 import AutoComplate from "@/components/Commons/AutoComplate/autoComplate";
+import Playerbar from "@/components/Playerbar/index";
+import SubPlayerbar from "@/components/Playerbar/sub";
 
 export default {
   name: "App",
   components: {
-    AutoComplate
+    AutoComplate,
+    Playerbar,
+    SubPlayerbar
   },
   data() {
     return {
       bottomNav: "search"
     };
+  },
+  computed: {
+    ...mapGetters({
+      isPlayer: "GET_SHOW_PLAYER"
+    }),
+    isPlayer: {
+      get() {
+        return this.$store.getters.GET_SHOW_PLAYER;
+      },
+      set(val) {
+        this.$store.commit("SET_SHOW_PLAYER", false);
+      }
+    }
   },
   methods: {
     route(name) {

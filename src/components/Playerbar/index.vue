@@ -45,7 +45,7 @@
 
         <v-card-actions>
           <v-btn flat>Share</v-btn>
-          <v-btn flat color="purple" @click="$emit('playerClose')">Close</v-btn>
+          <v-btn flat color="purple" @click="$emit('update:isVisible', false)">Close</v-btn>
           <v-spacer></v-spacer>
           <v-btn icon @click="show = !show">
             <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
@@ -54,6 +54,7 @@
 
         <v-divider></v-divider>
         <v-card-actions class="list-bg">
+          <v-icon>queue_music</v-icon>
           <v-card-text class="title font-weight-bold playback-list-pd">PLAYBACK WITH LIST</v-card-text>
         </v-card-actions>
         <v-divider></v-divider>
@@ -69,7 +70,7 @@
             <v-list-tile :key="index" avatar @click="playVideo(item)">
               <!-- 썸네일 -->
               <v-list-tile-avatar>
-                <img :src="item.thumbnails.default.url" />
+                <img :src="item.thumbnails.medium.url" />
               </v-list-tile-avatar>
 
               <!-- 제목 및 라벨 -->
@@ -159,7 +160,6 @@ export default {
       });
     },
     endDrag(value) {
-      console.log(value);
       const playbackWaitList = this.playbackWaitList;
       const list = this._.chain(playbackWaitList)
         .forEach((item, index) => {
@@ -222,8 +222,9 @@ export default {
   background: #f5f5f5;
 }
 .playback-list-pd {
-  padding: 0 78px;
-  font-size: 18px !important;
+  padding: 0px;
+  padding-left: 5px;
+  font-size: 16px !important;
 }
 .total-play-time {
   position: absolute;

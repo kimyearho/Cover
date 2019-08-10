@@ -8,7 +8,7 @@
         <v-list-tile :key="index" avatar @click="openPlayer(item)">
           <!-- 썸네일 -->
           <v-list-tile-avatar>
-            <img :src="item.thumbnails.default.url" />
+            <img :src="item.thumbnails.medium.url" />
           </v-list-tile-avatar>
 
           <!-- 제목 및 라벨 -->
@@ -32,7 +32,6 @@
         color="primary"
       >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
     </v-list>
-    <playerbar :isVisible.sync="showPlayer" @playerClose="showPlayer = false" />
   </v-card>
 </template>
 
@@ -41,15 +40,13 @@ import { mapGetters, mapActions } from "vuex";
 import sMixin from "../../../Search/Mixin/mixin";
 import VideoInfo from "../../Info/index";
 import VideoMenu from "../../../Commons/Menu/videoMenu";
-import Playerbar from "../../../Playerbar/index";
 
 export default {
   name: "PlayList",
   mixins: [sMixin],
   components: {
     VideoInfo,
-    VideoMenu,
-    Playerbar
+    VideoMenu
   },
   data() {
     return {
@@ -63,13 +60,14 @@ export default {
       id: "GET_ID",
       playlist: "GET_PLAY_LIST",
       isNextToken: "GET_PLAYLIST_TOKEN"
-    })
+    }),
   },
   methods: {
     ...mapActions({
       getPlaylist: "getPlaylist",
       getNextList: "getPlaylistNextSearch",
       getPlaybackWaitList: "getPlaybackWaitList",
+      setPlayerSwitch: "playerSwitch",
       setting: "playingVideoSetting"
     }),
     get() {
@@ -85,7 +83,7 @@ export default {
       const params = { vm: this, position: item.position };
       this.getPlaybackWaitList(params).then(() => {
         this.setting({ data: item }).then(() => {
-          this.showPlayer = true;
+          this.setPlayerSwitch({ flag: true });
         });
       });
     },

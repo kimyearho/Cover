@@ -38,14 +38,14 @@ html {
     /* display: none; */
 }
 
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #ddd;
+    /* background: #ddd; */
 }
 
 ::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.14); 
-} */
+}

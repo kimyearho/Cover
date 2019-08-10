@@ -1,6 +1,5 @@
 <template>
   <div class="text-xs-center" v-if="playingVideo.coverData.videoId && !isPlayer">
-    <v-bottom-sheet persistent hide-overlay v-model="visible">
       <v-card tile class="frame">
         <v-progress-linear :value="50" class="my-0" height="3"></v-progress-linear>
 
@@ -31,7 +30,6 @@
           </v-list-tile>
         </v-list>
       </v-card>
-    </v-bottom-sheet>
   </div>
 </template>
 
@@ -79,7 +77,6 @@ export default {
   border-bottom: 1px solid #ddd;
   -webkit-box-shadow: unset;
   box-shadow: unset;
-  z-index: 100;
 }
 .v-list {
   padding: 3px 0 3px;

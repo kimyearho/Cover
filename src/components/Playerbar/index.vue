@@ -1,14 +1,8 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog
-      class="playerbarDialog"
-      ref="bar"
-      v-model="visible"
-      transition="dialog-bottom-transition"
-      persistent
-    >
+    <v-dialog ref="bar" v-model="visible" persistent transition="dialog-bottom-transition">
       <v-card>
-        <v-img :src="getThumbnail" class="thumb"></v-img>
+        <v-img :src="getVideoThumbnail" class="thumb"></v-img>
         <v-progress-linear color="error" height="3" value="50"></v-progress-linear>
         <small class="total-play-time">{{ playingVideo.duration }}</small>
         <v-card-title primary-title>
@@ -39,7 +33,7 @@
 
         <v-card-actions class="volume-slider">
           <v-icon class="volume-down">volume_down</v-icon>
-          <v-slider class="margin-0" v-model="max"></v-slider>
+          <v-slider class="margin-0" v-model="volume"></v-slider>
           <v-icon class="volume-up">volume_up</v-icon>
         </v-card-actions>
 
@@ -70,6 +64,16 @@
             <v-list-tile :key="index" avatar @click="playVideo(item)">
               <!-- 썸네일 -->
               <v-list-tile-avatar>
+                <v-badge
+                  class="badge cursor"
+                  color="error"
+                  overlap
+                  @click.native.stop="remove(item)"
+                >
+                  <template v-slot:badge>
+                    <v-icon class="i-close">close</v-icon>
+                  </template>
+                </v-badge>
                 <img :src="item.thumbnails.medium.url" />
               </v-list-tile-avatar>
 
@@ -84,7 +88,7 @@
 
               <!-- 확장메뉴 -->
               <v-list-tile-action>
-                <v-icon class="cursor handle">menu</v-icon>
+                <v-icon class="cursor font-22 handle">menu</v-icon>
               </v-list-tile-action>
             </v-list-tile>
           </template>
@@ -113,7 +117,7 @@ export default {
     return {
       visible: false,
       show: true,
-      max: 50
+      volume: 50
     };
   },
   computed: {
@@ -131,14 +135,9 @@ export default {
         this.$store.commit("SET_PLAYBACK_WAIT_LIST", val);
       }
     },
-    getThumbnail() {
-      let thumbnail = null;
-      if (this.playingVideo.thumbnails === null) {
-        thumbnail = "";
-      } else {
-        thumbnail = this.playingVideo.thumbnails.high.url;
-      }
-      return thumbnail;
+    getVideoThumbnail() {
+      const videoInfo = this.playingVideo.thumbnails;
+      return videoInfo === null ? "" : videoInfo.high.url;
     }
   },
   watch: {
@@ -152,20 +151,33 @@ export default {
       setListUpdateDispatch: "getUpdatePlaybackWithList"
     }),
     playVideo(item) {
+      this.$log.info(item);
       this.setVideoSettingDispatch({ data: item }).then(() => {
         this.setListUpdateDispatch({
           vm: this,
           listIndex: item.listIndex
         }).then(() => {
-          // 재생 플레이어 최상단으로 이동
           this.$refs.bar.$refs.dialog.scrollTop = 0;
         });
       });
     },
     endDrag(value) {
-      this.$log.info("Done!", value);
+      this.$log.info(value);
       const playbackWaitList = this.playbackWaitList;
       const list = this._.chain(playbackWaitList)
+        .forEach((item, index) => {
+          item.listIndex = index + 1;
+        })
+        .value();
+      if (list.length > 0) {
+        this.$store.commit("SET_PLAYBACK_WAIT_LIST", list);
+      }
+    },
+    remove(item) {
+      this.$log.info(item);
+      const playbackWaitList = this.playbackWaitList;
+      const list = this._.chain(playbackWaitList)
+        .reject({ listIndex: item.listIndex })
         .forEach((item, index) => {
           item.listIndex = index + 1;
         })
@@ -182,7 +194,18 @@ export default {
 <style scoped>
 .thumb {
   height: 200px;
-  /* margin: 2px; */
+}
+.badge >>> .v-badge__badge {
+  height: 15px !important;
+  width: 15px !important;
+}
+.badge {
+  position: absolute;
+  right: 3px;
+  top: 5px;
+}
+.i-close {
+  color: #ffffff;
 }
 .v-progress-linear {
   background: transparent;
@@ -193,7 +216,6 @@ export default {
 }
 .v-progress-linear__background {
   position: absolute;
-  /* top: 200px; */
   left: 0;
   bottom: 0;
   -webkit-transition: 0.3s ease-in;
@@ -202,9 +224,6 @@ export default {
 }
 .item-center {
   margin: 0 50px;
-}
-.playerbarDialog {
-  z-index: 300;
 }
 .paly-icon-margin {
   margin: 0 14px;

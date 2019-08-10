@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-img :src="infos.thumbnails.high.url" height="190px">
+    <v-img :src="getThumbnail" height="190px">
       <span class="avatar-right">
         <v-list-tile-avatar color="grey darken-3">
           <v-img
@@ -30,7 +30,11 @@ export default {
     ...mapGetters({
       channel: "GET_CHANNEL",
       infos: "GET_PLAYLIST_INFO"
-    })
+    }),
+    getThumbnail() {
+      const listThumbnail = this.infos.thumbnails;
+      return listThumbnail === null ? "" : listThumbnail.high.url;
+    }
   },
   methods: {}
 };

@@ -3,7 +3,7 @@
     <video-info />
     <v-divider></v-divider>
     <!-- 검색목록 템플릿 -->
-    <v-list class="maxHeight" :class="{playmaxheight:playingVideo.coverData.videoId}">
+    <v-list class="max-height" :class="{playmaxheight:playingVideo.coverData.videoId}">
       <template v-for="(item, index) in playlist">
         <v-list-tile :key="index" avatar @click="openPlayer(item)">
           <!-- 썸네일 -->
@@ -118,7 +118,7 @@ export default {
 .grow >>> .v-list__tile {
   padding: 0px !important;
 }
-.maxHeight {
+.max-height {
   max-height: 310px;
   overflow-y: scroll;
 }

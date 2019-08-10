@@ -11,7 +11,7 @@
 
           <v-list-tile-content>
             <v-list-tile-title>{{ playingVideo.coverData.videoTitle }}</v-list-tile-title>
-            <v-list-tile-sub-title>Fitz & The Trantrums</v-list-tile-sub-title>
+            <v-list-tile-sub-title>Youtube & Cover</v-list-tile-sub-title>
           </v-list-tile-content>
 
           <v-spacer></v-spacer>
@@ -49,13 +49,8 @@ export default {
       isPlayer: "GET_SHOW_PLAYER"
     }),
     getThumbnail() {
-      let thumbnail = null;
-      if (this.playingVideo.thumbnails === null) {
-        thumbnail = "";
-      } else {
-        thumbnail = this.playingVideo.thumbnails.medium.url;
-      }
-      return thumbnail;
+      const videoInfo = this.playingVideo.thumbnails;
+      return videoInfo === null ? "" : videoInfo.medium.url;
     }
   },
   methods: {

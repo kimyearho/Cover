@@ -23,6 +23,10 @@ html {
     font-size: 12px;
 }
 
+.font-22 {
+    font-size: 22px;
+}
+
 .font-40 {
     font-size: 40px;
 }
@@ -47,5 +51,5 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.14); 
+    background: rgba(0, 0, 0, 0.14);
 }

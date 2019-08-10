@@ -9647,6 +9647,13 @@ vue-loading-overlay@^3.2.0:
   resolved "https://registry.yarnpkg.com/vue-loading-overlay/-/vue-loading-overlay-3.2.0.tgz#7896f195e26a8d915219139a096367c9ad2c3c61"
   integrity sha512-QBHa+vwcQ3k3oKp4pucP7RHWHSQvgVWFlDFqSaXLu+kCuEv1PZCoerAo1T04enF5y9yMFCqh7L9ChrWHy7HYvA==
 
+vue-marquee-text-component@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/vue-marquee-text-component/-/vue-marquee-text-component-1.1.1.tgz#c5ce3eea76d340afdae37424b555ef6840a8c4cd"
+  integrity sha512-ei3OrX6uKPtm+H9GbAlJL3NqTJxXoQsbAMcmuao56Z8rH2mlFkYSGrJGDsX8wyQ/IQtYgMSuf50kaH2mQx8DSQ==
+  dependencies:
+    vue "^2.5.17"
+
 vue-page-transition@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/vue-page-transition/-/vue-page-transition-0.2.2.tgz#a7c607ccc8dc67e7c05e66a5a9d54bd27d252d56"
@@ -9685,7 +9692,7 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue@^2.6.10:
+vue@^2.5.17, vue@^2.6.10:
   version "2.6.10"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==

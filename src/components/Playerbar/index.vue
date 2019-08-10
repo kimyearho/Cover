@@ -6,7 +6,9 @@
         <v-progress-linear color="error" height="3" value="50"></v-progress-linear>
         <small class="total-play-time">{{ playingVideo.duration }}</small>
         <v-card-title primary-title>
-          <div class="playing-video-title">{{ playingVideo.coverData.videoTitle }}</div>
+          <div class="playing-video-title">
+            <marquee-text :duration="30">{{ playingVideo.coverData.videoTitle }}</marquee-text>
+          </div>
         </v-card-title>
 
         <v-list>
@@ -58,7 +60,7 @@
           class="list-bg"
           v-model="playbackWaitList"
           handle=".handle"
-          @end="endDrag"
+          @end="videoDrag"
         >
           <template v-for="(item, index) in playbackWaitList">
             <v-list-tile :key="index" avatar @click="playVideo(item)">
@@ -68,7 +70,7 @@
                   class="badge cursor"
                   color="error"
                   overlap
-                  @click.native.stop="remove(item)"
+                  @click.native.stop="videoRemove(item)"
                 >
                   <template v-slot:badge>
                     <v-icon class="i-close">close</v-icon>
@@ -100,10 +102,11 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import draggable from "vuedraggable";
+import MarqueeText from "vue-marquee-text-component";
+import Draggable from "vuedraggable";
 
 export default {
-  name: "Playerbar",
+  name: "MainPlayerbar",
   props: {
     isVisible: {
       type: Boolean,
@@ -111,7 +114,8 @@ export default {
     }
   },
   components: {
-    draggable
+    MarqueeText,
+    Draggable
   },
   data() {
     return {
@@ -161,19 +165,17 @@ export default {
         });
       });
     },
-    endDrag(value) {
+    videoDrag(value) {
       this.$log.info(value);
       const playbackWaitList = this.playbackWaitList;
-      const list = this._.chain(playbackWaitList)
-        .forEach((item, index) => {
-          item.listIndex = index + 1;
-        })
-        .value();
+      const list = this._.forEach(playbackWaitList, (item, index) => {
+        item.listIndex = index + 1;
+      });
       if (list.length > 0) {
         this.$store.commit("SET_PLAYBACK_WAIT_LIST", list);
       }
     },
-    remove(item) {
+    videoRemove(item) {
       this.$log.info(item);
       const playbackWaitList = this.playbackWaitList;
       const list = this._.chain(playbackWaitList)

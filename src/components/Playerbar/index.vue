@@ -148,19 +148,22 @@ export default {
   },
   methods: {
     ...mapActions({
-      setting: "playingVideoSetting",
-      listUpdate: "getUpdatePlaybackWithList"
+      setVideoSettingDispatch: "playingVideoSetting",
+      setListUpdateDispatch: "getUpdatePlaybackWithList"
     }),
     playVideo(item) {
-      this.setting({ data: item }).then(() => {
-        this.listUpdate({ vm: this, listIndex: item.listIndex }).then(() => {
+      this.setVideoSettingDispatch({ data: item }).then(() => {
+        this.setListUpdateDispatch({
+          vm: this,
+          listIndex: item.listIndex
+        }).then(() => {
           // 재생 플레이어 최상단으로 이동
-          this.$refs.bar.$refs.dialog.scrollTop = 0
+          this.$refs.bar.$refs.dialog.scrollTop = 0;
         });
       });
     },
     endDrag(value) {
-      this.$log.info('Done!', value)
+      this.$log.info("Done!", value);
       const playbackWaitList = this.playbackWaitList;
       const list = this._.chain(playbackWaitList)
         .forEach((item, index) => {
@@ -204,7 +207,7 @@ export default {
   z-index: 300;
 }
 .paly-icon-margin {
-  margin: 0 15px;
+  margin: 0 14px;
 }
 .margin-0 {
   margin-top: 0;

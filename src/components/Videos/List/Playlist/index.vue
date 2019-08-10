@@ -65,26 +65,26 @@ export default {
   },
   methods: {
     ...mapActions({
-      getPlaylist: "getPlaylist",
-      getNextList: "getPlaylistNextSearch",
-      getPlaybackWaitList: "getPlaybackWaitList",
-      setPlayerSwitch: "playerSwitch",
-      setting: "playingVideoSetting"
+      getPlaylistDispatch: "getPlaylist",
+      getNextListDispatch: "getPlaylistNextSearch",
+      getPlaybackListDispatch: "getPlaybackWaitList",
+      setPlayerSwitchDispatch: "playerSwitch",
+      setVideoSettingDispatch: "playingVideoSetting"
     }),
     get() {
       const params = {
         vm: this,
         playlistId: this.$route.params.id
       };
-      this.getPlaylist(params).then(() => {
+      this.getPlaylistDispatch(params).then(() => {
         this.$log.info("Done!");
       });
     },
     openPlayer(item) {
       const params = { vm: this, position: item.position };
-      this.getPlaybackWaitList(params).then(() => {
-        this.setting({ data: item }).then(() => {
-          this.setPlayerSwitch({ flag: true });
+      this.getPlaybackListDispatch(params).then(() => {
+        this.setVideoSettingDispatch({ data: item }).then(() => {
+          this.setPlayerSwitchDispatch({ flag: true });
         });
       });
     },
@@ -95,7 +95,7 @@ export default {
           vm: this,
           playlistId: this.$route.params.id
         };
-        this.getNextList(param);
+        this.getNextListDispatch(param);
       }, 1000);
     }
   }

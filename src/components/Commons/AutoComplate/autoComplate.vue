@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      getList: "getApiSearch"
+      getListDispatch: "getApiSearch"
     }),
     querySelections(v) {
       const url = path.concat(v);
@@ -82,7 +82,7 @@ export default {
           this.$set(this, "select", this.search);
           //
           const params = { vm: this, text: this.select };
-          this.getList(params).then(() => {
+          this.getListDispatch(params).then(() => {
             this.redirect()
           });
           //

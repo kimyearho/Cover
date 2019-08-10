@@ -30,10 +30,10 @@ export default {
      * @param {*} s - 재생시간(단위:초)
      */
     secondFormat(sa) {
-      var d = Number(sa);
-      var h = Math.floor(d / 3600);
-      var m = Math.floor((d % 3600) / 60);
-      var s = Math.floor((d % 3600) % 60);
+      let d = Number(sa);
+      let h = Math.floor(d / 3600);
+      let m = Math.floor((d % 3600) / 60);
+      let s = Math.floor((d % 3600) % 60);
       return (
         (h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") +
         m +

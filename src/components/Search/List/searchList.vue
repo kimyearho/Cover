@@ -93,17 +93,17 @@ export default {
   },
   methods: {
     ...mapActions({
-      getList: "getApiSearch",
-      getPlaylist: "getPlaylist",
-      getChannel: "getChannel",
-      loadMoreSearch: "getApiNextloadSearch"
+      getListDispatch: "getApiSearch",
+      getPlaylistDispatch: "getPlaylist",
+      getChannelDispatch: "getChannel",
+      loadMoreDispatch: "getApiNextloadSearch"
     }),
 
     get() {
       // 처음 조회
       if (this.list.length === 0) {
         const params = { vm: this };
-        this.getList(params);
+        this.getListDispatch(params);
       }
     },
 
@@ -115,9 +115,9 @@ export default {
           vm: this,
           playlistId: data.playlistId
         };
-        this.getPlaylist(params).then(() => {
+        this.getPlaylistDispatch(params).then(() => {
           if (data.channel) {
-            this.getChannel({ vm: this, channelId: data.channel }).then(() => {
+            this.getChannelDispatch({ vm: this, channelId: data.channel }).then(() => {
               this.routeDetail(data);
             });
           } else {
@@ -143,7 +143,7 @@ export default {
       this.loadMoreLoading = true;
       setTimeout(() => {
         const param = { vm: this };
-        this.loadMoreSearch(param);
+        this.loadMoreDispatch(param);
       }, 1000);
     }
   }

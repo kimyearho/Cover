@@ -79,5 +79,6 @@ export default {
   border-bottom: 1px solid #ddd;
   -webkit-box-shadow: unset;
   box-shadow: unset;
+  z-index: 100;
 }
 </style>

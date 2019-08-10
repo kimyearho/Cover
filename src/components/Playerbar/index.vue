@@ -199,6 +199,9 @@ export default {
 .item-center {
   margin: 0 50px;
 }
+.playerbarDialog {
+  z-index: 101;
+}
 .paly-icon-margin {
   margin: 0 15px;
 }

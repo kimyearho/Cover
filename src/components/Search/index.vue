@@ -1,6 +1,13 @@
 <template>
   <v-layout row>
-    <v-flex xs12 sm6 ref="block" class="maxHeight" @scroll="handleScroll">
+    <v-flex
+      xs12
+      sm6
+      ref="block"
+      class="max-height"
+      :class="{playmaxheight: playingVideo.coverData.videoId}"
+      @scroll="handleScroll"
+    >
       <cover-list />
       <v-img
         src="https://developers.google.com/youtube/images/developed-with-youtube-sentence-case-dark.png"
@@ -27,7 +34,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      scrollPos: "GET_SCROLL"
+      scrollPos: "GET_SCROLL",
+      playingVideo: "GET_PLAYING_VIDEO"
     })
   },
   mounted() {
@@ -38,7 +46,7 @@ export default {
     window.addEventListener("scroll", this.handleScroll);
   },
   beforeDestroy() {
-    this.event.$off('topList')
+    this.event.$off("topList");
     this.$store.commit("SET_SCROLL", this.pos);
     window.removeEventListener("scroll", this.handleScroll);
   },
@@ -58,8 +66,11 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.maxHeight {
+.max-height {
   max-height: 572px;
   overflow-y: scroll;
+}
+.playmaxheight {
+  max-height: 506px !important;
 }
 </style>

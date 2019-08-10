@@ -3,7 +3,7 @@
     <video-info />
     <v-divider></v-divider>
     <!-- 검색목록 템플릿 -->
-    <v-list class="maxHeight">
+    <v-list class="maxHeight" :class="{playmaxheight:playingVideo.coverData.videoId}">
       <template v-for="(item, index) in playlist">
         <v-list-tile :key="index" avatar @click="openPlayer(item)">
           <!-- 썸네일 -->
@@ -59,8 +59,9 @@ export default {
     ...mapGetters({
       id: "GET_ID",
       playlist: "GET_PLAY_LIST",
-      isNextToken: "GET_PLAYLIST_TOKEN"
-    }),
+      isNextToken: "GET_PLAYLIST_TOKEN",
+      playingVideo: "GET_PLAYING_VIDEO"
+    })
   },
   methods: {
     ...mapActions({
@@ -120,5 +121,8 @@ export default {
 .maxHeight {
   max-height: 310px;
   overflow-y: scroll;
+}
+.playmaxheight {
+  max-height: 243px !important;
 }
 </style>

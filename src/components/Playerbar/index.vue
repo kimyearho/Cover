@@ -160,6 +160,7 @@ export default {
       });
     },
     endDrag(value) {
+      this.$log.info('Done!', value)
       const playbackWaitList = this.playbackWaitList;
       const list = this._.chain(playbackWaitList)
         .forEach((item, index) => {

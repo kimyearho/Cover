@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import AutoComplate from "@/components/Commons/AutoComplate/autoComplate";
 import Playerbar from "@/components/Playerbar/index";
 import SubPlayerbar from "@/components/Playerbar/sub";
@@ -69,7 +69,7 @@ export default {
         return this.$store.getters.GET_SHOW_PLAYER;
       },
       set(val) {
-        this.$store.commit("SET_SHOW_PLAYER", false);
+        this.$store.commit("SET_SHOW_PLAYER", val);
       }
     }
   },

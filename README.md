@@ -5,6 +5,10 @@
   <img src="https://i.imgur.com/eUXfCJZ.png" />
 </p>
 
+<p align="center">
+  <img src="https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Fk.kakaocdn.net%2Fdn%2Fnprmt%2Fbtqu0463kbN%2FGso0UtWFz6UY0X1DLcOSnk%2Fimg.jpg" />
+</p>
+
 ### Project Information
 Project vCover is a player for playing music using Youtube video.
 

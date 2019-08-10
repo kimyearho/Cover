@@ -13,7 +13,6 @@
       </vue-page-transition>
     </v-content>
 
-    <!-- 컴포넌트화 시킬것 -->
     <v-footer>
       <v-bottom-nav :active.sync="bottomNav" :value="true" absolute>
         <v-btn color="pink" flat value="search" @click="route('search')">

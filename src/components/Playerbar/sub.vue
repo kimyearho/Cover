@@ -75,10 +75,13 @@ export default {
 .frame {
   width: 100%;
   position: absolute;
-  top: 556px;
+  top: 566px;
   border-bottom: 1px solid #ddd;
   -webkit-box-shadow: unset;
   box-shadow: unset;
   z-index: 100;
+}
+.v-list {
+  padding: 3px 0 3px;
 }
 </style>

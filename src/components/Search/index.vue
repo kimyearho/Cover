@@ -71,6 +71,6 @@ export default {
   overflow-y: scroll;
 }
 .playmaxheight {
-  max-height: 506px !important;
+  max-height: 516px !important;
 }
 </style>

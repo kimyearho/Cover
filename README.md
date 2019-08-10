@@ -1,4 +1,4 @@
-# vCover - Youtube music
+# Cover - Youtube Music Library
 
 <p align="center">
   <img src="https://i.imgur.com/heVWcRW.png" />

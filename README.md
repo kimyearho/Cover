@@ -11,6 +11,7 @@
 
 ### Project Information
 Project vCover is a player for playing music using Youtube video.
+<b>This project is currently in development.</b>
 
 ### Features
 Project vCover removed unnecessary features and codes from the existing Metube, made it lighter, and improved the wrong way of coding. Additionally, the newly added library synchronizes with your actual Youtube playlist.

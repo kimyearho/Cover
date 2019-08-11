@@ -66,7 +66,13 @@
         <v-expand-transition>
           <div v-show="show">
             <!-- 재생 대기 목록 -->
-            <draggable tag="v-list" class="list-bg" v-model="playbackWaitList" handle=".handle">
+            <draggable
+              tag="v-list"
+              class="list-bg"
+              v-model="playbackWaitList"
+              v-bind="dragOptions"
+              handle=".handle"
+            >
               <template v-for="(item, index) in playbackWaitList">
                 <v-list-tile
                   v-if="filtersVideo(item.listIndex)"
@@ -135,7 +141,7 @@ export default {
     return {
       visible: false,
       show: true,
-      volume: 50
+      volume: 49
     };
   },
   computed: {
@@ -153,6 +159,14 @@ export default {
         this.videoDragPlaybackSync(val);
       }
     },
+    dragOptions() {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost"
+      };
+    },
     getVideoThumbnail() {
       const videoInfo = this.playingVideo.thumbnails;
       return videoInfo === null ? "" : videoInfo.high.url;
@@ -161,6 +175,7 @@ export default {
   watch: {
     isVisible(val) {
       this.visible = val;
+      this.$refs.bar.$refs.dialog.scrollTop = 0;
     }
   },
   methods: {
@@ -309,7 +324,7 @@ export default {
   margin: 0 50px;
 }
 .paly-icon-margin {
-  margin: 0 14px;
+  margin: 0 17px;
 }
 .margin-0 {
   margin-top: 0;

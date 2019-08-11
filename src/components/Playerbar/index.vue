@@ -14,7 +14,7 @@
         <v-list>
           <v-list-tile class="item-center">
             <v-list-tile-action class="paly-icon-margin">
-              <v-btn icon>
+              <v-btn icon @click="previousVideo">
                 <v-icon class="font-40">fast_rewind</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -26,7 +26,7 @@
             </v-list-tile-action>
 
             <v-list-tile-action class="paly-icon-margin">
-              <v-btn icon>
+              <v-btn icon @click="nextVideo">
                 <v-icon class="font-40">fast_forward</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -55,15 +55,14 @@
         </v-card-actions>
         <v-divider></v-divider>
 
-        <draggable
-          tag="v-list"
-          class="list-bg"
-          v-model="playbackWaitList"
-          handle=".handle"
-          @end="videoDrag"
-        >
+        <draggable tag="v-list" class="list-bg" v-model="playbackWaitList" handle=".handle">
           <template v-for="(item, index) in playbackWaitList">
-            <v-list-tile :key="index" avatar @click="playVideo(item)">
+            <v-list-tile
+              v-if="filtersVideo(item.listIndex)"
+              @click="playVideo(item)"
+              :key="index"
+              avatar
+            >
               <!-- 썸네일 -->
               <v-list-tile-avatar>
                 <v-badge
@@ -136,7 +135,7 @@ export default {
         return this.$store.getters.GET_PLAYBACK_WAIT_LIST;
       },
       set(val) {
-        this.$store.commit("SET_PLAYBACK_WAIT_LIST", val);
+        this.videoDragPlaybackSync(val);
       }
     },
     getVideoThumbnail() {
@@ -154,27 +153,124 @@ export default {
       setVideoSettingDispatch: "playingVideoSetting",
       setListUpdateDispatch: "getUpdatePlaybackWithList"
     }),
+
+    /**
+     * 재생 대기 목록을 렌더링하면서 현재 재생 중인 비디오의 순번보다,
+     * 큰 순번만 필터링하여 렌더링한다.
+     *
+     * @param {Object} listIndex - 재생 대기 목록 각 비디오별 순번
+     */
+    filtersVideo(listIndex) {
+      if (listIndex > this.playingVideo.playIndex) {
+        return true;
+      }
+    },
+
+    /**
+     * 이전 재생 버튼을 클릭하면 실행된다.
+     * 현재 재생중인 비디오의 이전 비디오를 재생한다.
+     */
+    previousVideo() {
+      // 현재 재생중인 비디오의 순번을 가져와, 재생대기목록에서 이전 순번을 찾는다.
+      const playingVideoIndex = this.playingVideo.playIndex;
+      const previousVideoInfo = this._.find(this.playbackWaitList, {
+        listIndex: playingVideoIndex - 1
+      });
+      this.$log.info(previousVideoInfo);
+      if (previousVideoInfo) {
+        this.setVideoSettingDispatch({ data: previousVideoInfo }).then(() => {
+          this.setListUpdateDispatch().then(() => {
+            this.$log.info("Success, PreviousVideo!", previousVideoInfo);
+          });
+        });
+      } else {
+        // undefined면 1번째곡을 0초부터 다시 시작한다.
+        const firstVideoInfo = this.playbackWaitList[0];
+        this.$log.info("firstVideo", firstVideoInfo);
+        // TODO: 재생로직
+      }
+    },
+
+    /**
+     * 다음 재생 버튼을 클릭하면 실행된다.
+     * 현재 재생중인 비디오의 다음 비디오를 재생한다.
+     */
+    nextVideo() {
+      // 현재 재생중인 비디오의 순번을 가져와, 재생대기목록에서 다음 순번을 찾는다.
+      const playingVideoIndex = this.playingVideo.playIndex;
+      const nextVideoInfo = this._.find(this.playbackWaitList, {
+        listIndex: playingVideoIndex + 1
+      });
+      this.$log.info("nextVideo", nextVideoInfo);
+      if (nextVideoInfo) {
+        this.setVideoSettingDispatch({ data: nextVideoInfo }).then(() => {
+          this.setListUpdateDispatch().then(() => {
+            this.$log.info("Success, NextVideo!", nextVideoInfo);
+          });
+        });
+      } else {
+        // 재생목록의 마지막에서 다음재생을 클릭하면 재생대기목록의 첫번째 비디오를 재생한다.
+        const firstVideoInfo = this.playbackWaitList[0];
+        this.$log.info("firstVideo", firstVideoInfo);
+        this.setVideoSettingDispatch({ data: firstVideoInfo }).then(() => {
+          this.setListUpdateDispatch().then(() => {
+            this.$log.info("Success, NextVideo!", firstVideoInfo);
+          });
+        });
+      }
+    },
+
+    /**
+     * 재생 대기 목록에서 비디오를 드래그했을때 실행된다.
+     *
+     * @param {Object} val = 드래그로 순번이 변경된 재생 대기 목록
+     */
+    videoDragPlaybackSync(val) {
+      // 현재 재생중인 비디오의 순번보다 큰 순번의 목록만 필터링한뒤,
+      // 목록의 순번을 현재 재생중인 비디오의 순번에서 1씩 증가시켜 순번을 재정의한다.
+      const playbackNewFilterList = this._.chain(val)
+        .filter(item => {
+          return item.listIndex > this.playingVideo.playIndex;
+        })
+        .forEach((item, index) => {
+          let assignIndex = index + 1;
+          item.listIndex = this.playingVideo.playIndex + assignIndex;
+        })
+        .value();
+      // 필터링 되기전 재생 대기 목록을 기준으로 현재 재생중인 비디오의 순번과,
+      // 같거나 작은 항목을 필터링한다. 그후 위에서 필터링한 목록을 합쳐 전체 새목록을 완성한다.
+      const fixedList = this._.chain(this.playbackWaitList)
+        .filter(item => {
+          return item.listIndex <= this.playingVideo.playIndex;
+        })
+        .concat(playbackNewFilterList)
+        .value();
+      Promise.all(fixedList).then(result => {
+        this.$store.commit("SET_PLAYBACK_WAIT_LIST", result);
+      });
+    },
+
+    /**
+     * 사용자가 재생 대기 목록중 비디오 항목을 클릭하면 실행된다.
+     * 선택한 비디오를 재생한다.
+     *
+     * @param {Object} item - 선택한 비디오의 정보
+     */
     playVideo(item) {
       this.$log.info(item);
       this.setVideoSettingDispatch({ data: item }).then(() => {
-        this.setListUpdateDispatch({
-          vm: this,
-          listIndex: item.listIndex
-        }).then(() => {
+        this.setListUpdateDispatch().then(() => {
           this.$refs.bar.$refs.dialog.scrollTop = 0;
         });
       });
     },
-    videoDrag(value) {
-      this.$log.info(value);
-      const playbackWaitList = this.playbackWaitList;
-      const list = this._.forEach(playbackWaitList, (item, index) => {
-        item.listIndex = index + 1;
-      });
-      if (list.length > 0) {
-        this.$store.commit("SET_PLAYBACK_WAIT_LIST", list);
-      }
-    },
+
+    /**
+     * 사용자가 재생 대기 목록중 비디오 삭제항목을 클릭하면 실행된다.
+     * 선택한 비디오를 삭제한다
+     *
+     * @param {Object} item - 선택한 비디오의 정보
+     */
     videoRemove(item) {
       this.$log.info(item);
       const playbackWaitList = this.playbackWaitList;
@@ -184,12 +280,11 @@ export default {
           item.listIndex = index + 1;
         })
         .value();
-      if (list.length > 0) {
-        this.$store.commit("SET_PLAYBACK_WAIT_LIST", list);
-      }
+      Promise.all(list).then(result => {
+        this.$store.commit("SET_PLAYBACK_WAIT_LIST", result);
+      });
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 

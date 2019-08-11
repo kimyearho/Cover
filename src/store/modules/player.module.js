@@ -38,6 +38,7 @@ const mutations = {
     state.playingVideoInfo.coverData.videoId = payload.videoId;
     state.playingVideoInfo.coverData.videoTitle = payload.title;
     state.playingVideoInfo.thumbnails = payload.thumbnails;
+    state.playingVideoInfo.playIndex = payload.listIndex
     state.playingVideoInfo.duration = payload.duration;
   }
 };

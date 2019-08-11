@@ -86,9 +86,10 @@ const actions = {
       .then(({ data }) => {
         commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
         let array = [];
-        vm._.forEach(data.items, item => {
+        vm._.forEach(data.items, (item, index) => {
           let videoItem = Object.assign({}, item.snippet);
           videoItem.videoId = videoItem.resourceId.videoId;
+          videoItem.listIndex = index + 1
           delete videoItem.resourceId;
           delete videoItem.publishedAt;
           array.push(videoItem);
@@ -149,39 +150,15 @@ const actions = {
     });
   },
 
-  getPlaybackWaitList({ commit, state }, { vm, position }) {
-    /**
-     * 사용자가 선택한 비디오의 순번보다 높은 비디오를 필터링한뒤,
-     * 필터링된 데이터에 index를 부여한다. 시작은 1부터
-     */
+  getPlaybackWaitList({ commit, state }) {
     const playlist = state.playList.list;
-    const list = vm._.chain(playlist)
-      .filter(item => {
-        return item.position > position;
-      })
-      .forEach((item, index) => {
-        item.listIndex = index + 1;
-      })
-      .value();
-    commit("SET_PLAYBACK_WAIT_LIST", list);
+    commit("SET_PLAYBACK_WAIT_LIST", playlist);
     return true;
   },
 
-  getUpdatePlaybackWithList({ commit, state }, { vm, listIndex }) {
-    /**
-     * 사용자가 재생대기목록을 선택했을때 선택한 listIndex 보다 큰 순번만
-     * 필터링 되도록한다. 필터링 된 목록의 lintIndex를 1부터 다시 설정한다.
-     */
+  getUpdatePlaybackWithList({ commit, state }) {
     const playbackWithList = state.playbackWaitList.list;
-    const list = vm._.chain(playbackWithList)
-      .filter(item => {
-        return item.listIndex > listIndex;
-      })
-      .forEach((item, index) => {
-        item.listIndex = index + 1;
-      })
-      .value();
-    commit("SET_PLAYBACK_WAIT_LIST", list);
+    commit("SET_PLAYBACK_WAIT_LIST", playbackWithList);
     return true
   }
 

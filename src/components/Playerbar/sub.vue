@@ -4,7 +4,7 @@
       <v-progress-linear :value="50" class="my-0" height="3"></v-progress-linear>
 
       <v-list>
-        <v-list-tile @click="on">
+        <v-list-tile @click="switchOnPlayer">
           <v-list-tile-avatar>
             <img :src="getThumbnail" />
           </v-list-tile-avatar>
@@ -23,7 +23,7 @@
           </v-list-tile-action>
 
           <v-list-tile-action :class="{ 'mr-3': $vuetify.breakpoint.mdAndUp }">
-            <v-btn icon>
+            <v-btn icon @click.native.stop="nextVideo">
               <v-icon>fast_forward</v-icon>
             </v-btn>
           </v-list-tile-action>
@@ -35,9 +35,11 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import playerMixin from "./Mixin/mixin"
 
 export default {
   name: "SubPlayerBar",
+  mixins: [playerMixin],
   data() {
     return {
       visible: true
@@ -46,6 +48,7 @@ export default {
   computed: {
     ...mapGetters({
       playingVideo: "GET_PLAYING_VIDEO",
+      playbackWaitList: "GET_PLAYBACK_WAIT_LIST",
       isPlayer: "GET_SHOW_PLAYER"
     }),
     getThumbnail() {
@@ -55,11 +58,15 @@ export default {
   },
   methods: {
     ...mapActions({
-      setPlayerSwitchDispatch: "playerSwitch"
+      setPlayerSwitchDispatch: "playerSwitch",
+      setVideoSettingDispatch: "playingVideoSetting",
+      setListUpdateDispatch: "getUpdatePlaybackWithList"
     }),
-    on() {
+
+    switchOnPlayer() {
       this.setPlayerSwitchDispatch({ flag: true });
     }
+
   }
 };
 </script>

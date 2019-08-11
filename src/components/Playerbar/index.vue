@@ -2,15 +2,20 @@
   <v-layout row justify-center>
     <v-dialog ref="bar" v-model="visible" persistent transition="dialog-bottom-transition">
       <v-card>
+        <!-- 비디오 썸네일 -->
         <v-img :src="getVideoThumbnail" class="thumb"></v-img>
+        <!-- 재생 프로그레스 바 -->
         <v-progress-linear color="error" height="3" value="50"></v-progress-linear>
+        <!-- 총 재생시간 -->
         <small class="total-play-time">{{ playingVideo.duration }}</small>
+        <!-- 비디오 제목 -->
         <v-card-title primary-title>
           <div class="playing-video-title">
             <marquee-text :duration="30">{{ playingVideo.coverData.videoTitle }}</marquee-text>
           </div>
         </v-card-title>
 
+        <!-- 재생 컨트롤 -->
         <v-list>
           <v-list-tile class="item-center">
             <v-list-tile-action class="paly-icon-margin">
@@ -32,13 +37,15 @@
             </v-list-tile-action>
           </v-list-tile>
         </v-list>
-
+        
+        <!-- 볼륨 컨트롤 -->
         <v-card-actions class="volume-slider">
           <v-icon class="volume-down">volume_down</v-icon>
           <v-slider class="margin-0" v-model="volume"></v-slider>
           <v-icon class="volume-up">volume_up</v-icon>
         </v-card-actions>
 
+        <!-- 옵션 -->
         <v-card-actions>
           <v-btn flat>Share</v-btn>
           <v-btn flat color="purple" @click="$emit('update:isVisible', false)">Close</v-btn>
@@ -48,13 +55,15 @@
           </v-btn>
         </v-card-actions>
 
+        <!-- 재생 대기 목록 헤더 -->
         <v-divider></v-divider>
         <v-card-actions class="list-bg">
           <v-icon>queue_music</v-icon>
-          <v-card-text class="title font-weight-bold playback-list-pd">PLAYBACK WITH LIST</v-card-text>
+          <v-card-text class="title font-weight-bold playback-list-pd">재생 대기 목록</v-card-text>
         </v-card-actions>
         <v-divider></v-divider>
 
+        <!-- 재생 대기 목록 -->
         <draggable tag="v-list" class="list-bg" v-model="playbackWaitList" handle=".handle">
           <template v-for="(item, index) in playbackWaitList">
             <v-list-tile

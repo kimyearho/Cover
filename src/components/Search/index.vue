@@ -9,9 +9,7 @@
       @scroll="handleScroll"
     >
       <cover-list />
-      <v-img
-        src="https://developers.google.com/youtube/images/developed-with-youtube-sentence-case-dark.png"
-      ></v-img>
+      <v-img :src="require('@/assets/images/developed-with-youtube.png')"></v-img>
     </v-flex>
   </v-layout>
 </template>

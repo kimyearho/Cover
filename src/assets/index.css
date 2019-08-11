@@ -33,21 +33,14 @@ html {
 
 .playing-video-title {
     font-size: 15px;
+    font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 ::-webkit-scrollbar {
-    /* display: none; */
-}
-
-::-webkit-scrollbar {
     width: 5px;
-}
-
-::-webkit-scrollbar-track {
-    /* background: #ddd; */
 }
 
 ::-webkit-scrollbar-thumb {

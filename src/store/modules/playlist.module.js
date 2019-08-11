@@ -112,10 +112,16 @@ const actions = {
     };
     vm.axios.get(`/playlistItems`, { params: queryParams }).then(({ data }) => {
       commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
+
+      let playlist = state.playList.list
+      let listMaxIndex = playlist[playlist.length - 1].listIndex
+
       let array = [];
-      vm._.forEach(data.items, item => {
+      vm._.forEach(data.items, (item, index) => {
+        let assignIndex = index + 1
         let videoItem = Object.assign({}, item.snippet);
         videoItem.videoId = videoItem.resourceId.videoId;
+        videoItem.listIndex = listMaxIndex + assignIndex
         delete videoItem.resourceId;
         delete videoItem.publishedAt;
         array.push(videoItem);

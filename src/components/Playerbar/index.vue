@@ -178,6 +178,16 @@ export default {
       this.$refs.bar.$refs.dialog.scrollTop = 0;
     }
   },
+  mounted() {
+    // TODO: 샘플
+    if (this.isElectron) {
+      setTimeout(() => {
+        this.ipcRenderer.on("event:reply", (event, arg) => {
+          console.log(arg);
+        });
+      }, 1000);
+    }
+  },
   methods: {
     ...mapActions({
       setVideoSettingDispatch: "playingVideoSetting",
@@ -258,6 +268,10 @@ export default {
      * @param {Object} item - 선택한 비디오의 정보
      */
     playVideo(item) {
+      if (this.isElectron) {
+        // this.ipcRenderer.send("event:route", "ping");
+        this.ipcRenderer.send("win2Player", ["loadVideoById", item.videoId]);
+      }
       this.$log.info(item);
       this.setVideoSettingDispatch({ data: item }).then(() => {
         this.setListUpdateDispatch().then(() => {

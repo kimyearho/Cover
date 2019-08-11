@@ -1,15 +1,19 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import {
   createProtocol,
   installVueDevtools
 } from "vue-cli-plugin-electron-builder/lib";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
+let player;
+
+require('./ipc')(win, player)
 
 app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
 
@@ -32,7 +36,7 @@ function createWindow() {
     }
   });
 
-  win.setMenu(null)
+  // win.setMenu(null);
   // win.webContents.openDevTools();
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -42,8 +46,35 @@ function createWindow() {
     createProtocol("app");
     // Load the index.html when not in development
     // win.loadURL("app://./index.html");
-    win.loadURL('http://localhost:8080')
+    win.loadURL("http://localhost:8080");
   }
+
+  win.webContents.on("did-finish-load", () => {
+    if (player) return;
+
+    const playerPath = "http://kstory8715.kr";
+    player = new BrowserWindow({
+      width: 420,
+      height: 280,
+      title: "Metube Video Player",
+      webPreferences: {
+        nodeIntegration: true,
+        backgroundThrottling: false
+      }
+    });
+    player.setMenu(null);
+    player.webContents.openDevTools();
+    player.loadURL(playerPath);
+    player.on("close", e => {
+      if (!willQuitApp) {
+        dialog.showErrorBox(
+          "Oops! 🤕",
+          "Sorry, player window cannot be closed. You can only minimize it or Setting in hide option"
+        );
+        e.preventDefault();
+      }
+    });
+  });
 
   win.on("closed", () => {
     win = null;
@@ -80,6 +111,30 @@ app.on("ready", async () => {
     }
   }
   createWindow();
+});
+
+// Window to Player Events
+ipcMain.on("win2Player", (e, args) => {
+  try {
+    if (process.env.NODE_ENV === "development") {
+      console.log("main -> " + args);
+    }
+    player.webContents.send("win2Player", args);
+  } catch (err) {
+    /* window already closed */
+  }
+});
+
+// Player to Window Events
+ipcMain.on("player2Win", (e, args) => {
+  try {
+    if (process.env.NODE_ENV === "development") {
+      console.log("sub -> " + args);
+    }
+    //   win.webContents.send("player2Win", args);
+  } catch (err) {
+    /* window already closed */
+  }
 });
 
 // Exit cleanly on request from parent process in development mode.

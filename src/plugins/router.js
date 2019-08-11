@@ -17,17 +17,29 @@ const router = new VueRouter({
       meta: { transition: 'overlay-right-full' }
     },
     {
-      path: "/sample",
-      name: "sample",
-      component: require("@/components/Sample/index").default,
-      meta: { transition: 'overlay-left-full' }
-    },
-    {
       path: "/playList/:id",
       name: "playList",
       component: require("@/components/Videos/index").default,
       meta: { transition: 'overlay-down-full' }
-    }
+    },
+    {
+      path: "/sample1",
+      name: "sample1",
+      component: require("@/components/Sample/index").default,
+      meta: { transition: 'overlay-left-full' }
+    },
+    {
+      path: "/sample2",
+      name: "sample2",
+      component: require("@/components/Sample/index2").default,
+      meta: { transition: 'overlay-left-full' }
+    },
+    {
+      path: "/sample3",
+      name: "sample3",
+      component: require("@/components/Sample/index3").default,
+      meta: { transition: 'overlay-left-full' }
+    },
   ]
 });
 

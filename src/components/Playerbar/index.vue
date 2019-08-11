@@ -37,7 +37,7 @@
             </v-list-tile-action>
           </v-list-tile>
         </v-list>
-        
+
         <!-- 볼륨 컨트롤 -->
         <v-card-actions class="volume-slider">
           <v-icon class="volume-down">volume_down</v-icon>
@@ -59,50 +59,54 @@
         <v-divider></v-divider>
         <v-card-actions class="list-bg">
           <v-icon>queue_music</v-icon>
-          <v-card-text class="title font-weight-bold playback-list-pd">재생 대기 목록</v-card-text>
+          <v-card-text class="title font-weight-bold playback-list-pd">PLAYBACK WAIT LIST</v-card-text>
         </v-card-actions>
         <v-divider></v-divider>
 
-        <!-- 재생 대기 목록 -->
-        <draggable tag="v-list" class="list-bg" v-model="playbackWaitList" handle=".handle">
-          <template v-for="(item, index) in playbackWaitList">
-            <v-list-tile
-              v-if="filtersVideo(item.listIndex)"
-              @click="playVideo(item)"
-              :key="index"
-              avatar
-            >
-              <!-- 썸네일 -->
-              <v-list-tile-avatar>
-                <v-badge
-                  class="badge cursor"
-                  color="error"
-                  overlap
-                  @click.native.stop="videoRemove(item)"
+        <v-expand-transition>
+          <div v-show="show">
+            <!-- 재생 대기 목록 -->
+            <draggable tag="v-list" class="list-bg" v-model="playbackWaitList" handle=".handle">
+              <template v-for="(item, index) in playbackWaitList">
+                <v-list-tile
+                  v-if="filtersVideo(item.listIndex)"
+                  @click="playVideo(item)"
+                  :key="index"
+                  avatar
                 >
-                  <template v-slot:badge>
-                    <v-icon class="i-close">close</v-icon>
-                  </template>
-                </v-badge>
-                <img :src="item.thumbnails.medium.url" />
-              </v-list-tile-avatar>
+                  <!-- 썸네일 -->
+                  <v-list-tile-avatar>
+                    <v-badge
+                      class="badge cursor"
+                      color="error"
+                      overlap
+                      @click.native.stop="videoRemove(item)"
+                    >
+                      <template v-slot:badge>
+                        <v-icon class="i-close">close</v-icon>
+                      </template>
+                    </v-badge>
+                    <img :src="item.thumbnails.medium.url" />
+                  </v-list-tile-avatar>
 
-              <!-- 제목 및 라벨 -->
-              <v-list-tile-content class="cursor">
-                <v-list-tile-title class="font-13" v-html="item.title"></v-list-tile-title>
-                <v-list-tile-sub-title
-                  v-if="item.duration"
-                  class="font-12"
-                >{{ item.duration }} / {{ item.listIndex }}</v-list-tile-sub-title>
-              </v-list-tile-content>
+                  <!-- 제목 및 라벨 -->
+                  <v-list-tile-content class="cursor">
+                    <v-list-tile-title class="font-13" v-html="item.title"></v-list-tile-title>
+                    <v-list-tile-sub-title
+                      v-if="item.duration"
+                      class="font-12"
+                    >{{ item.duration }} / {{ item.listIndex }}</v-list-tile-sub-title>
+                  </v-list-tile-content>
 
-              <!-- 확장메뉴 -->
-              <v-list-tile-action>
-                <v-icon class="cursor font-22 handle">menu</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-          </template>
-        </draggable>
+                  <!-- 확장메뉴 -->
+                  <v-list-tile-action>
+                    <v-icon class="cursor font-22 handle">menu</v-icon>
+                  </v-list-tile-action>
+                </v-list-tile>
+              </template>
+            </draggable>
+          </div>
+        </v-expand-transition>
       </v-card>
     </v-dialog>
   </v-layout>
@@ -110,7 +114,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import playerMixin from "./Mixin/mixin"
+import playerMixin from "./Mixin/mixin";
 import MarqueeText from "vue-marquee-text-component";
 import Draggable from "vuedraggable";
 

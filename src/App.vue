@@ -25,7 +25,7 @@
           <v-icon>favorite</v-icon>
         </v-btn>
 
-        <v-btn color="pink" flat value="library">
+        <v-btn color="pink" flat value="library" @click="route('library')">
           <span>Library</span>
           <v-icon>video_library</v-icon>
         </v-btn>
@@ -79,9 +79,11 @@ export default {
       if (name === "search") {
         this.$router.push({ name: "searchList" });
       } else if (name === "favorites") {
-        this.$router.push({ name: "sample" });
+        this.$router.push({ name: "sample1" });
+      } else if (name === 'library') {
+        this.$router.push({ name: "sample2" });
       } else if (name === "setting") {
-        // this.$router.push("playList");
+        this.$router.push({ name: "sample3" });
       }
     }
   }

@@ -49,7 +49,7 @@ export default {
       if (newval) {
         this.isStart = true;
         const params = { vm: this, text: this.select };
-        this.getList(params).then(() => {
+        this.getListDispatch(params).then(() => {
           this.isStart = false;
           this.redirect()
         });

@@ -220,6 +220,7 @@ export default {
       if (previousVideoInfo) {
         this.setVideoSettingDispatch({ data: previousVideoInfo }).then(() => {
           this.setListUpdateDispatch().then(() => {
+            this.ipcSendPlayVideo(previousVideoInfo)
             this.$log.info("Success, PreviousVideo!", previousVideoInfo);
           });
         });
@@ -268,10 +269,7 @@ export default {
      * @param {Object} item - 선택한 비디오의 정보
      */
     playVideo(item) {
-      if (this.isElectron) {
-        // this.ipcRenderer.send("event:route", "ping");
-        this.ipcRenderer.send("win2Player", ["loadVideoById", item.videoId]);
-      }
+      this.ipcSendPlayVideo(item)
       this.$log.info(item);
       this.setVideoSettingDispatch({ data: item }).then(() => {
         this.setListUpdateDispatch().then(() => {

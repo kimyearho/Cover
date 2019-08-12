@@ -1,9 +1,15 @@
 export default {
   methods: {
+    ipcSendPlayVideo(item) {
+      if (this.isElectron) {
+        this.ipcRenderer.send("win2Player", ["loadVideoById", item.videoId]);
+      }
+    },
+
     /**
      * 다음 재생 버튼을 클릭하면 실행된다.
      * 현재 재생중인 비디오의 다음 비디오를 재생한다.
-     * 
+     *
      * 이 기능은 메인/서브 플레이어바에서 동일하게 사용하므로 Mixin에서 관리한다.
      */
     nextVideo() {
@@ -16,6 +22,7 @@ export default {
       if (nextVideoInfo) {
         this.setVideoSettingDispatch({ data: nextVideoInfo }).then(() => {
           this.setListUpdateDispatch().then(() => {
+            this.ipcSendPlayVideo(nextVideoInfo)
             this.$log.info("Success, NextVideo!", nextVideoInfo);
           });
         });
@@ -25,6 +32,7 @@ export default {
         this.$log.info("firstVideo", firstVideoInfo);
         this.setVideoSettingDispatch({ data: firstVideoInfo }).then(() => {
           this.setListUpdateDispatch().then(() => {
+            this.ipcSendPlayVideo(firstVideoInfo)
             this.$log.info("Success, NextVideo!", firstVideoInfo);
           });
         });

@@ -59,6 +59,7 @@ const mutations = {
   },
   SET_PLAYLIST_NEXTLOAD(state, { vm, data }) {
     state.playList.list = vm._.concat(state.playList.list, data);
+    state.playbackWaitList.list = vm._.concat(state.playbackWaitList.list, data);
   },
   SET_PLAYLIST_INFO(state, payload) {
     state.playlistInfo.id = payload.playlistId;
@@ -78,7 +79,7 @@ const actions = {
     const params = {
       part: "snippet",
       playlistId: playlistId,
-      maxResults: 30,
+      maxResults: 25,
       key: API_KEY
     };
     return vm.axios
@@ -106,10 +107,11 @@ const actions = {
     const queryParams = {
       part: "snippet",
       playlistId: playlistId,
-      maxResults: 30,
+      maxResults: 25,
       pageToken: state.playList.nextToken,
       key: API_KEY
     };
+    
     vm.axios.get(`/playlistItems`, { params: queryParams }).then(({ data }) => {
       commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
 
@@ -149,17 +151,12 @@ const actions = {
       });
       if (mode === "s") {
         commit("SET_PLAY_LIST", array);
+        commit("SET_PLAYBACK_WAIT_LIST", array);
       } else {
         commit("SET_PLAYLIST_NEXTLOAD", { vm: vm, data: array });
         vm.loadMoreLoading = false;
       }
     });
-  },
-
-  getPlaybackWaitList({ commit, state }) {
-    const playlist = state.playList.list;
-    commit("SET_PLAYBACK_WAIT_LIST", playlist);
-    return true;
   },
 
   getUpdatePlaybackWithList({ commit, state }) {

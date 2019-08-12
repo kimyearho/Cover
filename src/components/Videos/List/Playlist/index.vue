@@ -27,7 +27,7 @@
       <v-btn
         block
         :loading="loadMoreLoading"
-        :disabled="loadMoreLoading"
+        :disabled="loadMoreLoading || playlist.length >= 100"
         @click="loadMore"
         color="primary"
       >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
@@ -67,7 +67,6 @@ export default {
     ...mapActions({
       getPlaylistDispatch: "getPlaylist",
       getNextListDispatch: "getPlaylistNextSearch",
-      getPlaybackListDispatch: "getPlaybackWaitList",
       setPlayerSwitchDispatch: "playerSwitch",
       setVideoSettingDispatch: "playingVideoSetting"
     }),
@@ -81,11 +80,8 @@ export default {
       });
     },
     openPlayer(item) {
-      const params = { vm: this, position: item.position };
-      this.getPlaybackListDispatch(params).then(() => {
-        this.setVideoSettingDispatch({ data: item }).then(() => {
-          this.setPlayerSwitchDispatch({ flag: true });
-        });
+      this.setVideoSettingDispatch({ data: item }).then(() => {
+        this.setPlayerSwitchDispatch({ flag: true });
       });
     },
     loadMore() {

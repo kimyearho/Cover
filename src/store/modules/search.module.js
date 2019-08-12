@@ -60,7 +60,7 @@ const actions = {
       part: "snippet",
       q: state.searchText,
       type: "video,playlist,channel",
-      maxResults: "25",
+      maxResults: 25,
       safeSearch: "strict",
       key: API_KEY
     };
@@ -88,7 +88,7 @@ const actions = {
       part: "snippet",
       q: state.searchText,
       type: "video,playlist,channel",
-      maxResults: "25",
+      maxResults: 25,
       safeSearch: "strict",
       pageToken: state.nextToken,
       key: API_KEY

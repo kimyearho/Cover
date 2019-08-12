@@ -42,7 +42,7 @@
       <v-btn
         block
         :loading="loadMoreLoading"
-        :disabled="loadMoreLoading"
+        :disabled="loadMoreLoading || list.length >= 100"
         @click="loadMore"
         color="primary"
       >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>

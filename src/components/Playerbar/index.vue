@@ -141,7 +141,7 @@ export default {
     return {
       visible: false,
       show: true,
-      volume: 49
+      volume: 50
     };
   },
   computed: {
@@ -336,7 +336,7 @@ export default {
   margin: 0 50px;
 }
 .paly-icon-margin {
-  margin: 0 17px;
+  margin: 0 14px;
 }
 .margin-0 {
   margin-top: 0;

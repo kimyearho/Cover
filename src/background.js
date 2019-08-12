@@ -25,7 +25,7 @@ protocol.registerSchemesAsPrivileged([
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 420,
+    width: 400,
     height: 705,
     resizable: false,
     maximizable: false,
@@ -36,7 +36,7 @@ function createWindow() {
     }
   });
 
-  // win.setMenu(null);
+  win.setMenu(null);
   // win.webContents.openDevTools();
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -63,7 +63,7 @@ function createWindow() {
       }
     });
     player.setMenu(null);
-    player.webContents.openDevTools();
+    // player.webContents.openDevTools();
     player.loadURL(playerPath);
     player.on("close", e => {
       if (!willQuitApp) {

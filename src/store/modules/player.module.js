@@ -49,6 +49,7 @@ const actions = {
   },
   playerSwitch({ commit }, { flag }) {
     commit("SET_SHOW_PLAYER", flag);
+    return true
   }
 };
 

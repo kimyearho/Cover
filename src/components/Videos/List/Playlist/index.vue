@@ -27,7 +27,7 @@
       <v-btn
         block
         :loading="loadMoreLoading"
-        :disabled="loadMoreLoading || playlist.length >= 100"
+        :disabled="loadMoreLoading || playlist.length >= 100 || !isNextToken"
         @click="loadMore"
         color="primary"
       >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
@@ -37,13 +37,14 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import sMixin from "../../../Search/Mixin/mixin";
+import playerMixin from "../../../Playerbar/Mixin/mixin";
+import searchMixin from "../../../Search/Mixin/mixin";
 import VideoInfo from "../../Info/index";
 import VideoMenu from "../../../Commons/Menu/videoMenu";
 
 export default {
   name: "PlayList",
-  mixins: [sMixin],
+  mixins: [searchMixin, playerMixin],
   components: {
     VideoInfo,
     VideoMenu
@@ -81,7 +82,9 @@ export default {
     },
     openPlayer(item) {
       this.setVideoSettingDispatch({ data: item }).then(() => {
-        this.setPlayerSwitchDispatch({ flag: true });
+        this.setPlayerSwitchDispatch({ flag: true }).then(() => {
+          this.ipcSendPlayVideo(item);
+        });
       });
     },
     loadMore() {

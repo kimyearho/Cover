@@ -158,26 +158,29 @@ const actions = {
       const isPlayingVideoGetter = rootGetters.GET_PLAYING_VIDEO;
       const isPlaying = isPlayingVideoGetter.coverData.videoId;
 
-      const isPlayingListId = isPlayingVideoGetter.coverData.playlistId;
-      const playlistIdGetter = rootGetters.GET_ID;
-
       if (mode === "s") {
         commit("SET_PLAY_LIST", array);
         if (!isPlaying) {
-          vm.$log.info('재생 정보가 없으므로 재생 대기 목록 동기화', array)
+          vm.$log.info("재생 정보가 없으므로 재생 대기 목록 동기화됨", array);
           commit("SET_PLAYBACK_WAIT_LIST", array);
-        } 
+        }
       } else {
         commit("SET_PLAYLIST_NEXTLOAD", { vm: vm, data: array });
+        // 재생중이지 않음
         if (!isPlaying) {
-          vm.$log.info('재생 정보가 없으므로 재생 대기 목록 동기화', array)
+          vm.$log.info("재생 정보가 없으므로 재생 대기 목록 동기화됨", array);
           commit("SET_PLAYBACK_NEXTLOAD", { vm: vm, data: array });
         } else {
-          // 재생중
+          // 재생중임
           // 현재 재생목록 아이디와, 재생중인 비디오의 재생목록 아이디가 동일하면
-          if(isPlayingListId === playlistIdGetter) {
+          const isPlayingListId = isPlayingVideoGetter.coverData.playlistId;
+          const playlistIdGetter = rootGetters.GET_ID;
+          if (isPlayingListId === playlistIdGetter) {
             // 같은 재생목록에서 페이징 조회를 했으므로 재생 대기 목록과 동기화 한다.
-            vm.$log.info('재생중이며, 재생목록, 대기목록 아이디가 서로 일치함', array)
+            vm.$log.info(
+              "재생중이며, 재생목록, 대기목록 아이디가 서로 일치하므로 동기화됨",
+              array
+            );
             commit("SET_PLAYBACK_NEXTLOAD", { vm: vm, data: array });
           }
         }

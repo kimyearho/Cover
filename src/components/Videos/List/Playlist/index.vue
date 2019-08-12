@@ -84,7 +84,7 @@ export default {
           });
         });
       } else {
-        // 최초 재생중이 아닐때
+        // 최초, 재생중이 아닐때
         this.$log.info('현재 재생정보가 없음 (최초실행)')
         this.setVideoSettingDispatch({ data: item }).then(() => {
           this.setPlayerSwitchDispatch({ flag: true }).then(() => {

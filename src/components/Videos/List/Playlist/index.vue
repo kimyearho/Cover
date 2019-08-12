@@ -68,24 +68,30 @@ export default {
     ...mapActions({
       getPlaylistDispatch: "getPlaylist",
       getNextListDispatch: "getPlaylistNextSearch",
+      getPlaybackDispatch: "getPlaybackWithList",
       setPlayerSwitchDispatch: "playerSwitch",
       setVideoSettingDispatch: "playingVideoSetting"
     }),
-    get() {
-      const params = {
-        vm: this,
-        playlistId: this.$route.params.id
-      };
-      this.getPlaylistDispatch(params).then(() => {
-        this.$log.info("Done!");
-      });
-    },
     openPlayer(item) {
-      this.setVideoSettingDispatch({ data: item }).then(() => {
-        this.setPlayerSwitchDispatch({ flag: true }).then(() => {
-          this.ipcSendPlayVideo(item);
+      // 재생중이라면 재생대기목록을 새로 갱신
+      if (this.playingVideo.coverData.videoId) {
+        this.$log.info('현재 재생정보가 있음', this.playingVideo.coverData.videoId)
+        this.getPlaybackDispatch().then(() => {
+          this.setVideoSettingDispatch({ data: item }).then(() => {
+            this.setPlayerSwitchDispatch({ flag: true }).then(() => {
+              this.ipcSendPlayVideo(item);
+            });
+          });
         });
-      });
+      } else {
+        // 최초 재생중이 아닐때
+        this.$log.info('현재 재생정보가 없음 (최초실행)')
+        this.setVideoSettingDispatch({ data: item }).then(() => {
+          this.setPlayerSwitchDispatch({ flag: true }).then(() => {
+            this.ipcSendPlayVideo(item);
+          });
+        });
+      }
     },
     loadMore() {
       this.loadMoreLoading = true;

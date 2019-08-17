@@ -18,7 +18,7 @@ const router = new VueRouter({
     },
     {
       path: "/playList/:id",
-      name: "playList",
+      name: "Playlist",
       component: require("@/components/Videos/index").default,
       meta: { transition: 'overlay-down-full' }
     },

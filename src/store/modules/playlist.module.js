@@ -18,11 +18,20 @@ const state = {
   playList: {
     id: "",
     list: [],
-    nextToken: ""
+    nextToken: "",
+    type: "playlist"
   },
   playbackWaitList: {
+    id: "",
     list: [],
-    nextToken: ""
+    nextToken: "",
+    type: "playlist"
+  },
+  playListTemp: {
+    id: "",
+    list: [],
+    nextToken: "",
+    type: "playlist"
   }
 };
 
@@ -44,6 +53,15 @@ const getters = {
   },
   GET_PLAYBACK_WAIT_TOKEN: state => {
     return state.playbackWaitList.nextToken;
+  },
+  GET_TEMP_ID: state => {
+    return state.playListTemp.id;
+  },
+  GET_TEMP_PLAYLIST: state => {
+    return state.playListTemp.list;
+  },
+  GET_TEMP_PLAYLIST_TOKEN: state => {
+    return state.playListTemp.nextToken;
   }
 };
 
@@ -75,12 +93,52 @@ const mutations = {
       state.playbackWaitList.list,
       data
     );
+  },
+  SET_PLAYLIST_TEMP_ID(state, payload) {
+    state.playListTemp.id = payload;
+  },
+  SET_PLAYLIST_TEMP(state, payload) {
+    state.playListTemp.list = payload;
+  },
+  SET_PLAYLIST_TEMP_TOKEN(state, payload) {
+    state.playListTemp.nextToken = payload;
+  },
+  SET_PLAYLIST_TEMP_NEXTLOAD(state, { vm, data }) {
+    state.playListTemp.list = vm._.concat(state.playListTemp.list, data);
+  },
+  SET_PLAYLIST_TEMP_CLEAR(state) {
+    state.playListTemp.id = ""
+    state.playListTemp.list = []
+    state.playListTemp.nextToken = ""
   }
 };
 
 const actions = {
-  getPlaylist({ commit, dispatch }, { vm, playlistId }) {
-    commit("SET_PLAYLIST_ID", playlistId);
+  playlistInit({ commit, rootGetters }, { playlistId, data }) {
+    // 현재 재생중인 비디오 정보
+    const playingVideoInfo = rootGetters.GET_PLAYING_VIDEO;
+    const isPlaying = playingVideoInfo.isUse;
+    return new Promise(resolve => {
+      if (isPlaying) {
+        const playingVideoListId = playingVideoInfo.coverData.playlistId;
+        if (playingVideoListId === playlistId) {
+          commit("SET_PLAYLIST_ID", playlistId);
+          commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
+          resolve(true);
+        } else {
+          commit("SET_PLAYLIST_TEMP_ID", playlistId);
+          commit("SET_PLAYLIST_TEMP_TOKEN", data.nextPageToken);
+          resolve(false);
+        }
+      } else {
+        commit("SET_PLAYLIST_ID", playlistId);
+        commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
+        resolve(true);
+      }
+    });
+  },
+
+  getPlaylist({ dispatch }, { vm, playlistId }) {
     const params = {
       part: "snippet",
       playlistId: playlistId,
@@ -90,39 +148,65 @@ const actions = {
     return vm.axios
       .get("/playlistItems", { params: params })
       .then(({ data }) => {
-        commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
-        let array = [];
-        vm._.forEach(data.items, (item, index) => {
-          let videoItem = Object.assign({}, item.snippet);
-          videoItem.videoId = videoItem.resourceId.videoId;
-          videoItem.listIndex = index + 1;
-          delete videoItem.resourceId;
-          delete videoItem.publishedAt;
-          array.push(videoItem);
-        });
-        dispatch("getPlaylistVideoDuration", {
-          vm: vm,
-          data: array,
-          mode: "s"
-        });
+        dispatch("playlistInit", { playlistId: playlistId, data: data }).then(
+          result => {
+            const type = result;
+            vm.$log.info(type);
+
+            let array = [];
+            vm._.forEach(data.items, (item, index) => {
+              let videoItem = Object.assign({}, item.snippet);
+              videoItem.videoId = videoItem.resourceId.videoId;
+              videoItem.listIndex = index + 1;
+              delete videoItem.resourceId;
+              delete videoItem.publishedAt;
+              array.push(videoItem);
+            });
+            dispatch("getPlaylistVideoDuration", {
+              vm: vm,
+              data: array,
+              mode: "list",
+              type
+            });
+          }
+        );
       });
   },
 
-  getPlaylistNextSearch({ commit, dispatch, state }, { vm, playlistId }) {
+  getPlaylistNextSearch({ commit, dispatch, state }, { vm, playlistId, type }) {
+    let nextToken = "";
+
+    if (type === "") {
+      vm.$log.info("재생중 아님, 페이징 조회");
+      nextToken = state.playList.nextToken;
+    } else if (type) {
+      vm.$log.info("재생중, 동일 재생목록 페이징 조회");
+      nextToken = state.playList.nextToken;
+    } else if (!type) {
+      vm.$log.info("재생중, 임시 재생목록 페이징 조회");
+      nextToken = state.playListTemp.nextToken;
+    }
+
     const queryParams = {
       part: "snippet",
       playlistId: playlistId,
       maxResults: 25,
-      pageToken: state.playList.nextToken,
+      pageToken: nextToken,
       key: API_KEY
     };
 
     vm.axios.get(`/playlistItems`, { params: queryParams }).then(({ data }) => {
-      commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
-
-      let playlist = state.playList.list;
-      let listMaxIndex = playlist[playlist.length - 1].listIndex;
-
+      let playlist,
+        listMaxIndex = "";
+      if (type === "" || type === true) {
+        playlist = state.playList.list;
+        listMaxIndex = playlist[playlist.length - 1].listIndex;
+        commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
+      } else if (!type) {
+        playlist = state.playListTemp.list;
+        listMaxIndex = playlist[playlist.length - 1].listIndex;
+        commit("SET_PLAYLIST_TEMP_TOKEN", data.nextPageToken);
+      }
       let array = [];
       vm._.forEach(data.items, (item, index) => {
         let assignIndex = index + 1;
@@ -133,11 +217,16 @@ const actions = {
         delete videoItem.publishedAt;
         array.push(videoItem);
       });
-      dispatch("getPlaylistVideoDuration", { vm: vm, data: array, mode: "n" });
+      dispatch("getPlaylistVideoDuration", {
+        vm: vm,
+        data: array,
+        mode: "nextLoad",
+        type: type
+      });
     });
   },
 
-  getPlaylistVideoDuration({ commit, rootGetters }, { vm, data, mode }) {
+  getPlaylistVideoDuration({ commit, rootGetters }, { vm, data, mode, type }) {
     const videoIds = vm._.map(data, "videoId");
     const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
     let array = [];
@@ -155,38 +244,44 @@ const actions = {
         array.push(item);
       });
 
-      const isPlayingVideoGetter = rootGetters.GET_PLAYING_VIDEO;
-      const isPlaying = isPlayingVideoGetter.coverData.videoId;
+      const playingVideoInfo = rootGetters.GET_PLAYING_VIDEO;
+      const isPlaying = playingVideoInfo.isUse;
 
-      if (mode === "s") {
-        commit("SET_PLAY_LIST", array);
-        if (!isPlaying) {
-          vm.$log.info("재생 정보가 없으므로 재생 대기 목록 동기화됨", array);
-          commit("SET_PLAYBACK_WAIT_LIST", array);
+      // 재생목록 조회일때
+      if (mode === "list") {
+        if (type === "" || type === true) {
+          vm.$log.info("원본 재생목록의 저장");
+          commit("SET_PLAY_LIST", array);
+          if (!isPlaying) {
+            commit("SET_PLAYBACK_WAIT_LIST", array);
+          }
+        } else {
+          vm.$log.info("임시 재생목록의 저장");
+          commit("SET_PLAYLIST_TEMP", array);
         }
       } else {
-        commit("SET_PLAYLIST_NEXTLOAD", { vm: vm, data: array });
-        // 재생중이지 않음
-        if (!isPlaying) {
-          vm.$log.info("재생 정보가 없으므로 재생 대기 목록 동기화됨", array);
+        // 페이징 조회 일대
+        if (type === "" || type === true) {
+          commit("SET_PLAYLIST_NEXTLOAD", { vm: vm, data: array });
           commit("SET_PLAYBACK_NEXTLOAD", { vm: vm, data: array });
         } else {
-          // 재생중임
-          // 현재 재생목록 아이디와, 재생중인 비디오의 재생목록 아이디가 동일하면
-          const isPlayingListId = isPlayingVideoGetter.coverData.playlistId;
-          const playlistIdGetter = rootGetters.GET_ID;
-          if (isPlayingListId === playlistIdGetter) {
-            // 같은 재생목록에서 페이징 조회를 했으므로 재생 대기 목록과 동기화 한다.
-            vm.$log.info(
-              "재생중이며, 재생목록, 대기목록 아이디가 서로 일치하므로 동기화됨",
-              array
-            );
-            commit("SET_PLAYBACK_NEXTLOAD", { vm: vm, data: array });
-          }
+          commit("SET_PLAYLIST_TEMP_NEXTLOAD", { vm: vm, data: array });
         }
         vm.loadMoreLoading = false;
       }
     });
+  },
+
+  getNewUpdatePlayback({commit, state}) {
+    const newPlayback = state.playListTemp.list;
+    const newPlaybackToken = state.playListTemp.nextToken;
+    const newPlaybackId = state.playListTemp.id
+    commit("SET_PLAY_LIST", newPlayback);
+    commit("SET_PLAYLIST_TOKEN", newPlaybackToken);
+    commit("SET_PLAYLIST_ID", newPlaybackId)
+    commit("SET_PLAYBACK_WAIT_LIST", newPlayback);
+    commit("SET_PLAYLIST_TEMP_CLEAR")
+    return true;
   },
 
   getPlaybackWithList({ commit, state }) {

@@ -77,6 +77,7 @@ export default {
       id: "GET_ID",
       list: "GET_SEARCH_LIST",
       isNextToken: "GET_NEXT_TOKEN",
+      playingVideo: "GET_PLAYING_VIDEO",
       isLoading: "GET_IS_LOADING"
     }),
     isLoading: {
@@ -108,33 +109,108 @@ export default {
     },
 
     detail(data) {
-      if (this.id !== data.playlistId) {
-        // 재생목록아이디가 서로 다르면 처음 접속
-        this.$store.commit("SET_PLAYLIST_INFO", data);
-        const params = {
-          vm: this,
-          playlistId: data.playlistId
-        };
-        this.getPlaylistDispatch(params).then(() => {
-          if (data.channel) {
-            this.getChannelDispatch({ vm: this, channelId: data.channel }).then(() => {
-              this.routeDetail(data);
-            });
-          } else {
-            this.routeDetail(data);
-          }
-        });
-      } else {
-        // 동일한 재생목록을 재조회시 즉시 이동
-        this.routeDetail(data);
+      // 재생타입 구분
+      const playType = this.playTypeReturn(data);
+
+      // 나중에 아래 메소드 합칠것.
+      if (playType === "Playlist") {
+        this.playlistDetail(data);
+      } else if (playType === "Channel") {
+        this.channelDetail(data);
+      } else if (playType === "Related") {
+        this.relatedDetail(data);
       }
     },
 
-    routeDetail(data) {
+    playlistDetail(data) {
+      // 재생목록아이디가 서로 다르면 처음 접속
+      this.$store.commit("SET_PLAYLIST_INFO", data);
+      // 2. 현재 재생중인 비디오가 있는지?
+      const playingVideo = this.playingVideo;
+      // 재생중인 비디오 있음.
+      if (playingVideo.isUse) {
+        const tempId = this.$store.getters.GET_TEMP_ID;
+        if (playingVideo.coverData.playlistId === data.playlistId) {
+          this.routeVideoListDetail(data, "Playlist");
+        } else {
+          // 현재 재생중인 목록과, 선택한 비됴가 다름.
+          // 현제 temp에 등록된 아이디가 있는지?
+          //  - 없으면 새로 조회
+          //  - 있으면 아래로
+          if (tempId !== "") {
+            // 현재 선택한 아이디가 temp 아이디와 동일한것인지 체크.
+            if (tempId === data.playlistId) {
+              // 동일하다면, temp에 등록된 아이디의 재생목록을 재조회한 것.
+              this.routeVideoListDetail(data, "Playlist");
+            } else {
+              // 아니면 다른 재생목록을 새로 조회한것.
+              this.playlistSetting(data, "Playlist");
+            }
+          } else {
+            // 재생중인 비디오 없음, 처음실행
+            this.playlistSetting(data, "Playlist");
+          }
+        }
+      } else {
+        // 재생중인 비디오 없음 (최초 접속)
+        this.playlistSetting(data, "Playlist");
+      }
+    },
+
+    channelDetail(data) {
+      this.$log.info(data)
+    },
+
+    relatedDetail(data) {
+      this.$log.info(data)
+    },
+
+    playTypeReturn(data) {
+      let playType = "";
+      if (data.duration) {
+        playType = "Related";
+      } else if (data.liveBroadcastContent !== "none") {
+        playType = "Live";
+      } else if (data.playlistId) {
+        playType = "Playlist";
+      } else if (data.channelId) {
+        playType = "Channel";
+      }
+      return playType;
+    },
+
+    playlistSetting(data, playType) {
+      const params = {
+        vm: this,
+        playlistId: data.playlistId
+      };
+      this.getPlaylistDispatch(params).then(() => {
+        if (data.channel) {
+          this.getChannelDispatch({
+            vm: this,
+            channelId: data.channel
+          }).then(() => {
+            this.routeVideoListDetail(data, playType);
+          });
+        } else {
+          this.routeVideoListDetail(data, playType);
+        }
+      });
+    },
+
+    routeVideoListDetail(data, playType) {
+      let videoListId = "";
+      if (playType === "Playlist") {
+        videoListId = data.playlistId;
+      } else if (playType === "Channel") {
+        // videoListId = data.channelId;
+      } else if (playType === "Related") {
+        // videoListId = data.videoId;
+      }
       this.$router.push({
-        name: "playList",
+        name: playType,
         params: {
-          id: data.playlistId
+          id: videoListId
         }
       });
     },

@@ -7,6 +7,7 @@
 
 const state = {
   playingVideoInfo: {
+    isUse: false,
     coverData: {
       channelId: "",
       playlistId: "",
@@ -40,6 +41,7 @@ const mutations = {
     state.playingVideoInfo.thumbnails = payload.thumbnails;
     state.playingVideoInfo.playIndex = payload.listIndex
     state.playingVideoInfo.duration = payload.duration;
+    state.playingVideoInfo.isUse = true
   }
 };
 const actions = {

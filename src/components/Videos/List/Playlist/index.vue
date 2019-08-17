@@ -58,34 +58,63 @@ export default {
   },
   computed: {
     ...mapGetters({
-      id: "GET_ID",
-      playlist: "GET_PLAY_LIST",
+      originalId: "GET_ID",
+      tempId: "GET_TEMP_ID",
       isNextToken: "GET_PLAYLIST_TOKEN",
       playingVideo: "GET_PLAYING_VIDEO"
-    })
+    }),
+    playlist: {
+      get() {
+        const routePlaylistId = this.$route.params.id;
+        if (this.tempId === "" || routePlaylistId === this.originalId) {
+          this.$log.info("원본 재생목록 가져옴");
+          return this.$store.getters.GET_PLAY_LIST;
+        } else {
+          if (routePlaylistId === this.tempId) {
+            this.$log.info("임시 재생목록 가져옴");
+            return this.$store.getters.GET_TEMP_PLAYLIST;
+          }
+        }
+        return true;
+      }
+    }
   },
   methods: {
     ...mapActions({
       getPlaylistDispatch: "getPlaylist",
       getNextListDispatch: "getPlaylistNextSearch",
       getPlaybackDispatch: "getPlaybackWithList",
+      getNewUpdatePlaybackDispatch: "getNewUpdatePlayback",
       setPlayerSwitchDispatch: "playerSwitch",
       setVideoSettingDispatch: "playingVideoSetting"
     }),
     openPlayer(item) {
-      // 재생중이라면 재생대기목록을 새로 갱신
-      if (this.playingVideo.coverData.videoId) {
-        this.$log.info('현재 재생정보가 있음', this.playingVideo.coverData.videoId)
-        this.getPlaybackDispatch().then(() => {
-          this.setVideoSettingDispatch({ data: item }).then(() => {
-            this.setPlayerSwitchDispatch({ flag: true }).then(() => {
-              this.ipcSendPlayVideo(item);
+      if (this.playingVideo.isUse) {
+        this.$log.info("현재 재생중인가?", true);
+        const playingListId = this.playingVideo.coverData.playlistId;
+        const routePlaylistId = this.$route.params.id;
+        if (routePlaylistId === playingListId) {
+          this.$log.info("재생 목록 동일함, 재생 대기 목록 갱신 후 재생");
+          this.getPlaybackDispatch().then(() => {
+            this.setVideoSettingDispatch({ data: item }).then(() => {
+              this.setPlayerSwitchDispatch({ flag: true }).then(() => {
+                this.ipcSendPlayVideo(item);
+              });
             });
           });
-        });
+        } else {
+          this.$log.info("재생 목록 다름, 재생 대기 목록 갱신 후 재생");
+          this.getNewUpdatePlaybackDispatch().then(() => {
+            this.setVideoSettingDispatch({ data: item }).then(() => {
+              this.setPlayerSwitchDispatch({ flag: true }).then(() => {
+                this.ipcSendPlayVideo(item);
+              });
+            });
+          })
+        }
       } else {
         // 최초, 재생중이 아닐때
-        this.$log.info('현재 재생정보가 없음 (최초실행)')
+        this.$log.info("현재 재생중이지 않음", false);
         this.setVideoSettingDispatch({ data: item }).then(() => {
           this.setPlayerSwitchDispatch({ flag: true }).then(() => {
             this.ipcSendPlayVideo(item);
@@ -95,12 +124,32 @@ export default {
     },
     loadMore() {
       this.loadMoreLoading = true;
+      const routePlaylistId = this.$route.params.id;
+      this.$log.info("현재 재생목록 아이디", routePlaylistId);
       setTimeout(() => {
-        const param = {
+        let param = {
           vm: this,
-          playlistId: this.$route.params.id
+          playlistId: routePlaylistId,
+          type: ""
         };
-        this.getNextListDispatch(param);
+        if (this.playingVideo.isUse) {
+          const playingListId = this.playingVideo.coverData.playlistId;
+          this.$log.info("현재 재생중인가?", true);
+          this.$log.info("재생중인 재생목록 아이디", playingListId);
+          if (playingListId === routePlaylistId) {
+            // 동일한 재생목록 일 경우
+            param.type = true;
+          } else {
+            if (routePlaylistId === this.tempId) {
+              // 임시 재생목록 일 경우
+              param.type = false;
+            }
+          }
+          this.getNextListDispatch(param);
+        } else {
+          this.$log.info("현재 재생중인가?", false);
+          this.getNextListDispatch(param);
+        }
       }, 1000);
     }
   }

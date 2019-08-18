@@ -39,12 +39,14 @@
 
     <sub-playerbar />
     <playerbar :isVisible.sync="isPlayer" @playerClose="setPlayerSwitch({ flag: false })" />
+    <common-player-ipc-controller />
   </v-app>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import AutoComplate from "@/components/Commons/AutoComplate/autoComplate";
+import CommonPlayerIpcController from "@/components/Commons/PlayerIpc/index"
 import Playerbar from "@/components/Playerbar/index";
 import SubPlayerbar from "@/components/Playerbar/sub";
 
@@ -53,7 +55,8 @@ export default {
   components: {
     AutoComplate,
     Playerbar,
-    SubPlayerbar
+    SubPlayerbar,
+    CommonPlayerIpcController
   },
   data() {
     return {

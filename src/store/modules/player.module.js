@@ -15,10 +15,10 @@ const state = {
       videoTitle: ""
     },
     thumbnails: null,
-    playTime: 0,
     playIndex: 0,
     duration: 0
   },
+  playTime: 0,
   showPlayer: false
 };
 const getters = {

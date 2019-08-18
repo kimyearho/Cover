@@ -1,5 +1,19 @@
 <template>
   <div>
+      <!-- <v-layout>
+        <v-flex xs5>
+          <v-img :src="getThumbnail" height="125px" contain></v-img>
+        </v-flex>
+        <v-flex xs7>
+          <v-card-title primary-title>
+            <div>
+              <div class="headline">Supermodel</div>
+              <div>Foster the People</div>
+              <div>(2014)</div>
+            </div>
+          </v-card-title>
+        </v-flex>
+      </v-layout> -->
     <v-img :src="getThumbnail" height="190px">
       <span class="avatar-right">
         <v-list-tile-avatar color="grey darken-3">

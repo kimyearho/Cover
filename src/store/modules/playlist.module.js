@@ -148,28 +148,29 @@ const actions = {
     return vm.axios
       .get("/playlistItems", { params: params })
       .then(({ data }) => {
-        dispatch("playlistInit", { playlistId: playlistId, data: data }).then(
-          result => {
-            const type = result;
-            vm.$log.info(type);
+        dispatch("playlistInit", { playlistId: playlistId, data: data })
+          .then(
+            result => {
+              const type = result;
+              vm.$log.info(type);
 
-            let array = [];
-            vm._.forEach(data.items, (item, index) => {
-              let videoItem = Object.assign({}, item.snippet);
-              videoItem.videoId = videoItem.resourceId.videoId;
-              videoItem.listIndex = index + 1;
-              delete videoItem.resourceId;
-              delete videoItem.publishedAt;
-              array.push(videoItem);
-            });
-            dispatch("getPlaylistVideoDuration", {
-              vm: vm,
-              data: array,
-              mode: "list",
-              type
-            });
-          }
-        );
+              let array = [];
+              vm._.forEach(data.items, (item, index) => {
+                let videoItem = Object.assign({}, item.snippet);
+                videoItem.videoId = videoItem.resourceId.videoId;
+                videoItem.listIndex = index + 1;
+                delete videoItem.resourceId;
+                delete videoItem.publishedAt;
+                array.push(videoItem);
+              });
+              dispatch("getPlaylistVideoDuration", {
+                vm: vm,
+                data: array,
+                mode: "list",
+                type
+              });
+            }
+          );
       });
   },
 
@@ -272,7 +273,7 @@ const actions = {
     });
   },
 
-  getNewUpdatePlayback({commit, state}) {
+  getNewUpdatePlayback({ commit, state }) {
     const newPlayback = state.playListTemp.list;
     const newPlaybackToken = state.playListTemp.nextToken;
     const newPlaybackId = state.playListTemp.id

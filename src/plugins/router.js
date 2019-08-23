@@ -23,6 +23,12 @@ const router = new VueRouter({
       meta: { transition: 'overlay-down-full' }
     },
     {
+      path: "/related/:id",
+      name: "Related",
+      component: require("@/components/Videos/index").default,
+      meta: { transition: 'overlay-down-full' }
+    },
+    {
       path: "/sample1",
       name: "sample1",
       component: require("@/components/Sample/index").default,

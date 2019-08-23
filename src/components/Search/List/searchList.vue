@@ -97,6 +97,7 @@ export default {
       getListDispatch: "getApiSearch",
       getPlaylistDispatch: "getPlaylist",
       getChannelDispatch: "getChannel",
+      getRelatedListDispatch: "getRelatedList",
       loadMoreDispatch: "getApiNextloadSearch"
     }),
 
@@ -114,15 +115,15 @@ export default {
 
       // 나중에 아래 메소드 합칠것.
       if (playType === "Playlist") {
-        this.playlistDetail(data);
+        this.playlistDetail(data, playType);
       } else if (playType === "Channel") {
-        this.channelDetail(data);
+        this.channelDetail(data, playType);
       } else if (playType === "Related") {
-        this.relatedDetail(data);
+        this.relatedDetail(data, playType);
       }
     },
 
-    playlistDetail(data) {
+    playlistDetail(data, playType) {
       // 재생목록아이디가 서로 다르면 처음 접속
       this.$store.commit("SET_PLAYLIST_INFO", data);
       // 2. 현재 재생중인 비디오가 있는지?
@@ -131,7 +132,7 @@ export default {
       if (playingVideo.isUse) {
         const tempId = this.$store.getters.GET_TEMP_ID;
         if (playingVideo.coverData.playlistId === data.playlistId) {
-          this.routeVideoListDetail(data, "Playlist");
+          this.routeVideoListDetail(data, playType);
         } else {
           // 현재 재생중인 목록과, 선택한 비됴가 다름.
           // 현제 temp에 등록된 아이디가 있는지?
@@ -141,28 +142,37 @@ export default {
             // 현재 선택한 아이디가 temp 아이디와 동일한것인지 체크.
             if (tempId === data.playlistId) {
               // 동일하다면, temp에 등록된 아이디의 재생목록을 재조회한 것.
-              this.routeVideoListDetail(data, "Playlist");
+              this.routeVideoListDetail(data, playType);
             } else {
               // 아니면 다른 재생목록을 새로 조회한것.
-              this.playlistSetting(data, "Playlist");
+              this.videoListSetting(data, playType);
             }
           } else {
             // 재생중인 비디오 없음, 처음실행
-            this.playlistSetting(data, "Playlist");
+            this.videoListSetting(data, playType);
           }
         }
       } else {
         // 재생중인 비디오 없음 (최초 접속)
-        this.playlistSetting(data, "Playlist");
+        this.videoListSetting(data, playType);
       }
     },
 
     channelDetail(data) {
-      this.$log.info(data)
+      this.$log.info(data);
     },
 
-    relatedDetail(data) {
-      this.$log.info(data)
+    relatedDetail(data, playType) {
+      this.$log.info(data);
+      // 2. 현재 재생중인 비디오가 있는지?
+      const playingVideo = this.playingVideo;
+      // 재생중인 비디오 있음.
+      if (playingVideo.isUse) {
+        this.$log.info("1");
+      } else {
+        // 재생중인 비디오 없음 (최초 접속)
+        this.videoListSetting(data, playType);
+      }
     },
 
     playTypeReturn(data) {
@@ -179,23 +189,32 @@ export default {
       return playType;
     },
 
-    playlistSetting(data, playType) {
-      const params = {
-        vm: this,
-        playlistId: data.playlistId
-      };
-      this.getPlaylistDispatch(params).then(() => {
-        if (data.channel) {
-          this.getChannelDispatch({
-            vm: this,
-            channelId: data.channel
-          }).then(() => {
+    videoListSetting(data, playType) {
+      let params = null;
+      if (playType === "Playlist") {
+        params = {
+          vm: this,
+          playlistId: data.playlistId
+        };
+        this.getPlaylistDispatch(params).then(() => {
+          if (data.channel) {
+            this.getChannelDispatch({
+              vm: this,
+              channelId: data.channel
+            }).then(() => {
+              this.routeVideoListDetail(data, playType);
+            });
+          } else {
             this.routeVideoListDetail(data, playType);
-          });
-        } else {
-          this.routeVideoListDetail(data, playType);
-        }
-      });
+          }
+        });
+      } else if (playType === "Related") {
+        params = {
+          vm: this,
+          videoId: data.videoId
+        };
+        this.getRelatedListDispatch(params);
+      }
     },
 
     routeVideoListDetail(data, playType) {
@@ -205,7 +224,7 @@ export default {
       } else if (playType === "Channel") {
         // videoListId = data.channelId;
       } else if (playType === "Related") {
-        // videoListId = data.videoId;
+        videoListId = data.videoId;
       }
       this.$router.push({
         name: playType,

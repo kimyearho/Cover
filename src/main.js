@@ -38,9 +38,9 @@ Vue.use(VueScrollTo);
 
 Vue.config.productionTip = false;
 Vue.prototype._ = lodash;
-Vue.prototype.axios = axios;
+Vue.prototype.$axios = axios;
 Vue.prototype.moment = moment;
-Vue.prototype.event = new Vue();
+Vue.prototype.$event = new Vue();
 Vue.prototype.isElectron = isElectron()
 if (isElectron()) {
   import("electron").then(electron => {

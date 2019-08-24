@@ -220,7 +220,7 @@ export default {
       if (previousVideoInfo) {
         this.setVideoSettingDispatch({ data: previousVideoInfo }).then(() => {
           this.setListUpdateDispatch().then(() => {
-            this.ipcSendPlayVideo(previousVideoInfo)
+            this.ipcSendPlayVideo(previousVideoInfo);
             this.$log.info("Success, PreviousVideo!", previousVideoInfo);
           });
         });
@@ -269,7 +269,7 @@ export default {
      * @param {Object} item - 선택한 비디오의 정보
      */
     playVideo(item) {
-      this.ipcSendPlayVideo(item)
+      this.ipcSendPlayVideo(item);
       this.$log.info(item);
       this.setVideoSettingDispatch({ data: item }).then(() => {
         this.setListUpdateDispatch().then(() => {

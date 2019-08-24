@@ -145,7 +145,7 @@ const actions = {
       maxResults: 25,
       key: API_KEY
     };
-    return vm.axios
+    return vm.$axios
       .get("/playlistItems", { params: params })
       .then(({ data }) => {
         dispatch("playlistInit", { playlistId: playlistId, data: data })
@@ -196,7 +196,7 @@ const actions = {
       key: API_KEY
     };
 
-    vm.axios.get(`/playlistItems`, { params: queryParams }).then(({ data }) => {
+    vm.$axios.get(`/playlistItems`, { params: queryParams }).then(({ data }) => {
       let playlist,
         listMaxIndex = "";
       if (type === "" || type === true) {
@@ -231,7 +231,7 @@ const actions = {
     const videoIds = vm._.map(data, "videoId");
     const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
     let array = [];
-    vm.axios.get(url).then(res => {
+    vm.$axios.get(url).then(res => {
       vm._.forEach(data, item => {
         let videoId = item.videoId;
         vm._.forEach(res.data.items, videoIdArray => {

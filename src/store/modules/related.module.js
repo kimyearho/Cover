@@ -11,19 +11,16 @@ const state = {
     relatedList: {
         id: "",
         list: [],
-        nextToken: "",
         type: "related"
     },
     playbackWaitList: {
         id: "",
         list: [],
-        nextToken: "",
         type: "related"
     },
     relatedListTemp: {
         id: "",
         list: [],
-        nextToken: "",
         type: "related"
     }
 }
@@ -34,34 +31,22 @@ const getters = {
     GET_RELATED_LIST: state => {
         return state.relatedList.list;
     },
-    GET_RELATEDLIST_TOKEN: state => {
-        return state.relatedList.nextToken;
-    },
     GET_RELATEDLIST_INFO: state => {
         return state.relatedInfo;
     },
     GET_RELATED_PLAYBACK_WAIT_LIST: state => {
         return state.playbackWaitList.list;
     },
-    GET_RELATED_PLAYBACK_WAIT_TOKEN: state => {
-        return state.playbackWaitList.nextToken;
-    },
     GET_TEMP_RELATED_ID: state => {
         return state.relatedListTemp.id;
     },
     GET_TEMP_RELATED_PLAYLIST: state => {
         return state.relatedListTemp.list;
-    },
-    GET_TEMP_RELATED_TOKEN: state => {
-        return state.relatedListTemp.nextToken;
     }
 }
 const mutations = {
     SET_RELATED_LIST_ID(state, payload) {
         state.relatedList.id = payload
-    },
-    SET_RELATED_LIST_TOKEN(state, payload) {
-        state.relatedList.nextToken = payload;
     }
 }
 const actions = {
@@ -75,16 +60,13 @@ const actions = {
                 const playingVideoId = playingVideoInfo.coverData.videoId;
                 if (playingVideoId === videoId) {
                     commit("SET_RELATED_LIST_ID", videoId);
-                    commit("SET_RELATED_LIST_TOKEN", data.nextPageToken);
                     resolve(true);
                 } else {
                     // commit("SET_PLAYLIST_TEMP_ID", playlistId);
-                    // commit("SET_PLAYLIST_TEMP_TOKEN", data.nextPageToken);
                     // resolve(false);
                 }
             } else {
                 commit("SET_RELATED_LIST_ID", videoId);
-                commit("SET_RELATED_LIST_TOKEN", data.nextPageToken);
                 resolve(true);
             }
         });
@@ -99,7 +81,7 @@ const actions = {
             maxResults: 25,
             key: API_KEY
         };
-        return vm.axios
+        return vm.$axios
             .get('/search', { params: params })
             .then(({ data }) => {
                 vm.$log.info('getRelatedList', data)
@@ -108,6 +90,7 @@ const actions = {
                     .then(result => {
                         const type = result;
                         vm.$log.info('relatedInit | type | ', type);
+
                     })
             })
     },

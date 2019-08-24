@@ -65,7 +65,7 @@ const actions = {
       key: API_KEY
     };
     commit("SET_IS_LOADING", true);
-    return vm.axios.get(`/search`, { params: queryParams }).then(res => {
+    return vm.$axios.get(`/search`, { params: queryParams }).then(res => {
       if (res.status === 200) {
         if (res.data.nextPageToken)
           commit("SET_NEXT_TOKEN", res.data.nextPageToken);
@@ -94,7 +94,7 @@ const actions = {
       key: API_KEY
     };
 
-    vm.axios.get(`/search`, { params: queryParams }).then(res => {
+    vm.$axios.get(`/search`, { params: queryParams }).then(res => {
       if (res.status === 200) {
         if (res.data.nextPageToken)
           commit("SET_NEXT_TOKEN", res.data.nextPageToken);
@@ -115,7 +115,7 @@ const actions = {
     const videoIds = vm._.map(data, "videoId");
     const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
     let array = [];
-    vm.axios.get(url).then(res => {
+    vm.$axios.get(url).then(res => {
       vm._.forEach(data, item => {
         let videoId = item.videoId;
         vm._.forEach(res.data.items, videoIdArray => {
@@ -131,7 +131,7 @@ const actions = {
       if (mode === "s") {
         commit("SET_SEARCH_LIST", array);
         commit("SET_IS_LOADING", false);
-        vm.event.$emit("topList", { data: 0 });
+        vm.$event.$emit("topList", { data: 0 });
       } else {
         commit("SET_NEXTLOAD", { vm: vm, data: array });
         vm.loadMoreLoading = false;

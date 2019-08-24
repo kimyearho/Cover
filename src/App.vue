@@ -46,7 +46,7 @@
 <script>
 import { mapGetters } from "vuex";
 import AutoComplate from "@/components/Commons/AutoComplate/autoComplate";
-import CommonPlayerIpcController from "@/components/Commons/PlayerIpc/index"
+import CommonPlayerIpcController from "@/components/Commons/PlayerIpc/index";
 import Playerbar from "@/components/Playerbar/index";
 import SubPlayerbar from "@/components/Playerbar/sub";
 
@@ -83,7 +83,7 @@ export default {
         this.$router.push({ name: "searchList" });
       } else if (name === "favorites") {
         this.$router.push({ name: "sample1" });
-      } else if (name === 'library') {
+      } else if (name === "library") {
         this.$router.push({ name: "sample2" });
       } else if (name === "setting") {
         this.$router.push({ name: "sample3" });

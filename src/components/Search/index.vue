@@ -37,14 +37,14 @@ export default {
     })
   },
   mounted() {
-    this.event.$on("topList", this.scrollTo);
+    this.$event.$on("topList", this.scrollTo);
     this.scrollTo();
   },
   beforeMount() {
     window.addEventListener("scroll", this.handleScroll);
   },
   beforeDestroy() {
-    this.event.$off("topList");
+    this.$event.$off("topList");
     this.$store.commit("SET_SCROLL", this.pos);
     window.removeEventListener("scroll", this.handleScroll);
   },

@@ -5,7 +5,7 @@
  * author:
  */
 
-const API_KEY = "AIzaSyAcNGab-jHH_79rEhgFFFy_4oS46yUMNds";
+const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
 
 const state = {
   playlistInfo: {
@@ -162,12 +162,14 @@ const actions = {
                 delete videoItem.resourceId;
                 delete videoItem.publishedAt;
                 array.push(videoItem);
-              });
-              dispatch("getPlaylistVideoDuration", {
-                vm: vm,
-                data: array,
-                mode: "list",
-                type
+                if ((data.items.length - 1) === index) {
+                  dispatch("getPlaylistVideoDuration", {
+                    vm: vm,
+                    data: array,
+                    mode: "list",
+                    type
+                  });
+                }
               });
             }
           );
@@ -217,22 +219,27 @@ const actions = {
         delete videoItem.resourceId;
         delete videoItem.publishedAt;
         array.push(videoItem);
-      });
-      dispatch("getPlaylistVideoDuration", {
-        vm: vm,
-        data: array,
-        mode: "nextLoad",
-        type: type
+        if ((data.items.length - 1) === index) {
+          dispatch("getPlaylistVideoDuration", {
+            vm: vm,
+            data: array,
+            mode: "nextLoad",
+            type: type
+          });
+        }
       });
     });
   },
 
   getPlaylistVideoDuration({ commit, rootGetters }, { vm, data, mode, type }) {
+    const playingVideoInfo = rootGetters.GET_PLAYING_VIDEO;
+    const isPlaying = playingVideoInfo.isUse;
     const videoIds = vm._.map(data, "videoId");
     const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
+
     let array = [];
     vm.$axios.get(url).then(res => {
-      vm._.forEach(data, item => {
+      vm._.forEach(data, (item, index) => {
         let videoId = item.videoId;
         vm._.forEach(res.data.items, videoIdArray => {
           if (videoId === videoIdArray.id) {
@@ -243,33 +250,32 @@ const actions = {
           }
         });
         array.push(item);
+        if ((data.length - 1) === index) {
+          // 재생목록 조회일때
+          if (mode === "list") {
+            if (type === "" || type === true) {
+              vm.$log.info("원본 재생목록의 저장");
+              commit("SET_PLAY_LIST", array);
+              if (!isPlaying) {
+                commit("SET_PLAYBACK_WAIT_LIST", array);
+              }
+            } else {
+              vm.$log.info("임시 재생목록의 저장");
+              commit("SET_PLAYLIST_TEMP", array);
+            }
+          } else {
+            // 페이징 조회 일대
+            if (type === "" || type === true) {
+              commit("SET_PLAYLIST_NEXTLOAD", { vm: vm, data: array });
+              commit("SET_PLAYBACK_NEXTLOAD", { vm: vm, data: array });
+            } else {
+              commit("SET_PLAYLIST_TEMP_NEXTLOAD", { vm: vm, data: array });
+            }
+            vm.loadMoreLoading = false;
+          }
+        }
       });
 
-      const playingVideoInfo = rootGetters.GET_PLAYING_VIDEO;
-      const isPlaying = playingVideoInfo.isUse;
-
-      // 재생목록 조회일때
-      if (mode === "list") {
-        if (type === "" || type === true) {
-          vm.$log.info("원본 재생목록의 저장");
-          commit("SET_PLAY_LIST", array);
-          if (!isPlaying) {
-            commit("SET_PLAYBACK_WAIT_LIST", array);
-          }
-        } else {
-          vm.$log.info("임시 재생목록의 저장");
-          commit("SET_PLAYLIST_TEMP", array);
-        }
-      } else {
-        // 페이징 조회 일대
-        if (type === "" || type === true) {
-          commit("SET_PLAYLIST_NEXTLOAD", { vm: vm, data: array });
-          commit("SET_PLAYBACK_NEXTLOAD", { vm: vm, data: array });
-        } else {
-          commit("SET_PLAYLIST_TEMP_NEXTLOAD", { vm: vm, data: array });
-        }
-        vm.loadMoreLoading = false;
-      }
     });
   },
 
@@ -294,7 +300,17 @@ const actions = {
   getUpdatePlaybackWithList({ commit, state }) {
     const playbackWithList = state.playbackWaitList.list;
     commit("SET_PLAYBACK_WAIT_LIST", playbackWithList);
-    return true;
+    return true
+  },
+
+  updateRelatedPlaybackWithList({ commit, state }, { data }) {
+    const playbackWithList = data;
+    commit("SET_PLAYBACK_WAIT_LIST", playbackWithList);
+    return new Promise((resolve) => {
+      if (state.playbackWaitList.list.length > 0) {
+        resolve(true)
+      }
+    })
   }
 };
 

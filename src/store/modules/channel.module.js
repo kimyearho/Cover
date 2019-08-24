@@ -5,7 +5,7 @@
 * author: 
 */
 
-const API_KEY = "AIzaSyAcNGab-jHH_79rEhgFFFy_4oS46yUMNds";
+const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
 
 const state = {
   channelData: []

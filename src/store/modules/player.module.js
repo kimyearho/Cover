@@ -39,15 +39,19 @@ const mutations = {
     state.playingVideoInfo.coverData.videoId = payload.videoId;
     state.playingVideoInfo.coverData.videoTitle = payload.title;
     state.playingVideoInfo.thumbnails = payload.thumbnails;
-    state.playingVideoInfo.playIndex = payload.listIndex
+    state.playingVideoInfo.playIndex = payload.listIndex ? payload.listIndex : 1
     state.playingVideoInfo.duration = payload.duration;
     state.playingVideoInfo.isUse = true
   }
 };
 const actions = {
-  playingVideoSetting({ commit }, { data }) {
+  playingVideoSetting({ commit, state }, { data }) {
     commit("SET_PLAYING_VIDEO", data);
-    return true;
+    return new Promise((resolve) => {
+      if (state.playingVideoInfo.isUse) {
+        resolve(true)
+      }
+    })
   },
   playerSwitch({ commit }, { flag }) {
     commit("SET_SHOW_PLAYER", flag);

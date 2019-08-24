@@ -51,7 +51,7 @@ export default {
         const params = { vm: this, text: this.select };
         this.getListDispatch(params).then(() => {
           this.isStart = false;
-          this.redirect()
+          this.redirect();
         });
       }
     },
@@ -65,7 +65,7 @@ export default {
     }),
     querySelections(v) {
       const url = path.concat(v);
-      this.axios.jsonp(url).then(res => {
+      this.$axios.jsonp(url).then(res => {
         let value = this._.map(res[1], item => {
           return {
             name: item[0]
@@ -83,7 +83,7 @@ export default {
           //
           const params = { vm: this, text: this.select };
           this.getListDispatch(params).then(() => {
-            this.redirect()
+            this.redirect();
           });
           //
           this.$refs.auto.isMenuActive = false;

@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import RelatedList from "./List/Related/index"
 import PlayList from "./List/Playlist/index";
 
 export default {
@@ -19,10 +18,10 @@ export default {
     return {};
   },
   watch: {
-    '$route': {
+    $route: {
       handler(to, from) {
-        this.$log.info('to', to)
-        this.$log.info('from', from)
+        this.$log.info("to", to);
+        this.$log.info("from", from);
       }
     }
   }

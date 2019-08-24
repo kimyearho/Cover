@@ -56,10 +56,11 @@
 import { mapActions, mapGetters } from "vuex";
 import Loading from "vue-loading-overlay";
 import SearchMixin from "../Mixin/mixin";
+import playerMixin from "../../Playerbar/Mixin/mixin";
 import VideoMenu from "../../Commons/Menu/videoMenu";
 export default {
   name: "List",
-  mixins: [SearchMixin],
+  mixins: [SearchMixin, playerMixin],
   components: {
     VideoMenu,
     Loading
@@ -76,6 +77,7 @@ export default {
     ...mapGetters({
       id: "GET_ID",
       list: "GET_SEARCH_LIST",
+      relatedList: "GET_RELATED_LIST",
       isNextToken: "GET_NEXT_TOKEN",
       playingVideo: "GET_PLAYING_VIDEO",
       isLoading: "GET_IS_LOADING"
@@ -98,7 +100,10 @@ export default {
       getPlaylistDispatch: "getPlaylist",
       getChannelDispatch: "getChannel",
       getRelatedListDispatch: "getRelatedList",
-      loadMoreDispatch: "getApiNextloadSearch"
+      loadMoreDispatch: "getApiNextloadSearch",
+      updateRelatedPlaybackWithList: "updateRelatedPlaybackWithList",
+      setPlayerSwitchDispatch: "playerSwitch",
+      setVideoSettingDispatch: "playingVideoSetting"
     }),
 
     get() {
@@ -112,7 +117,6 @@ export default {
     detail(data) {
       // 재생타입 구분
       const playType = this.playTypeReturn(data);
-
       // 나중에 아래 메소드 합칠것.
       if (playType === "Playlist") {
         this.playlistDetail(data, playType);
@@ -164,15 +168,8 @@ export default {
 
     relatedDetail(data, playType) {
       this.$log.info(data);
-      // 2. 현재 재생중인 비디오가 있는지?
-      const playingVideo = this.playingVideo;
-      // 재생중인 비디오 있음.
-      if (playingVideo.isUse) {
-        this.$log.info("1");
-      } else {
-        // 재생중인 비디오 없음 (최초 접속)
-        this.videoListSetting(data, playType);
-      }
+      this.$store.commit("SET_PLAYLIST_INFO", data);
+      this.videoListSetting(data, playType);
     },
 
     playTypeReturn(data) {
@@ -213,7 +210,24 @@ export default {
           vm: this,
           videoId: data.videoId
         };
-        this.getRelatedListDispatch(params);
+        this.isLoading = true;
+        this.getRelatedListDispatch(params).then(() => {
+          setTimeout(() => {
+            this.isLoading = false;
+            this.updateRelatedPlaybackWithList({ data: this.relatedList }).then(
+              () => {
+                this.setVideoSettingDispatch({ data: data }).then(result => {
+                  if (result) {
+                    this.setPlayerSwitchDispatch({ flag: true }).then(() => {
+                      this.isLoading = false;
+                      this.ipcSendPlayVideo(data);
+                    });
+                  }
+                });
+              }
+            );
+          }, 500);
+        });
       }
     },
 
@@ -223,8 +237,6 @@ export default {
         videoListId = data.playlistId;
       } else if (playType === "Channel") {
         // videoListId = data.channelId;
-      } else if (playType === "Related") {
-        videoListId = data.videoId;
       }
       this.$router.push({
         name: playType,

@@ -27,9 +27,11 @@ const actions = {
       id: channelId,
       key: API_KEY
     };
-    return vm.$axios.get("/channels", { params: query }).then(({ data }) => {
-      commit("SET_CHANNEL", data.items[0].snippet);
-    });
+    return vm.$axios
+      .get("/channels", { params: query })
+      .then(({ data }) => {
+        commit("SET_CHANNEL", data.items[0].snippet);
+      });
   }
 };
 

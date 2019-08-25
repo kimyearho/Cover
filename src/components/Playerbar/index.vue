@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog ref="bar" v-model="visible" persistent transition="dialog-bottom-transition">
+    <v-dialog ref="bar" v-model="isVisible" persistent transition="dialog-bottom-transition">
       <v-card>
         <!-- 비디오 썸네일 -->
         <v-img :src="getVideoThumbnail" class="thumb"></v-img>
@@ -109,6 +109,15 @@
                     <v-icon class="cursor font-22 handle">menu</v-icon>
                   </v-list-tile-action>
                 </v-list-tile>
+                <v-list-tile v-if="lastVideo(index)" :key="item.videoId">
+                  <!-- 제목 및 라벨 -->
+                  <v-list-tile-content class="cursor">
+                    <v-list-tile-title
+                      class="font-13 font-weight-bold"
+                      :style="{textAlign: 'center'}"
+                    >There is no play queue.</v-list-tile-title>
+                  </v-list-tile-content>
+                </v-list-tile>
               </template>
             </draggable>
           </div>
@@ -139,10 +148,14 @@ export default {
   },
   data() {
     return {
-      visible: false,
       show: true,
       volume: 50
     };
+  },
+  watch: {
+    isVisible(val) {
+      this.$refs.bar.$refs.dialog.scrollTop = 0;
+    }
   },
   computed: {
     ...mapGetters({
@@ -151,6 +164,8 @@ export default {
       playbackWaitList: "playback/GET_PLAYBACK_LIST",
       isNextToken: "playback/GET_PLAYBACK_TOKEN"
     }),
+
+    // 재생 대기 목록
     playbackWaitList: {
       get() {
         return this.$store.getters["playback/GET_PLAYBACK_LIST"];
@@ -159,6 +174,42 @@ export default {
         this.videoDragPlaybackSync(val);
       }
     },
+
+    /**
+     * 재생 대기 목록을 렌더링하면서 현재 재생 중인 비디오의 순번보다,
+     * 큰 순번만 필터링하여 렌더링한다.
+     *
+     * @param {Object} listIndex - 재생 대기 목록 각 비디오별 순번
+     */
+    filtersVideo() {
+      return listIndex => {
+        const playingVideoIndex = this.playingVideo.playIndex;
+        if (listIndex > playingVideoIndex) {
+          return true;
+        }
+      };
+    },
+
+    /**
+     * 마지막 번째 비디오가 실행시 보여줄 문구
+     *
+     * @param {Object} index - 반복 index
+     */
+    lastVideo() {
+      return index => {
+        const playbackList = this.playbackWaitList;
+        const playbackMaxCount = playbackList.length - 1;
+        if (playbackMaxCount === index) {
+          const playingVideoIndex = this.playingVideo.playIndex;
+          const lastVideoListIndex = playbackList[playbackMaxCount].listIndex;
+          if (playingVideoIndex === lastVideoListIndex) {
+            return true;
+          }
+        }
+      };
+    },
+
+    // 드래그 옵션
     dragOptions() {
       return {
         animation: 200,
@@ -167,25 +218,11 @@ export default {
         ghostClass: "ghost"
       };
     },
+
+    // 비디오 썸네일 조회
     getVideoThumbnail() {
       const videoInfo = this.playingVideo.thumbnails;
       return videoInfo === null ? "" : videoInfo.high.url;
-    }
-  },
-  watch: {
-    isVisible(val) {
-      this.visible = val;
-      this.$refs.bar.$refs.dialog.scrollTop = 0;
-    }
-  },
-  mounted() {
-    // TODO: 샘플
-    if (this.isElectron) {
-      setTimeout(() => {
-        this.ipcRenderer.on("event:reply", (event, arg) => {
-          console.log(arg);
-        });
-      }, 1000);
     }
   },
   methods: {
@@ -193,18 +230,6 @@ export default {
       setVideoSettingDispatch: "playingVideoSetting",
       setListUpdateDispatch: "playback/setUpdatePlaybackList"
     }),
-
-    /**
-     * 재생 대기 목록을 렌더링하면서 현재 재생 중인 비디오의 순번보다,
-     * 큰 순번만 필터링하여 렌더링한다.
-     *
-     * @param {Object} listIndex - 재생 대기 목록 각 비디오별 순번
-     */
-    filtersVideo(listIndex) {
-      if (listIndex > this.playingVideo.playIndex) {
-        return true;
-      }
-    },
 
     /**
      * 이전 재생 버튼을 클릭하면 실행된다.

@@ -39,7 +39,7 @@ const actions = {
 
     getUpdatePlaybackWithList({ commit, state }) {
         const playbackWithList = state.playbackList.list;
-        commit("playback/SET_PLAYBACK_LIST", playbackWithList);
+        commit("SET_PLAYBACK_LIST", playbackWithList);
         return true
     }
 }

@@ -35,7 +35,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import playerMixin from "./Mixin/mixin"
+import playerMixin from "./Mixin/mixin";
 
 export default {
   name: "SubPlayerBar",
@@ -48,7 +48,7 @@ export default {
   computed: {
     ...mapGetters({
       playingVideo: "GET_PLAYING_VIDEO",
-      playbackWaitList: "GET_PLAYBACK_WAIT_LIST",
+      playbackWaitList: "playback/GET_PLAYBACK_LIST",
       isPlayer: "GET_SHOW_PLAYER"
     }),
     getThumbnail() {
@@ -60,13 +60,12 @@ export default {
     ...mapActions({
       setPlayerSwitchDispatch: "playerSwitch",
       setVideoSettingDispatch: "playingVideoSetting",
-      setListUpdateDispatch: "getUpdatePlaybackWithList"
+      setListUpdateDispatch: "playback/getUpdatePlaybackWithList"
     }),
 
     switchOnPlayer() {
       this.setPlayerSwitchDispatch({ flag: true });
     }
-
   }
 };
 </script>

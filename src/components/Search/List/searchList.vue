@@ -128,36 +128,22 @@ export default {
     },
 
     playlistDetail(data, playType) {
-      // 재생목록아이디가 서로 다르면 처음 접속
       this.$store.commit("SET_PLAYLIST_INFO", data);
-      // 2. 현재 재생중인 비디오가 있는지?
+      // 현재 재생중인 비디오가 있는지?
       const playingVideo = this.playingVideo;
-      // 재생중인 비디오 있음.
       if (playingVideo.isUse) {
         const tempId = this.$store.getters.GET_TEMP_ID;
         if (playingVideo.coverData.playlistId === data.playlistId) {
           this.routeVideoListDetail(data, playType);
         } else {
-          // 현재 재생중인 목록과, 선택한 비됴가 다름.
-          // 현제 temp에 등록된 아이디가 있는지?
-          //  - 없으면 새로 조회
-          //  - 있으면 아래로
-          if (tempId !== "") {
-            // 현재 선택한 아이디가 temp 아이디와 동일한것인지 체크.
-            if (tempId === data.playlistId) {
-              // 동일하다면, temp에 등록된 아이디의 재생목록을 재조회한 것.
-              this.routeVideoListDetail(data, playType);
-            } else {
-              // 아니면 다른 재생목록을 새로 조회한것.
-              this.videoListSetting(data, playType);
-            }
+          if (tempId !== "" && tempId === data.playlistId) {
+            this.routeVideoListDetail(data, playType);
           } else {
             // 재생중인 비디오 없음, 처음실행
             this.videoListSetting(data, playType);
           }
         }
       } else {
-        // 재생중인 비디오 없음 (최초 접속)
         this.videoListSetting(data, playType);
       }
     },
@@ -181,12 +167,9 @@ export default {
     },
 
     videoListSetting(data, playType) {
-      let params = null;
+      let params = { vm: this };
       if (playType === "Playlist") {
-        params = {
-          vm: this,
-          playlistId: data.playlistId
-        };
+        params.playlistId = data.playlistId;
         this.getPlaylistDispatch(params).then(() => {
           if (data.channel) {
             this.getChannelDispatch({
@@ -200,14 +183,10 @@ export default {
           }
         });
       } else if (playType === "Related") {
-        params = {
-          vm: this,
-          videoId: data.videoId
-        };
+        params.videoId = data.videoId;
         this.isLoading = true;
         this.getRelatedListDispatch(params).then(() => {
           setTimeout(() => {
-            this.isLoading = false;
             this.setVideoSettingDispatch({ data: data }).then(result => {
               if (result) {
                 this.setPlayerSwitchDispatch({ flag: true }).then(() => {

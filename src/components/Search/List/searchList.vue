@@ -8,7 +8,7 @@
       </v-subheader>
 
       <!-- 검색목록 템플릿 -->
-      <template v-for="(item, index) in list">
+      <template v-for="(item, index) in searchList">
         <v-list-tile :key="index" avatar @click="detail(item)">
           <!-- 썸네일 -->
           <v-list-tile-avatar>
@@ -37,12 +37,12 @@
         </v-list-tile>
 
         <!-- 구분선 -->
-        <v-divider v-if="index + 1 < list.length" :key="`item${index}`"></v-divider>
+        <v-divider v-if="index + 1 < searchList.length" :key="`item${index}`"></v-divider>
       </template>
       <v-btn
         block
         :loading="loadMoreLoading"
-        :disabled="loadMoreLoading || list.length >= 200"
+        :disabled="loadMoreLoading || searchList.length >= 200"
         @click="loadMore"
         color="primary"
       >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
@@ -72,8 +72,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      id: "GET_ID",
-      list: "GET_SEARCH_LIST",
+      searchList: "GET_SEARCH_LIST",
       isNextToken: "GET_NEXT_TOKEN",
       playingVideo: "GET_PLAYING_VIDEO",
       isLoading: "GET_IS_LOADING"
@@ -86,7 +85,7 @@ export default {
         this.$store.commit("SET_IS_LOADING", val);
       }
     },
-    getThumbnail(item) {
+    getThumbnail() {
       return item => {
         return item.thumbnails
           ? item.thumbnails.medium.url
@@ -110,7 +109,7 @@ export default {
 
     get() {
       // 처음 조회
-      if (this.list.length === 0) {
+      if (this.searchList.length === 0) {
         const params = { vm: this };
         this.getListDispatch(params);
       }

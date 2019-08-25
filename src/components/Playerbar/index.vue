@@ -153,7 +153,7 @@ export default {
     };
   },
   watch: {
-    isVisible(val) {
+    isVisible() {
       this.$refs.bar.$refs.dialog.scrollTop = 0;
     }
   },

@@ -65,7 +65,7 @@ const actions = {
             })
     },
 
-    getRelatedVideoDuration({ commit }, { vm, data, type }) {
+    getRelatedVideoDuration({ commit }, { vm, data }) {
         const videoIds = vm._.map(data, "videoId");
         const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
         let videos = [];

@@ -169,6 +169,7 @@ export default {
         });
       } else if (playType === "Related") {
         params.videoId = data.videoId;
+        params.firstVideoData = data;
         this.isLoading = true;
         this.getRelatedListDispatch(params).then(() => {
           setTimeout(() => {

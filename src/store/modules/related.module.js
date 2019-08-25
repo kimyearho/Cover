@@ -20,7 +20,7 @@ const mutations = {
 const actions = {
 
     // 연관 재생목록 생성
-    getRelatedList({ dispatch, commit }, { vm, videoId }) {
+    getRelatedList({ dispatch, commit }, { vm, videoId, firstVideoData }) {
         const params = {
             part: "snippet",
             type: "video",
@@ -32,6 +32,19 @@ const actions = {
             .get('/search', { params: params })
             .then(({ data }) => {
                 commit("SET_RELATED_LIST_ID", videoId);
+                const firstData = {
+                    id: { videoId: firstVideoData.videoId },
+                    snippet: {
+                        channelId: firstVideoData.channel,
+                        channelTitle: firstVideoData.channelTitle,
+                        description: firstVideoData.description,
+                        liveBroadcastContent: firstVideoData.liveBroadcastContent,
+                        publishedAt: firstVideoData.publishedAt,
+                        thumbnails: firstVideoData.thumbnails,
+                        title: firstVideoData.title
+                    }
+                }
+                data.items.unshift(firstData)
                 let videos = [];
                 vm._.forEach(data.items, (item, index) => {
                     let videoItem = Object.assign({}, item.snippet);

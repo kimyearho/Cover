@@ -110,8 +110,7 @@ export default {
     get() {
       // 처음 조회
       if (this.searchList.length === 0) {
-        const params = { vm: this };
-        this.getListDispatch(params);
+        this.getListDispatch({ vm: this });
       }
     },
 

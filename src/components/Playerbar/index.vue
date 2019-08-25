@@ -191,7 +191,7 @@ export default {
   methods: {
     ...mapActions({
       setVideoSettingDispatch: "playingVideoSetting",
-      setListUpdateDispatch: "playback/getUpdatePlaybackWithList"
+      setListUpdateDispatch: "playback/setUpdatePlaybackList"
     }),
 
     /**
@@ -237,10 +237,10 @@ export default {
      *
      * @param {Object} val = 드래그로 순번이 변경된 재생 대기 목록
      */
-    videoDragPlaybackSync(val) {
+    async videoDragPlaybackSync(val) {
       // 현재 재생중인 비디오의 순번보다 큰 순번의 목록만 필터링한뒤,
       // 목록의 순번을 현재 재생중인 비디오의 순번에서 1씩 증가시켜 순번을 재정의한다.
-      const playbackNewFilterList = this._.chain(val)
+      const playbackNewFilterList = await this._.chain(val)
         .filter(item => {
           return item.listIndex > this.playingVideo.playIndex;
         })
@@ -249,17 +249,26 @@ export default {
           item.listIndex = this.playingVideo.playIndex + assignIndex;
         })
         .value();
+
+      this.$log.info(
+        "videoDragPlaybackSync | playbackNewFilterList | ",
+        playbackNewFilterList
+      );
+
       // 필터링 되기전 재생 대기 목록을 기준으로 현재 재생중인 비디오의 순번과,
       // 같거나 작은 항목을 필터링한다. 그후 위에서 필터링한 목록을 합쳐 전체 새목록을 완성한다.
-      const fixedList = this._.chain(this.playbackWaitList)
+      const fixedList = await this._.chain(this.playbackWaitList)
         .filter(item => {
           return item.listIndex <= this.playingVideo.playIndex;
         })
         .concat(playbackNewFilterList)
         .value();
-      Promise.all(fixedList).then(result => {
-        this.$store.commit("playback/SET_PLAYBACK_LIST", result);
-      });
+
+      this.$log.info("videoDragPlaybackSync | fixedList | ", fixedList);
+
+      if (fixedList.length > 0) {
+        this.$store.commit("playback/SET_PLAYBACK_LIST", fixedList);
+      }
     },
 
     /**
@@ -284,18 +293,21 @@ export default {
      *
      * @param {Object} item - 선택한 비디오의 정보
      */
-    videoRemove(item) {
+    async videoRemove(item) {
       this.$log.info(item);
-      const playbackWaitList = this.playbackWaitList;
-      const list = this._.chain(playbackWaitList)
+      const playbackWaitList = await this.playbackWaitList;
+      const list = await this._.chain(playbackWaitList)
         .reject({ listIndex: item.listIndex })
         .forEach((item, index) => {
           item.listIndex = index + 1;
         })
         .value();
-      Promise.all(list).then(result => {
-        this.$store.commit("playback/SET_PLAYBACK_LIST", result);
-      });
+
+      this.$log.info("videoRemove | playbackWaitList | ", list);
+
+      if (list.length > 0) {
+        this.$store.commit("playback/SET_PLAYBACK_LIST", list);
+      }
     }
   }
 };

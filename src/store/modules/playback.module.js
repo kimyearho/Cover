@@ -28,6 +28,12 @@ const mutations = {
     }
 }
 const actions = {
+
+    /**
+     * 재생 대기 목록을 세팅한다.
+     * 
+     * @param {*} data - 재생 대기 목록 데이터 
+     */
     setPlaybackList({ commit, state }, { data }) {
         commit("SET_PLAYBACK_LIST", data);
         return new Promise((resolve) => {
@@ -37,10 +43,17 @@ const actions = {
         })
     },
 
-    getUpdatePlaybackWithList({ commit, state }) {
+    /**
+     * 재생 대기 목록을 새로 갱신한다.
+     */
+    setUpdatePlaybackList({ commit, state }) {
         const playbackWithList = state.playbackList.list;
         commit("SET_PLAYBACK_LIST", playbackWithList);
-        return true
+        return new Promise((resolve) => {
+            if (state.playbackList.list.length > 0) {
+                resolve(true)
+            }
+        })
     }
 }
 

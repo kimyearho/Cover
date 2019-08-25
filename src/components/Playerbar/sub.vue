@@ -60,7 +60,7 @@ export default {
     ...mapActions({
       setPlayerSwitchDispatch: "playerSwitch",
       setVideoSettingDispatch: "playingVideoSetting",
-      setListUpdateDispatch: "playback/getUpdatePlaybackWithList"
+      setListUpdateDispatch: "playback/setUpdatePlaybackList"
     }),
 
     switchOnPlayer() {

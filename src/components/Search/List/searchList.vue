@@ -100,7 +100,6 @@ export default {
       getChannelDispatch: "getChannel",
       getRelatedListDispatch: "getRelatedList",
       loadMoreDispatch: "getApiNextloadSearch",
-      setPlaybackListDispatch: "playback/setPlaybackList",
       setPlayerSwitchDispatch: "playerSwitch",
       setVideoSettingDispatch: "playingVideoSetting"
     }),
@@ -150,20 +149,6 @@ export default {
 
     channelDetail(data) {
       this.$log.info(data);
-    },
-
-    playTypeReturn(data) {
-      let playType = "";
-      if (data.duration) {
-        playType = "Related";
-      } else if (data.liveBroadcastContent !== "none") {
-        playType = "Live";
-      } else if (data.playlistId) {
-        playType = "Playlist";
-      } else if (data.channelId) {
-        playType = "Channel";
-      }
-      return playType;
     },
 
     videoListSetting(data, playType) {
@@ -221,6 +206,20 @@ export default {
         const param = { vm: this };
         this.loadMoreDispatch(param);
       }, 1000);
+    },
+
+    playTypeReturn(data) {
+      let playType = "";
+      if (data.duration) {
+        playType = "Related";
+      } else if (data.liveBroadcastContent !== "none") {
+        playType = "Live";
+      } else if (data.playlistId) {
+        playType = "Playlist";
+      } else if (data.channelId) {
+        playType = "Channel";
+      }
+      return playType;
     }
   }
 };

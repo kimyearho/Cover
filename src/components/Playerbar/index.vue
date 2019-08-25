@@ -148,12 +148,12 @@ export default {
     ...mapGetters({
       id: "GET_ID",
       playingVideo: "GET_PLAYING_VIDEO",
-      playbackWaitList: "GET_PLAYBACK_WAIT_LIST",
-      isNextToken: "GET_PLAYBACK_WAIT_TOKEN"
+      playbackWaitList: "playback/GET_PLAYBACK_LIST",
+      isNextToken: "playback/GET_PLAYBACK_TOKEN"
     }),
     playbackWaitList: {
       get() {
-        return this.$store.getters.GET_PLAYBACK_WAIT_LIST;
+        return this.$store.getters["playback/GET_PLAYBACK_LIST"];
       },
       set(val) {
         this.videoDragPlaybackSync(val);
@@ -191,7 +191,7 @@ export default {
   methods: {
     ...mapActions({
       setVideoSettingDispatch: "playingVideoSetting",
-      setListUpdateDispatch: "getUpdatePlaybackWithList"
+      setListUpdateDispatch: "playback/getUpdatePlaybackWithList"
     }),
 
     /**
@@ -258,7 +258,7 @@ export default {
         .concat(playbackNewFilterList)
         .value();
       Promise.all(fixedList).then(result => {
-        this.$store.commit("SET_PLAYBACK_WAIT_LIST", result);
+        this.$store.commit("playback/SET_PLAYBACK_LIST", result);
       });
     },
 
@@ -294,7 +294,7 @@ export default {
         })
         .value();
       Promise.all(list).then(result => {
-        this.$store.commit("SET_PLAYBACK_WAIT_LIST", result);
+        this.$store.commit("playback/SET_PLAYBACK_LIST", result);
       });
     }
   }

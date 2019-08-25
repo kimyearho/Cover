@@ -21,12 +21,6 @@ const state = {
     nextToken: "",
     type: "playlist"
   },
-  playbackWaitList: {
-    id: "",
-    list: [],
-    nextToken: "",
-    type: "playlist"
-  },
   playListTemp: {
     id: "",
     list: [],
@@ -47,12 +41,6 @@ const getters = {
   },
   GET_PLAYLIST_INFO: state => {
     return state.playlistInfo;
-  },
-  GET_PLAYBACK_WAIT_LIST: state => {
-    return state.playbackWaitList.list;
-  },
-  GET_PLAYBACK_WAIT_TOKEN: state => {
-    return state.playbackWaitList.nextToken;
   },
   GET_TEMP_ID: state => {
     return state.playListTemp.id;
@@ -84,15 +72,6 @@ const mutations = {
     state.playlistInfo.channelTitle = payload.channelTitle;
     state.playlistInfo.description = payload.description;
     state.playlistInfo.thumbnails = payload.thumbnails;
-  },
-  SET_PLAYBACK_WAIT_LIST(state, payload) {
-    state.playbackWaitList.list = payload;
-  },
-  SET_PLAYBACK_NEXTLOAD(state, { vm, data }) {
-    state.playbackWaitList.list = vm._.concat(
-      state.playbackWaitList.list,
-      data
-    );
   },
   SET_PLAYLIST_TEMP_ID(state, payload) {
     state.playListTemp.id = payload;
@@ -257,7 +236,7 @@ const actions = {
               vm.$log.info("원본 재생목록의 저장");
               commit("SET_PLAY_LIST", array);
               if (!isPlaying) {
-                commit("SET_PLAYBACK_WAIT_LIST", array);
+                commit("playback/SET_PLAYBACK_LIST", array);
               }
             } else {
               vm.$log.info("임시 재생목록의 저장");
@@ -267,7 +246,7 @@ const actions = {
             // 페이징 조회 일대
             if (type === "" || type === true) {
               commit("SET_PLAYLIST_NEXTLOAD", { vm: vm, data: array });
-              commit("SET_PLAYBACK_NEXTLOAD", { vm: vm, data: array });
+              commit("playback/SET_PLAYBACK_NEXTLOAD", { vm: vm, data: array });
             } else {
               commit("SET_PLAYLIST_TEMP_NEXTLOAD", { vm: vm, data: array });
             }
@@ -286,32 +265,17 @@ const actions = {
     commit("SET_PLAY_LIST", newPlayback);
     commit("SET_PLAYLIST_TOKEN", newPlaybackToken);
     commit("SET_PLAYLIST_ID", newPlaybackId)
-    commit("SET_PLAYBACK_WAIT_LIST", newPlayback);
+    commit("playback/SET_PLAYBACK_LIST", newPlayback);
     commit("SET_PLAYLIST_TEMP_CLEAR")
     return true;
   },
 
   getPlaybackWithList({ commit, state }) {
     const playList = state.playList.list;
-    commit("SET_PLAYBACK_WAIT_LIST", playList);
+    commit("playback/SET_PLAYBACK_LIST", playList);
     return true;
-  },
-
-  getUpdatePlaybackWithList({ commit, state }) {
-    const playbackWithList = state.playbackWaitList.list;
-    commit("SET_PLAYBACK_WAIT_LIST", playbackWithList);
-    return true
-  },
-
-  updateRelatedPlaybackWithList({ commit, state }, { data }) {
-    const playbackWithList = data;
-    commit("SET_PLAYBACK_WAIT_LIST", playbackWithList);
-    return new Promise((resolve) => {
-      if (state.playbackWaitList.list.length > 0) {
-        resolve(true)
-      }
-    })
   }
+
 };
 
 export default {

@@ -10,17 +10,11 @@ const state = {
 const getters = {
     GET_RELATED_ID: state => {
         return state.relatedList.id;
-    },
-    GET_RELATED_LIST: state => {
-        return state.relatedList.list;
     }
 }
 const mutations = {
     SET_RELATED_LIST_ID(state, payload) {
         state.relatedList.id = payload
-    },
-    SET_RELATED_LIST(state, payload) {
-        state.relatedList.list = payload
     }
 }
 const actions = {
@@ -76,7 +70,7 @@ const actions = {
                 videos.push(item);
                 if ((data.length - 1) === index) {
                     vm.$log.info('duration', videos)
-                    commit("SET_RELATED_LIST", videos)
+                    commit("playback/SET_PLAYBACK_LIST", videos)
                 }
             });
         })

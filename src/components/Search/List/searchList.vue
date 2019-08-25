@@ -77,7 +77,6 @@ export default {
     ...mapGetters({
       id: "GET_ID",
       list: "GET_SEARCH_LIST",
-      relatedList: "GET_RELATED_LIST",
       isNextToken: "GET_NEXT_TOKEN",
       playingVideo: "GET_PLAYING_VIDEO",
       isLoading: "GET_IS_LOADING"
@@ -101,7 +100,7 @@ export default {
       getChannelDispatch: "getChannel",
       getRelatedListDispatch: "getRelatedList",
       loadMoreDispatch: "getApiNextloadSearch",
-      updateRelatedPlaybackWithList: "updateRelatedPlaybackWithList",
+      setPlaybackListDispatch: "playback/setPlaybackList",
       setPlayerSwitchDispatch: "playerSwitch",
       setVideoSettingDispatch: "playingVideoSetting"
     }),
@@ -123,7 +122,8 @@ export default {
       } else if (playType === "Channel") {
         this.channelDetail(data, playType);
       } else if (playType === "Related") {
-        this.relatedDetail(data, playType);
+        this.$store.commit("SET_PLAYLIST_INFO", data);
+        this.videoListSetting(data, playType);
       }
     },
 
@@ -164,12 +164,6 @@ export default {
 
     channelDetail(data) {
       this.$log.info(data);
-    },
-
-    relatedDetail(data, playType) {
-      this.$log.info(data);
-      this.$store.commit("SET_PLAYLIST_INFO", data);
-      this.videoListSetting(data, playType);
     },
 
     playTypeReturn(data) {
@@ -214,19 +208,15 @@ export default {
         this.getRelatedListDispatch(params).then(() => {
           setTimeout(() => {
             this.isLoading = false;
-            this.updateRelatedPlaybackWithList({ data: this.relatedList }).then(
-              () => {
-                this.setVideoSettingDispatch({ data: data }).then(result => {
-                  if (result) {
-                    this.setPlayerSwitchDispatch({ flag: true }).then(() => {
-                      this.isLoading = false;
-                      this.ipcSendPlayVideo(data);
-                    });
-                  }
+            this.setVideoSettingDispatch({ data: data }).then(result => {
+              if (result) {
+                this.setPlayerSwitchDispatch({ flag: true }).then(() => {
+                  this.isLoading = false;
+                  this.ipcSendPlayVideo(data);
                 });
               }
-            );
-          }, 500);
+            });
+          }, 200);
         });
       }
     },

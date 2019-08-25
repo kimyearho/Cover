@@ -12,7 +12,7 @@
         <v-list-tile :key="index" avatar @click="detail(item)">
           <!-- 썸네일 -->
           <v-list-tile-avatar>
-            <img :src="item.thumbnails.medium.url" />
+            <img :src="getThumbnail(item)" />
           </v-list-tile-avatar>
 
           <!-- 제목 및 라벨 -->
@@ -67,10 +67,7 @@ export default {
   },
   data() {
     return {
-      loadMoreLoading: false,
-      modal: {
-        menu: false
-      }
+      loadMoreLoading: false
     };
   },
   computed: {
@@ -88,6 +85,13 @@ export default {
       set(val) {
         this.$store.commit("SET_IS_LOADING", val);
       }
+    },
+    getThumbnail(item) {
+      return item => {
+        return item.thumbnails
+          ? item.thumbnails.medium.url
+          : "https://i.imgur.com/4MqP8kE.jpg";
+      };
     }
   },
   mounted() {

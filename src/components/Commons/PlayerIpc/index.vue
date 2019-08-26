@@ -42,7 +42,8 @@ export default {
                 break;
             }
           } else if (eventName === "currentTime") {
-            this.$log.info(eventName, eventValue);
+            // this.$log.info(eventName, eventValue);
+            this.$event.$emit("currentTime", eventValue);
           }
         });
       }, 1000);

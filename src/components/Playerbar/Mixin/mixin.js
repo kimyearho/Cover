@@ -1,5 +1,12 @@
 export default {
   methods: {
+
+    ipcSendSeekPlay(playtime) {
+      if (this.isElectron) {
+        this.ipcRenderer.send("win2Player", ["seekTo", playtime]);
+      }
+    },
+
     ipcSendPlayVideo(item) {
       if (this.isElectron) {
         this.ipcRenderer.send("win2Player", ["loadVideoById", item.videoId]);

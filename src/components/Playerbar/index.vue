@@ -5,7 +5,16 @@
         <!-- 비디오 썸네일 -->
         <v-img :src="getVideoThumbnail" class="thumb"></v-img>
         <!-- 재생 프로그레스 바 -->
-        <v-progress-linear color="error" height="3" value="50"></v-progress-linear>
+        <!-- <v-progress-linear color="error" height="3" :value="playTime" @click="playTimeSkip($event)"></v-progress-linear> -->
+        <v-slider
+          class="playTime"
+          height="3"
+          thumb-color="red"
+          thumb-label="always"
+          :thumb-size="20"
+          v-model="playTime"
+          @change="playTimeController"
+        />
         <!-- 총 재생시간 -->
         <small class="total-play-time">{{ playingVideo.duration }}</small>
         <!-- 비디오 제목 -->
@@ -48,7 +57,7 @@
         <!-- 옵션 -->
         <v-card-actions>
           <v-btn flat>Share</v-btn>
-          <v-btn flat color="purple" @click="$emit('update:isVisible', false)">Close</v-btn>
+          <v-btn flat color="purple" @click="closePlayer">Close</v-btn>
           <v-spacer></v-spacer>
           <v-btn icon @click="show = !show">
             <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
@@ -149,7 +158,8 @@ export default {
   data() {
     return {
       show: true,
-      volume: 50
+      volume: 50,
+      playTime: 0
     };
   },
   watch: {
@@ -225,11 +235,31 @@ export default {
       return videoInfo === null ? "" : videoInfo.high.url;
     }
   },
+  mounted() {
+    this.$event.$on("currentTime", this.currentTime);
+  },
   methods: {
     ...mapActions({
       setVideoSettingDispatch: "playingVideoSetting",
       setListUpdateDispatch: "playback/setUpdatePlaybackList"
     }),
+
+    // 재생시간 건너띄기
+    playTimeController(data) {
+      let seekTime = (data * this.playingVideo.durationTime) / 100;
+      this.ipcSendSeekPlay(seekTime);
+    },
+
+    // 현재 재생시간
+    currentTime(args) {
+      let percent = (args * 100) / this.playingVideo.durationTime;
+      this.playTime = Math.floor(percent) + 1;
+    },
+
+    // 플레이어 닫기
+    closePlayer() {
+      this.$emit("update:isVisible", false);
+    },
 
     /**
      * 이전 재생 버튼을 클릭하면 실행된다.
@@ -354,20 +384,8 @@ export default {
 .i-close {
   color: #ffffff;
 }
-.v-progress-linear {
-  background: transparent;
-  margin: unset;
-  overflow: unset;
-  width: 100%;
-  position: relative;
-}
-.v-progress-linear__background {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  -webkit-transition: 0.3s ease-in;
-  transition: 0.3s ease-in;
-  background: transparent;
+.playTime {
+  margin-top: 0px !important;
 }
 .item-center {
   margin: 0 50px;

@@ -16,7 +16,8 @@ const state = {
     },
     thumbnails: null,
     playIndex: 0,
-    duration: 0
+    duration: 0,
+    durationTime: 0
   },
   playTime: 0,
   showPlayer: false
@@ -41,6 +42,7 @@ const mutations = {
     state.playingVideoInfo.thumbnails = payload.thumbnails;
     state.playingVideoInfo.playIndex = payload.listIndex ? payload.listIndex : 1
     state.playingVideoInfo.duration = payload.duration;
+    state.playingVideoInfo.durationTime = payload.duration_time;
     state.playingVideoInfo.isUse = true
   }
 };

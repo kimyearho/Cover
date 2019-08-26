@@ -131,7 +131,7 @@ ipcMain.on("player2Win", (e, args) => {
     if (process.env.NODE_ENV === "development") {
       console.log("sub -> " + args);
     }
-      win.webContents.send("player2Win", args);
+    win.webContents.send("player2Win", args);
   } catch (err) {
     /* window already closed */
   }

@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog ref="bar" v-model="isVisible" persistent transition="dialog-bottom-transition">
+    <v-dialog ref="bar" v-model="isVisible" persistent>
       <v-card>
         <!-- 비디오 썸네일 -->
         <v-img :src="getVideoThumbnail" class="thumb"></v-img>

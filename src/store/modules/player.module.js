@@ -20,7 +20,8 @@ const state = {
     durationTime: 0
   },
   playTime: 0,
-  showPlayer: false
+  showPlayer: false,
+  playerStatus: 0
 };
 const getters = {
   GET_PLAYING_VIDEO: state => {
@@ -28,6 +29,9 @@ const getters = {
   },
   GET_SHOW_PLAYER: state => {
     return state.showPlayer;
+  },
+  GET_PLAYER_STATUS: state => {
+    return state.playerStatus
   }
 };
 const mutations = {
@@ -44,6 +48,9 @@ const mutations = {
     state.playingVideoInfo.duration = payload.duration;
     state.playingVideoInfo.durationTime = payload.duration_time;
     state.playingVideoInfo.isUse = true
+  },
+  SET_PLAYER_STATUS(state, payload) {
+    state.playerStatus = payload
   }
 };
 const actions = {
@@ -58,6 +65,9 @@ const actions = {
   playerSwitch({ commit }, { flag }) {
     commit("SET_SHOW_PLAYER", flag);
     return true
+  },
+  playerStatus({ commit }, { status }) {
+    commit("SET_PLAYER_STATUS", status)
   }
 };
 

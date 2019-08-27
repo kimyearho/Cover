@@ -1,6 +1,18 @@
 export default {
   methods: {
 
+    ipcSendVolumeControl(volume) {
+      if (this.isElectron) {
+        this.ipcRenderer.send("win2Player", ["setVolume", volume]);
+      }
+    },
+
+    ipcSendPlayToggle(playType) {
+      if (this.isElectron) {
+        this.ipcRenderer.send("win2Player", [playType]);
+      }
+    },
+
     ipcSendSeekPlay(playtime) {
       if (this.isElectron) {
         this.ipcRenderer.send("win2Player", ["seekTo", playtime]);

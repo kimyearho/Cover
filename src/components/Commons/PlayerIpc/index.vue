@@ -16,6 +16,7 @@ export default {
           const eventName = arg[0];
           const eventValue = arg[1];
           if (eventName === "onStateChange") {
+            this.$store.dispatch("playerStatus", { status: eventValue });
             // FIXME: 정확한 이벤트 구분을 위해 모두 작성.
             // 1. 영상을 처음 재생했을 경우
             //   * -1 -> 3 -> 1

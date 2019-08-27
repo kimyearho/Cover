@@ -9,18 +9,19 @@
         <v-slider
           class="playTime"
           height="3"
-          thumb-color="red"
+          color="red"
+          thumb-color="blue"
           thumb-label="always"
           :thumb-size="20"
           v-model="playTime"
           @change="playTimeController"
         />
-        <!-- 총 재생시간 -->
-        <small class="total-play-time">{{ playingVideo.duration }}</small>
         <!-- 비디오 제목 -->
         <v-card-title primary-title>
           <div class="playing-video-title">
             <marquee-text :duration="30">{{ playingVideo.coverData.videoTitle }}</marquee-text>
+            <!-- 총 재생시간 -->
+            <small class="total-play-time">{{ playingVideo.duration }}</small>
           </div>
         </v-card-title>
 
@@ -34,8 +35,9 @@
             </v-list-tile-action>
 
             <v-list-tile-action class="paly-icon-margin">
-              <v-btn icon>
-                <v-icon class="font-40">pause</v-icon>
+              <v-btn icon @click="playToggle">
+                <!-- pause -->
+                <v-icon class="font-40">{{ playStatusIcon }}</v-icon>
               </v-btn>
             </v-list-tile-action>
 
@@ -50,7 +52,7 @@
         <!-- 볼륨 컨트롤 -->
         <v-card-actions class="volume-slider">
           <v-icon class="volume-down">volume_down</v-icon>
-          <v-slider class="margin-0" v-model="volume"></v-slider>
+          <v-slider class="margin-0" v-model="volume" @change="changeVolume"></v-slider>
           <v-icon class="volume-up">volume_up</v-icon>
         </v-card-actions>
 
@@ -171,9 +173,22 @@ export default {
     ...mapGetters({
       id: "GET_ID",
       playingVideo: "GET_PLAYING_VIDEO",
+      playStatus: "GET_PLAYER_STATUS",
       playbackWaitList: "playback/GET_PLAYBACK_LIST",
       isNextToken: "playback/GET_PLAYBACK_TOKEN"
     }),
+
+    playStatusIcon() {
+      let iconName = "";
+      if (this.playStatus === 1) {
+        iconName = "pause";
+      } else if (this.playStatus === 2) {
+        iconName = "play_arrow";
+      } else {
+        iconName = "slow_motion_video";
+      }
+      return iconName;
+    },
 
     // 재생 대기 목록
     playbackWaitList: {
@@ -243,6 +258,15 @@ export default {
       setVideoSettingDispatch: "playingVideoSetting",
       setListUpdateDispatch: "playback/setUpdatePlaybackList"
     }),
+
+    changeVolume(data) {
+      this.ipcSendVolumeControl(data);
+    },
+
+    playToggle() {
+      let playType = this.playStatus === 1 ? "pauseVideo" : "playVideo";
+      this.ipcSendPlayToggle(playType);
+    },
 
     // 재생시간 건너띄기
     playTimeController(data) {
@@ -371,6 +395,9 @@ export default {
 <style scoped>
 .thumb {
   height: 200px;
+}
+.v-card__title--primary {
+  padding-top: 5px;
 }
 .badge >>> .v-badge__badge {
   height: 15px !important;

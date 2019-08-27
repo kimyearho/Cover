@@ -120,16 +120,15 @@
                     <v-icon class="cursor font-22 handle">menu</v-icon>
                   </v-list-tile-action>
                 </v-list-tile>
-                <v-list-tile v-if="lastVideo(index)" :key="item.videoId">
-                  <!-- 제목 및 라벨 -->
-                  <v-list-tile-content class="cursor">
-                    <v-list-tile-title
-                      class="font-13 font-weight-bold"
-                      :style="{textAlign: 'center'}"
-                    >There is no play queue.</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
               </template>
+              <!-- <v-list-tile v-if="lastVideo(index)" :key="item.videoId">
+                <v-list-tile-content class="cursor">
+                  <v-list-tile-title
+                    class="font-13 font-weight-bold"
+                    :style="{textAlign: 'center'}"
+                  >There is no play queue.</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>-->
             </draggable>
           </div>
         </v-expand-transition>
@@ -174,7 +173,6 @@ export default {
       id: "GET_ID",
       playingVideo: "GET_PLAYING_VIDEO",
       playStatus: "GET_PLAYER_STATUS",
-      playbackWaitList: "playback/GET_PLAYBACK_LIST",
       isNextToken: "playback/GET_PLAYBACK_TOKEN"
     }),
 
@@ -317,6 +315,8 @@ export default {
      * @param {Object} val = 드래그로 순번이 변경된 재생 대기 목록
      */
     async videoDragPlaybackSync(val) {
+      this.$log.info(val);
+
       // 현재 재생중인 비디오의 순번보다 큰 순번의 목록만 필터링한뒤,
       // 목록의 순번을 현재 재생중인 비디오의 순번에서 1씩 증가시켜 순번을 재정의한다.
       const playbackNewFilterList = await this._.chain(val)
@@ -329,10 +329,7 @@ export default {
         })
         .value();
 
-      this.$log.info(
-        "videoDragPlaybackSync | playbackNewFilterList | ",
-        playbackNewFilterList
-      );
+      this.$log.info("playbackNewFilterList | ", playbackNewFilterList);
 
       // 필터링 되기전 재생 대기 목록을 기준으로 현재 재생중인 비디오의 순번과,
       // 같거나 작은 항목을 필터링한다. 그후 위에서 필터링한 목록을 합쳐 전체 새목록을 완성한다.
@@ -343,11 +340,8 @@ export default {
         .concat(playbackNewFilterList)
         .value();
 
-      this.$log.info("videoDragPlaybackSync | fixedList | ", fixedList);
-
-      if (fixedList.length > 0) {
-        this.$store.commit("playback/SET_PLAYBACK_LIST", fixedList);
-      }
+      this.$log.info("fixedList | ", fixedList);
+      this.$store.commit("playback/SET_PLAYBACK_LIST", fixedList);
     },
 
     /**

@@ -130,20 +130,8 @@ export default {
 
     playlistDetail(data, playType) {
       this.$store.commit("SET_PLAYLIST_INFO", data);
-      // 현재 재생중인 비디오가 있는지?
-      const playingVideo = this.playingVideo;
-      if (playingVideo.isUse) {
-        const tempId = this.$store.getters.GET_TEMP_ID;
-        if (playingVideo.coverData.playlistId === data.playlistId) {
-          this.routeVideoListDetail(data, playType);
-        } else {
-          if (tempId !== "" && tempId === data.playlistId) {
-            this.routeVideoListDetail(data, playType);
-          } else {
-            // 재생중인 비디오 없음, 처음실행
-            this.videoListSetting(data, playType);
-          }
-        }
+      if (data.playlistId === this.$store.getters.GET_ID) {
+        this.routeVideoListDetail(data, playType);
       } else {
         this.videoListSetting(data, playType);
       }

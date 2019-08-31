@@ -20,12 +20,6 @@ const state = {
     list: [],
     nextToken: "",
     type: "playlist"
-  },
-  playListTemp: {
-    id: "",
-    list: [],
-    nextToken: "",
-    type: "playlist"
   }
 };
 
@@ -41,15 +35,6 @@ const getters = {
   },
   GET_PLAYLIST_INFO: state => {
     return state.playlistInfo;
-  },
-  GET_TEMP_ID: state => {
-    return state.playListTemp.id;
-  },
-  GET_TEMP_PLAYLIST: state => {
-    return state.playListTemp.list;
-  },
-  GET_TEMP_PLAYLIST_TOKEN: state => {
-    return state.playListTemp.nextToken;
   }
 };
 
@@ -72,48 +57,16 @@ const mutations = {
     state.playlistInfo.channelTitle = payload.channelTitle;
     state.playlistInfo.description = payload.description;
     state.playlistInfo.thumbnails = payload.thumbnails;
-  },
-  SET_PLAYLIST_TEMP_ID(state, payload) {
-    state.playListTemp.id = payload;
-  },
-  SET_PLAYLIST_TEMP(state, payload) {
-    state.playListTemp.list = payload;
-  },
-  SET_PLAYLIST_TEMP_TOKEN(state, payload) {
-    state.playListTemp.nextToken = payload;
-  },
-  SET_PLAYLIST_TEMP_NEXTLOAD(state, { vm, data }) {
-    state.playListTemp.list = vm._.concat(state.playListTemp.list, data);
-  },
-  SET_PLAYLIST_TEMP_CLEAR(state) {
-    state.playListTemp.id = ""
-    state.playListTemp.list = []
-    state.playListTemp.nextToken = ""
   }
 };
 
 const actions = {
-  playlistInit({ commit, rootGetters }, { playlistId, data }) {
+  playlistInit({ commit }, { playlistId, data }) {
     // 현재 재생중인 비디오 정보
-    const playingVideoInfo = rootGetters.GET_PLAYING_VIDEO;
-    const isPlaying = playingVideoInfo.isUse;
     return new Promise(resolve => {
-      if (isPlaying) {
-        const playingVideoListId = playingVideoInfo.coverData.playlistId;
-        if (playingVideoListId === playlistId) {
-          commit("SET_PLAYLIST_ID", playlistId);
-          commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
-          resolve(true);
-        } else {
-          commit("SET_PLAYLIST_TEMP_ID", playlistId);
-          commit("SET_PLAYLIST_TEMP_TOKEN", data.nextPageToken);
-          resolve(false);
-        }
-      } else {
-        commit("SET_PLAYLIST_ID", playlistId);
-        commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
-        resolve(true);
-      }
+      commit("SET_PLAYLIST_ID", playlistId);
+      commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
+      resolve(true);
     });
   },
 
@@ -121,7 +74,7 @@ const actions = {
     const params = {
       part: "snippet",
       playlistId: playlistId,
-      maxResults: 25,
+      maxResults: 30,
       key: API_KEY
     };
     return vm.$axios
@@ -156,39 +109,20 @@ const actions = {
   },
 
   getPlaylistNextSearch({ commit, dispatch, state }, { vm, playlistId, type }) {
-    let nextToken = "";
-
-    if (type === "") {
-      vm.$log.info("재생중 아님, 페이징 조회");
-      nextToken = state.playList.nextToken;
-    } else if (type) {
-      vm.$log.info("재생중, 동일 재생목록 페이징 조회");
-      nextToken = state.playList.nextToken;
-    } else if (!type) {
-      vm.$log.info("재생중, 임시 재생목록 페이징 조회");
-      nextToken = state.playListTemp.nextToken;
-    }
-
+    const nextToken = state.playList.nextToken;
     const queryParams = {
       part: "snippet",
       playlistId: playlistId,
-      maxResults: 25,
+      maxResults: 30,
       pageToken: nextToken,
       key: API_KEY
     };
 
     vm.$axios.get(`/playlistItems`, { params: queryParams }).then(({ data }) => {
-      let playlist,
-        listMaxIndex = "";
-      if (type === "" || type === true) {
-        playlist = state.playList.list;
-        listMaxIndex = playlist[playlist.length - 1].listIndex;
-        commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
-      } else if (!type) {
-        playlist = state.playListTemp.list;
-        listMaxIndex = playlist[playlist.length - 1].listIndex;
-        commit("SET_PLAYLIST_TEMP_TOKEN", data.nextPageToken);
-      }
+      let playlist = state.playList.list;
+      let listMaxIndex = playlist[playlist.length - 1].listIndex;
+      commit("SET_PLAYLIST_TOKEN", data.nextPageToken);
+
       let array = [];
       vm._.forEach(data.items, (item, index) => {
         let assignIndex = index + 1;
@@ -232,23 +166,16 @@ const actions = {
         if ((data.length - 1) === index) {
           // 재생목록 조회일때
           if (mode === "list") {
-            if (type === "" || type === true) {
-              vm.$log.info("원본 재생목록의 저장");
-              commit("SET_PLAY_LIST", array);
-              if (!isPlaying) {
-                commit("playback/SET_PLAYBACK_LIST", array);
-              }
-            } else {
-              vm.$log.info("임시 재생목록의 저장");
-              commit("SET_PLAYLIST_TEMP", array);
+            commit("SET_PLAY_LIST", array);
+            if (!isPlaying) {
+              commit("playback/SET_PLAYBACK_LIST", array);
             }
           } else {
-            // 페이징 조회 일대
             if (type === "" || type === true) {
               commit("SET_PLAYLIST_NEXTLOAD", { vm: vm, data: array });
               commit("playback/SET_PLAYBACK_NEXTLOAD", { vm: vm, data: array });
             } else {
-              commit("SET_PLAYLIST_TEMP_NEXTLOAD", { vm: vm, data: array });
+              commit("SET_PLAYLIST_NEXTLOAD", { vm: vm, data: array });
             }
             vm.loadMoreLoading = false;
           }
@@ -259,14 +186,13 @@ const actions = {
   },
 
   getNewUpdatePlayback({ commit, state }) {
-    const newPlayback = state.playListTemp.list;
-    const newPlaybackToken = state.playListTemp.nextToken;
-    const newPlaybackId = state.playListTemp.id
+    const newPlayback = state.playList.list;
+    const newPlaybackToken = state.playList.nextToken;
+    const newPlaybackId = state.playList.id
     commit("SET_PLAY_LIST", newPlayback);
     commit("SET_PLAYLIST_TOKEN", newPlaybackToken);
     commit("SET_PLAYLIST_ID", newPlaybackId)
     commit("playback/SET_PLAYBACK_LIST", newPlayback);
-    commit("SET_PLAYLIST_TEMP_CLEAR")
     return true;
   },
 

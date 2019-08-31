@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
 import {
   createProtocol,
   installVueDevtools
@@ -13,8 +13,6 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 let win;
 let player;
 
-require('./ipc')(win, player)
-
 app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
 
 // Scheme must be registered before the app is ready
@@ -23,6 +21,7 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 function createWindow() {
+
   // Create the browser window.
   win = new BrowserWindow({
     width: 400,
@@ -32,21 +31,21 @@ function createWindow() {
     transparent: true,
     webPreferences: {
       nodeIntegration: true,
-      backgroundThrottling: false
+      backgroundThrottling: false,
+      preload: __static + '/preload.js'
     }
   });
 
   win.setMenu(null);
-  // win.webContents.openDevTools();
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
-    win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+    // win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+    win.loadURL("http://202.182.100.137");
     if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
+    // production
     createProtocol("app");
-    // Load the index.html when not in development
-    // win.loadURL("app://./index.html");
-    win.loadURL("http://localhost:8080");
+    win.loadURL("http://202.182.100.137");
   }
 
   win.webContents.on("did-finish-load", () => {
@@ -58,21 +57,18 @@ function createWindow() {
       height: 280,
       title: "Metube Video Player",
       webPreferences: {
+        webSecurity: false,
         nodeIntegration: true,
         backgroundThrottling: false
       }
     });
     player.setMenu(null);
-    // player.webContents.openDevTools();
     player.loadURL(playerPath);
     player.on("close", e => {
-      if (!willQuitApp) {
-        dialog.showErrorBox(
-          "Oops! 🤕",
-          "Sorry, player window cannot be closed. You can only minimize it or Setting in hide option"
-        );
-        e.preventDefault();
-      }
+      dialog.showErrorBox(
+        "Oops! 🤕",
+        "Sorry, player window cannot be closed. You can only minimize it or Setting in hide option"
+      );
     });
   });
 

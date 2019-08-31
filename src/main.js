@@ -22,7 +22,7 @@ import isElectron from "is-electron";
 const isProduction = process.env.NODE_ENV === "production";
 const options = {
   isEnabled: true,
-  logLevel: isProduction ? "error" : "debug",
+  logLevel: isProduction ? "error" : "info",
   stringifyArguments: false,
   showLogLevel: true,
   showMethodName: true,
@@ -42,11 +42,8 @@ Vue.prototype.$axios = axios;
 Vue.prototype.moment = moment;
 Vue.prototype.$event = new Vue();
 Vue.prototype.isElectron = isElectron()
-if (isElectron()) {
-  import("electron").then(electron => {
-    Vue.prototype.ipcRenderer = electron.ipcRenderer;
-  });
-}
+
+if (isElectron()) Vue.prototype.ipcRenderer = window.ipcRenderer
 
 new Vue({
   render: h => h(App),

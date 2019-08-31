@@ -24,13 +24,13 @@
         </v-list-tile>
         <v-divider v-if="index + 1 < playlist.length" :key="`item${index}`"></v-divider>
       </template>
-      <v-btn
+      <!-- <v-btn
         block
         :loading="loadMoreLoading"
         :disabled="loadMoreLoading || playlist.length >= 100 || !isNextToken"
         @click="loadMore"
         color="primary"
-      >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>
+      >{{ isNextToken ? 'Load More' : 'End' }}</v-btn>-->
     </v-list>
   </v-card>
 </template>
@@ -59,25 +59,10 @@ export default {
   computed: {
     ...mapGetters({
       originalId: "GET_ID",
-      tempId: "GET_TEMP_ID",
+      playlist: "GET_PLAY_LIST",
       isNextToken: "GET_PLAYLIST_TOKEN",
       playingVideo: "GET_PLAYING_VIDEO"
-    }),
-    playlist: {
-      get() {
-        const routePlaylistId = this.$route.params.id;
-        if (this.tempId === "" || routePlaylistId === this.originalId) {
-          this.$log.info("원본 재생목록 가져옴");
-          return this.$store.getters.GET_PLAY_LIST;
-        } else {
-          if (routePlaylistId === this.tempId) {
-            this.$log.info("임시 재생목록 가져옴");
-            return this.$store.getters.GET_TEMP_PLAYLIST;
-          }
-        }
-        return true;
-      }
-    }
+    })
   },
   methods: {
     ...mapActions({
@@ -110,7 +95,7 @@ export default {
                 this.ipcSendPlayVideo(item);
               });
             });
-          })
+          });
         }
       } else {
         // 최초, 재생중이 아닐때
@@ -121,37 +106,41 @@ export default {
           });
         });
       }
-    },
-    loadMore() {
-      this.loadMoreLoading = true;
-      const routePlaylistId = this.$route.params.id;
-      this.$log.info("현재 재생목록 아이디", routePlaylistId);
-      setTimeout(() => {
-        let param = {
-          vm: this,
-          playlistId: routePlaylistId,
-          type: ""
-        };
-        if (this.playingVideo.isUse) {
-          const playingListId = this.playingVideo.coverData.playlistId;
-          this.$log.info("현재 재생중인가?", true);
-          this.$log.info("재생중인 재생목록 아이디", playingListId);
-          if (playingListId === routePlaylistId) {
-            // 동일한 재생목록 일 경우
-            param.type = true;
-          } else {
-            if (routePlaylistId === this.tempId) {
-              // 임시 재생목록 일 경우
-              param.type = false;
-            }
-          }
-          this.getNextListDispatch(param);
-        } else {
-          this.$log.info("현재 재생중인가?", false);
-          this.getNextListDispatch(param);
-        }
-      }, 1000);
     }
+    // loadMore() {
+    //   this.loadMoreLoading = true;
+    //   const routePlaylistId = this.$route.params.id;
+    //   this.$log.info("현재 재생목록 아이디", routePlaylistId);
+    //   setTimeout(() => {
+    //     let param = {
+    //       vm: this,
+    //       playlistId: routePlaylistId,
+    //       type: ""
+    //     };
+    //     if (this.playingVideo.isUse) {
+    //       const playingListId = this.playingVideo.coverData.playlistId;
+    //       this.$log.info("현재 재생중인가?", true);
+    //       this.$log.info("재생중인 재생목록 아이디", playingListId);
+    //       if (playingListId) {
+    //         // 동일한 재생목록 일 경우
+    //         if (playingListId === routePlaylistId) {
+    //           this.$log.info("동일한 재생목록");
+    //           param.type = true;
+    //         } else {
+    //           this.$log.info("동일하지 않은 재생목록");
+    //           param.type = false;
+    //         }
+    //       } else {
+    //         this.$log.info("재생목록이 아님");
+    //         param.type = false;
+    //       }
+    //       this.getNextListDispatch(param);
+    //     } else {
+    //       this.$log.info("현재 재생중인가?", false);
+    //       this.getNextListDispatch(param);
+    //     }
+    //   }, 1000);
+    // }
   }
 };
 </script>

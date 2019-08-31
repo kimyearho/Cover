@@ -117,7 +117,7 @@ ipcMain.on("win2Player", (e, args) => {
     }
     player.webContents.send("win2Player", args);
   } catch (err) {
-    /* window already closed */
+    console.error(err)
   }
 });
 
@@ -129,8 +129,22 @@ ipcMain.on("player2Win", (e, args) => {
     }
     win.webContents.send("player2Win", args);
   } catch (err) {
-    /* window already closed */
+    console.error(err)
   }
+});
+
+ipcMain.on("visibleVideoFrame", (e, args) => {
+  const flag = args.value
+  if (flag) {
+    player.hide();
+  } else {
+    player.show();
+  }
+});
+
+ipcMain.on("mainFrameAlwaysTop", (e, args) => {
+  const flag = args.value
+  win.setAlwaysOnTop(flag);
 });
 
 // Exit cleanly on request from parent process in development mode.

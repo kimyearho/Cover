@@ -36,7 +36,6 @@
 
             <v-list-tile-action class="paly-icon-margin">
               <v-btn icon @click="playToggle">
-                <!-- pause -->
                 <v-icon class="font-40">{{ playStatusIcon }}</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -176,18 +175,6 @@ export default {
       isNextToken: "playback/GET_PLAYBACK_TOKEN"
     }),
 
-    playStatusIcon() {
-      let iconName = "";
-      if (this.playStatus === 1) {
-        iconName = "pause";
-      } else if (this.playStatus === 2) {
-        iconName = "play_arrow";
-      } else {
-        iconName = "slow_motion_video";
-      }
-      return iconName;
-    },
-
     // 재생 대기 목록
     playbackWaitList: {
       get() {
@@ -261,21 +248,10 @@ export default {
       this.ipcSendVolumeControl(data);
     },
 
-    playToggle() {
-      let playType = this.playStatus === 1 ? "pauseVideo" : "playVideo";
-      this.ipcSendPlayToggle(playType);
-    },
-
     // 재생시간 건너띄기
     playTimeController(data) {
       let seekTime = (data * this.playingVideo.durationTime) / 100;
       this.ipcSendSeekPlay(seekTime);
-    },
-
-    // 현재 재생시간
-    currentTime(args) {
-      let percent = (args * 100) / this.playingVideo.durationTime;
-      this.playTime = Math.floor(percent) + 1;
     },
 
     // 플레이어 닫기
@@ -315,8 +291,6 @@ export default {
      * @param {Object} val = 드래그로 순번이 변경된 재생 대기 목록
      */
     async videoDragPlaybackSync(val) {
-      this.$log.info(val);
-
       // 현재 재생중인 비디오의 순번보다 큰 순번의 목록만 필터링한뒤,
       // 목록의 순번을 현재 재생중인 비디오의 순번에서 1씩 증가시켜 순번을 재정의한다.
       const playbackNewFilterList = await this._.chain(val)
@@ -329,8 +303,6 @@ export default {
         })
         .value();
 
-      this.$log.info("playbackNewFilterList | ", playbackNewFilterList);
-
       // 필터링 되기전 재생 대기 목록을 기준으로 현재 재생중인 비디오의 순번과,
       // 같거나 작은 항목을 필터링한다. 그후 위에서 필터링한 목록을 합쳐 전체 새목록을 완성한다.
       const fixedList = await this._.chain(this.playbackWaitList)
@@ -340,7 +312,7 @@ export default {
         .concat(playbackNewFilterList)
         .value();
 
-      this.$log.info("fixedList | ", fixedList);
+      this.$log.info("비디오 드래그 동기화 완료 목록 | ", fixedList);
       this.$store.commit("playback/SET_PLAYBACK_LIST", fixedList);
     },
 
@@ -367,8 +339,9 @@ export default {
      * @param {Object} item - 선택한 비디오의 정보
      */
     async videoRemove(item) {
-      this.$log.info(item);
       const playbackWaitList = await this.playbackWaitList;
+      this.$log.info("videoRemove | ", playbackWaitList);
+
       const list = await this._.chain(playbackWaitList)
         .reject({ listIndex: item.listIndex })
         .forEach((item, index) => {
@@ -377,7 +350,6 @@ export default {
         .value();
 
       this.$log.info("videoRemove | playbackWaitList | ", list);
-
       if (list.length > 0) {
         this.$store.commit("playback/SET_PLAYBACK_LIST", list);
       }

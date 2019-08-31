@@ -1,7 +1,7 @@
 <template>
   <div class="text-xs-center" v-if="playingVideo.coverData.videoId && !isPlayer">
     <v-card tile class="frame">
-      <v-progress-linear :value="50" class="my-0" height="3"></v-progress-linear>
+      <v-progress-linear :value="playTime" class="my-0" height="3"></v-progress-linear>
 
       <v-list>
         <v-list-tile @click="switchOnPlayer">
@@ -17,8 +17,8 @@
           <v-spacer></v-spacer>
 
           <v-list-tile-action :class="{ 'mx-5': $vuetify.breakpoint.mdAndUp }">
-            <v-btn icon>
-              <v-icon>pause</v-icon>
+            <v-btn icon @click.native.stop="playToggle">
+              <v-icon>{{ playStatusIcon }}</v-icon>
             </v-btn>
           </v-list-tile-action>
 
@@ -42,12 +42,14 @@ export default {
   mixins: [playerMixin],
   data() {
     return {
-      visible: true
+      visible: true,
+      playTime: 0
     };
   },
   computed: {
     ...mapGetters({
       playingVideo: "GET_PLAYING_VIDEO",
+      playStatus: "GET_PLAYER_STATUS",
       playbackWaitList: "playback/GET_PLAYBACK_LIST",
       isPlayer: "GET_SHOW_PLAYER"
     }),
@@ -55,6 +57,9 @@ export default {
       const videoInfo = this.playingVideo.thumbnails;
       return videoInfo === null ? "" : videoInfo.medium.url;
     }
+  },
+  mounted() {
+    this.$event.$on("currentTime", this.currentTime);
   },
   methods: {
     ...mapActions({

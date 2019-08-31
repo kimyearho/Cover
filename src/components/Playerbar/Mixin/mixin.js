@@ -1,4 +1,19 @@
 export default {
+  computed: {
+
+    playStatusIcon() {
+      let iconName = "";
+      if (this.playStatus === 1) {
+        iconName = "pause";
+      } else if (this.playStatus === 2) {
+        iconName = "play_arrow";
+      } else {
+        iconName = "slow_motion_video";
+      }
+      return iconName;
+    }
+
+  },
   methods: {
 
     ipcSendVolumeControl(volume) {
@@ -23,6 +38,17 @@ export default {
       if (this.isElectron) {
         this.ipcRenderer.send("win2Player", ["loadVideoById", item.videoId]);
       }
+    },
+
+    playToggle() {
+      let playType = this.playStatus === 1 ? "pauseVideo" : "playVideo";
+      this.ipcSendPlayToggle(playType);
+    },
+
+    // 현재 재생시간
+    currentTime(args) {
+      let percent = (args * 100) / this.playingVideo.durationTime;
+      this.playTime = Math.floor(percent) + 1;
     },
 
     /**

@@ -2,32 +2,36 @@
   <div class="text-xs-center" v-if="playingVideo.coverData.videoId && !isPlayer">
     <v-card tile class="frame">
       <v-progress-linear :value="playTime" class="my-0" height="3"></v-progress-linear>
-
       <v-list>
-        <v-list-tile @click="switchOnPlayer">
-          <v-list-tile-avatar>
-            <img :src="getThumbnail" />
-          </v-list-tile-avatar>
+        <v-tooltip top color="blue">
+          <template v-slot:activator="{ on }">
+            <v-list-tile v-on="on" @click="switchOnPlayer">
+              <v-list-tile-avatar>
+                <img :src="getThumbnail" />
+              </v-list-tile-avatar>
 
-          <v-list-tile-content>
-            <v-list-tile-title>{{ playingVideo.coverData.videoTitle }}</v-list-tile-title>
-            <v-list-tile-sub-title>Youtube & Cover</v-list-tile-sub-title>
-          </v-list-tile-content>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ playingVideo.coverData.videoTitle }}</v-list-tile-title>
+                <v-list-tile-sub-title>Youtube & Cover</v-list-tile-sub-title>
+              </v-list-tile-content>
 
-          <v-spacer></v-spacer>
+              <v-spacer></v-spacer>
 
-          <v-list-tile-action :class="{ 'mx-5': $vuetify.breakpoint.mdAndUp }">
-            <v-btn icon @click.native.stop="playToggle">
-              <v-icon>{{ playStatusIcon }}</v-icon>
-            </v-btn>
-          </v-list-tile-action>
+              <v-list-tile-action :class="{ 'mx-5': $vuetify.breakpoint.mdAndUp }">
+                <v-btn icon @click.native.stop="playToggle">
+                  <v-icon>{{ playStatusIcon }}</v-icon>
+                </v-btn>
+              </v-list-tile-action>
 
-          <v-list-tile-action :class="{ 'mr-3': $vuetify.breakpoint.mdAndUp }">
-            <v-btn icon @click.native.stop="nextVideo">
-              <v-icon>fast_forward</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+              <v-list-tile-action :class="{ 'mr-3': $vuetify.breakpoint.mdAndUp }">
+                <v-btn icon @click.native.stop="nextVideo">
+                  <v-icon>fast_forward</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+          </template>
+          <span>{{ playingVideo.coverData.videoTitle }}</span>
+        </v-tooltip>
       </v-list>
     </v-card>
   </div>

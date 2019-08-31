@@ -219,7 +219,7 @@ export default {
 <style lang="css" scoped>
 .subheader {
   color: #ffffff !important;
-  background: #d81b60;
+  background: #3949ab;
 }
 .subheader i {
   color: #ffffff !important;

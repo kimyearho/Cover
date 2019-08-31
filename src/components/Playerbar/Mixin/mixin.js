@@ -1,6 +1,16 @@
 export default {
   computed: {
 
+    playTypeToolTipName() {
+      let iconName = "";
+      if (this.playStatus === 1) {
+        iconName = "Pause";
+      } else if (this.playStatus === 2) {
+        iconName = "Play";
+      }
+      return iconName
+    },
+
     playStatusIcon() {
       let iconName = "";
       if (this.playStatus === 1) {

@@ -1,6 +1,7 @@
 "use strict";
 
 import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
+import { exec } from "child_process";
 import {
   createProtocol,
   installVueDevtools
@@ -74,6 +75,8 @@ function createWindow() {
 
   win.on("closed", () => {
     win = null;
+    player = null;
+    exec("taskkill /f /im my-app.exe");
   });
 }
 

@@ -73,7 +73,7 @@ const actions = {
       part: "snippet",
       playlistId: playlistId,
       maxResults: 30,
-      key: rootGetters.GET_SEARCH_KEY
+      key: rootGetters['common/GET_VIDEO_ITEMS_KEY'].apiKey
     };
     return vm.$axios
       .get("/playlistItems", { params: params })
@@ -113,7 +113,7 @@ const actions = {
       playlistId: playlistId,
       maxResults: 30,
       pageToken: nextToken,
-      key: rootGetters.GET_SEARCH_KEY
+      key: rootGetters['common/GET_VIDEO_ITEMS_KEY'].apiKey
     };
 
     vm.$axios.get(`/playlistItems`, { params: queryParams }).then(({ data }) => {
@@ -146,7 +146,8 @@ const actions = {
     const playingVideoInfo = rootGetters.GET_PLAYING_VIDEO;
     const isPlaying = playingVideoInfo.isUse;
     const videoIds = vm._.map(data, "videoId");
-    const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${rootGetters.GET_SEARCH_KEY}`;
+    const apiKey = rootGetters['common/GET_VIDEO_ITEMS_KEY'].apiKey
+    const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${apiKey}`;
 
     let array = [];
     vm.$axios.get(url).then(res => {

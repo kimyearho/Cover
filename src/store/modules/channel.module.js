@@ -23,7 +23,7 @@ const actions = {
     const query = {
       part: "snippet",
       id: channelId,
-      key: rootGetters.GET_VIDEO_ITEMS_KEY
+      key: rootGetters['common/GET_VIDEO_ITEMS_KEY'].apiKey
     };
     return vm.$axios
       .get("/channels", { params: query })

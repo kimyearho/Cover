@@ -24,7 +24,7 @@ const actions = {
             type: "video",
             relatedToVideoId: videoId,
             maxResults: 15,
-            key: rootGetters.GET_VIDEO_ITEMS_KEY
+            key: rootGetters['common/GET_VIDEO_ITEMS_KEY'].apiKey
         };
         return vm.$axios
             .get('/search', { params: params })
@@ -63,9 +63,10 @@ const actions = {
             })
     },
 
-    getRelatedVideoDuration({ commit }, { vm, data }) {
+    getRelatedVideoDuration({ commit, rootGetters }, { vm, data }) {
         const videoIds = vm._.map(data, "videoId");
-        const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${rootGetters.GET_VIDEO_ITEMS_KEY}`;
+        const apiKey = rootGetters['common/GET_VIDEO_ITEMS_KEY'].apiKey
+        const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${apiKey}`;
         let videos = [];
         vm.$axios.get(url).then(res => {
             vm._.forEach(data, (item, index) => {

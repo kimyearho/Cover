@@ -5,14 +5,11 @@
 * author: 
 */
 
-const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
-
 const state = {
   searchList: [],
   scrollPos: 0,
   nextToken: null,
   searchText: "audio library",
-  isLoading: false
 };
 
 const getters = {
@@ -27,9 +24,6 @@ const getters = {
   },
   GET_NEXT_TOKEN() {
     return state.nextToken;
-  },
-  GET_IS_LOADING() {
-    return state.isLoading;
   }
 };
 
@@ -48,23 +42,20 @@ const mutations = {
   },
   SET_NEXT_TOKEN(state, payload) {
     state.nextToken = payload;
-  },
-  SET_IS_LOADING(state, payload) {
-    state.isLoading = payload;
   }
 };
 
 const actions = {
-  getApiSearch({ commit, dispatch, state }, { vm }) {
+  getApiSearch({ commit, dispatch, state, rootGetters }, { vm }) {
     const queryParams = {
       part: "snippet",
       q: state.searchText,
       type: "video,playlist,channel",
       maxResults: 25,
       safeSearch: "strict",
-      key: API_KEY
+      key: rootGetters['common/GET_SEARCH_KEY'].apiKey
     };
-    commit("SET_IS_LOADING", true);
+    commit("common/SET_IS_LOADING", true);
     return vm.$axios.get(`/search`, { params: queryParams }).then(res => {
       if (res.status === 200) {
         if (res.data.nextPageToken)
@@ -83,7 +74,7 @@ const actions = {
     });
   },
 
-  getApiNextloadSearch({ commit, dispatch, state }, { vm }) {
+  getApiNextloadSearch({ commit, dispatch, state, rootGetters }, { vm }) {
     const queryParams = {
       part: "snippet",
       q: state.searchText,
@@ -91,7 +82,7 @@ const actions = {
       maxResults: 25,
       safeSearch: "strict",
       pageToken: state.nextToken,
-      key: API_KEY
+      key: rootGetters['common/GET_SEARCH_KEY'].apiKey
     };
 
     vm.$axios.get(`/search`, { params: queryParams }).then(res => {
@@ -111,9 +102,10 @@ const actions = {
     });
   },
 
-  getVideoDuration({ commit }, { vm, data, mode }) {
+  getVideoDuration({ commit, rootGetters }, { vm, data, mode }) {
     const videoIds = vm._.map(data, "videoId");
-    const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
+    const apiKey = rootGetters['common/GET_SEARCH_KEY'].apiKey
+    const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${apiKey}`;
     let array = [];
     vm.$axios.get(url).then(res => {
       vm._.forEach(data, item => {
@@ -130,7 +122,7 @@ const actions = {
       });
       if (mode === "s") {
         commit("SET_SEARCH_LIST", array);
-        commit("SET_IS_LOADING", false);
+        commit("common/SET_IS_LOADING", false);
         vm.$event.$emit("topList", { data: 0 });
       } else {
         commit("SET_NEXTLOAD", { vm: vm, data: array });

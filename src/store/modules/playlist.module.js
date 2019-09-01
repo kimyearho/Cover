@@ -5,8 +5,6 @@
  * author:
  */
 
-const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
-
 const state = {
   playlistInfo: {
     id: "",
@@ -70,12 +68,12 @@ const actions = {
     });
   },
 
-  getPlaylist({ dispatch }, { vm, playlistId }) {
+  getPlaylist({ dispatch, rootGetters }, { vm, playlistId }) {
     const params = {
       part: "snippet",
       playlistId: playlistId,
       maxResults: 30,
-      key: API_KEY
+      key: rootGetters.GET_SEARCH_KEY
     };
     return vm.$axios
       .get("/playlistItems", { params: params })
@@ -108,14 +106,14 @@ const actions = {
       });
   },
 
-  getPlaylistNextSearch({ commit, dispatch, state }, { vm, playlistId, type }) {
+  getPlaylistNextSearch({ commit, dispatch, state, rootGetters }, { vm, playlistId, type }) {
     const nextToken = state.playList.nextToken;
     const queryParams = {
       part: "snippet",
       playlistId: playlistId,
       maxResults: 30,
       pageToken: nextToken,
-      key: API_KEY
+      key: rootGetters.GET_SEARCH_KEY
     };
 
     vm.$axios.get(`/playlistItems`, { params: queryParams }).then(({ data }) => {
@@ -148,7 +146,7 @@ const actions = {
     const playingVideoInfo = rootGetters.GET_PLAYING_VIDEO;
     const isPlaying = playingVideoInfo.isUse;
     const videoIds = vm._.map(data, "videoId");
-    const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
+    const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${rootGetters.GET_SEARCH_KEY}`;
 
     let array = [];
     vm.$axios.get(url).then(res => {

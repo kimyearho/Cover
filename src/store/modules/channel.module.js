@@ -5,8 +5,6 @@
 * author: 
 */
 
-const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
-
 const state = {
   channelData: []
 };
@@ -21,11 +19,11 @@ const mutations = {
   }
 };
 const actions = {
-  getChannel({ commit }, { vm, channelId }) {
+  getChannel({ commit, rootGetters }, { vm, channelId }) {
     const query = {
       part: "snippet",
       id: channelId,
-      key: API_KEY
+      key: rootGetters.GET_VIDEO_ITEMS_KEY
     };
     return vm.$axios
       .get("/channels", { params: query })

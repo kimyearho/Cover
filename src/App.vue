@@ -49,6 +49,7 @@ import AutoComplate from "@/components/Commons/AutoComplate/autoComplate";
 import CommonPlayerIpcController from "@/components/Commons/PlayerIpc/index";
 import Playerbar from "@/components/Playerbar/index";
 import SubPlayerbar from "@/components/Playerbar/sub";
+import videoMenuVue from "./components/Commons/Menu/videoMenu.vue";
 
 export default {
   name: "App",

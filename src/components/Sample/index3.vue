@@ -28,7 +28,7 @@
             <v-switch class="switch1" v-model="setting.mainFrameAlwaysTop" color="red"></v-switch>
           </v-flex>
           <div class="option2-text">
-            <span>비디오 윈도우를 열거나 닫을 수 있습니다.</span>
+            <span>플레이어를 상시 상단으로 유지하거나 끕니다.</span>
           </div>
         </v-layout>
       </v-card>

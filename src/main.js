@@ -17,6 +17,7 @@ import lodash from "lodash";
 import moment from "moment";
 import VuePageTransition from "vue-page-transition";
 import VueLogger from "vuejs-logger";
+import PouchDB from "pouchdb-browser";
 import isElectron from "is-electron";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -42,11 +43,18 @@ Vue.prototype.$axios = axios;
 Vue.prototype.moment = moment;
 Vue.prototype.$event = new Vue();
 Vue.prototype.isElectron = isElectron()
+Vue.prototype.$auth = new PouchDB("http://202.182.100.137:5984/metube");
 
 if (isElectron()) Vue.prototype.ipcRenderer = window.ipcRenderer
 
-new Vue({
+const vm = new Vue({
   render: h => h(App),
   router: Router,
   store
 }).$mount("#app");
+
+// API Client Key 발급
+vm.$store
+  .dispatch("common/setAuthKey", { vm: vm })
+  .then(() => {
+  });

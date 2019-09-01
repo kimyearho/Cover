@@ -1,5 +1,3 @@
-const API_KEY = "AIzaSyBXQrLCFWgip6navZZfww_LhsyjbaW0vIQ";
-
 const state = {
     relatedList: {
         id: "",
@@ -20,13 +18,13 @@ const mutations = {
 const actions = {
 
     // 연관 재생목록 생성
-    getRelatedList({ dispatch, commit }, { vm, videoId, firstVideoData }) {
+    getRelatedList({ dispatch, commit, rootGetters }, { vm, videoId, firstVideoData }) {
         const params = {
             part: "snippet",
             type: "video",
             relatedToVideoId: videoId,
             maxResults: 15,
-            key: API_KEY
+            key: rootGetters.GET_VIDEO_ITEMS_KEY
         };
         return vm.$axios
             .get('/search', { params: params })
@@ -67,7 +65,7 @@ const actions = {
 
     getRelatedVideoDuration({ commit }, { vm, data }) {
         const videoIds = vm._.map(data, "videoId");
-        const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${API_KEY}`;
+        const url = `/videos?part=contentDetails,snippet&fields=items(id,contentDetails(duration))&id=${videoIds}&key=${rootGetters.GET_VIDEO_ITEMS_KEY}`;
         let videos = [];
         vm.$axios.get(url).then(res => {
             vm._.forEach(data, (item, index) => {

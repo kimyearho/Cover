@@ -75,14 +75,14 @@ export default {
       searchList: "GET_SEARCH_LIST",
       isNextToken: "GET_NEXT_TOKEN",
       playingVideo: "GET_PLAYING_VIDEO",
-      isLoading: "GET_IS_LOADING"
+      searchKey: "common/GET_SEARCH_KEY"
     }),
     isLoading: {
       get() {
-        return this.$store.getters.GET_IS_LOADING;
+        return this.$store.getters["common/GET_IS_LOADING"];
       },
       set(val) {
-        this.$store.commit("SET_IS_LOADING", val);
+        this.$store.commit("common/SET_IS_LOADING", val);
       }
     },
     getThumbnail() {
@@ -110,7 +110,13 @@ export default {
     get() {
       // 처음 조회
       if (this.searchList.length === 0) {
-        this.getListDispatch({ vm: this });
+        if (this.searchKey) {
+          this.getListDispatch({ vm: this });
+        } else {
+          setTimeout(() => {
+            this.getListDispatch({ vm: this });
+          }, 500);
+        }
       }
     },
 

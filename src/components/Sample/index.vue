@@ -8,8 +8,7 @@
       </v-subheader>
 
       <v-container grid-list-lg>
-        <v-layout row wrap>
-        </v-layout>
+        <v-layout row wrap></v-layout>
       </v-container>
     </v-card>
   </div>
@@ -35,6 +34,6 @@ export default {
 }
 .subheader {
   color: #ffffff !important;
-  background: #00897b;
+  background: #d81b60;
 }
 </style>

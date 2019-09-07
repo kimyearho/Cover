@@ -32,8 +32,7 @@ function createWindow() {
     transparent: true,
     webPreferences: {
       nodeIntegration: true,
-      backgroundThrottling: false,
-      preload: __static + '/preload.js'
+      backgroundThrottling: false
     }
   });
 
@@ -41,12 +40,10 @@ function createWindow() {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     // win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    win.loadURL("http://localhost:8080");
+    win.loadURL("http://202.182.100.137");
     if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
-    // production
-    createProtocol("app");
-    win.loadURL("http://202.182.100.137");
+    win.loadURL('http://localhost:3000')
   }
 
   win.webContents.on("did-finish-load", () => {

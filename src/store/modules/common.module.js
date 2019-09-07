@@ -44,13 +44,14 @@ const actions = {
 
   setAuthKey({ commit }, { vm }) {
     commit('SET_IS_LOADING', true)
-    vm.$auth.get("cfb9d27f0b59d3fbc55073830f01db05").then(result => {
+    return vm.$auth.get("cfb9d27f0b59d3fbc55073830f01db05").then(result => {
       const auth = result.auth
       const envType = process.env.NODE_ENV === "development" ? "dev" : "production"
       const service = vm._.find(auth, { type: envType })
       if (service.type === envType) {
         const keyList = service.key_list
         commit("SET_AUTH_KEYS", keyList)
+        vm.$log.info('Commit API KEY | Done | ', state.authKeys)
       }
     })
   },

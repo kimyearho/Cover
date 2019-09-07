@@ -108,15 +108,12 @@ export default {
     }),
 
     get() {
-      // 처음 조회
       if (this.searchList.length === 0) {
-        if (this.searchKey) {
-          this.getListDispatch({ vm: this });
-        } else {
-          setTimeout(() => {
-            this.getListDispatch({ vm: this });
-          }, 500);
-        }
+        this.getListDispatch({ vm: this }).then(() => {
+          this.$log.info("searchList | Done | ", this.searchKey);
+        });
+      } else {
+        this.$log.info("Getter searchList | Done | ", this.searchList);
       }
     },
 

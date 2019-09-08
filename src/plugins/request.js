@@ -1,9 +1,16 @@
 import axios from "axios-jsonp-pro"
+import { setupCache } from 'axios-cache-adapter'
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
 NProgress.configure({ showSpinner: false })
 
+// Create `axios-cache-adapter` instance
+const cache = setupCache({
+  maxAge: 15 * 60 * 1000
+})
+
 const service = axios.create({
+  adapter: cache.adapter,
   baseURL: 'https://www.googleapis.com/youtube/v3',
   timeout: 5000,
   headers: {

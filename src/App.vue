@@ -64,9 +64,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      isPlayer: "GET_SHOW_PLAYER"
-    }),
     isPlayer: {
       get() {
         return this.$store.getters.GET_SHOW_PLAYER;

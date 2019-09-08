@@ -20,6 +20,7 @@ const state = {
     durationTime: 0
   },
   playTime: 0,
+  videoRepeat: false,
   showPlayer: false,
   playerStatus: 0
 };
@@ -32,6 +33,9 @@ const getters = {
   },
   GET_PLAYER_STATUS: state => {
     return state.playerStatus
+  },
+  GET_REPEAT: state => {
+    return state.videoRepeat
   }
 };
 const mutations = {
@@ -51,6 +55,9 @@ const mutations = {
   },
   SET_PLAYER_STATUS(state, payload) {
     state.playerStatus = payload
+  },
+  SET_REPEAT(state, payload) {
+    state.videoRepeat = payload
   }
 };
 const actions = {

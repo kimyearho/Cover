@@ -2,7 +2,7 @@
   <div>
     <v-img :src="getThumbnail" height="190px">
       <span class="avatar-right">
-        <v-list-tile-avatar color="grey darken-3">
+        <v-list-tile-avatar>
           <v-img class="elevation-6" :src="channel.thumbnails.default.url"></v-img>
         </v-list-tile-avatar>
       </span>
@@ -30,7 +30,7 @@ export default {
     }),
     getThumbnail() {
       const listThumbnail = this.infos.thumbnails;
-      return listThumbnail === null ? "" : listThumbnail.high.url;
+      return listThumbnail === null ? "" : listThumbnail.medium.url;
     }
   },
   methods: {}
@@ -38,6 +38,12 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.vimage {
+  width: 100%;
+  height: 120px;
+  margin: 15px;
+  border-radius: 7px;
+}
 .subheader {
   color: #ffffff !important;
   background: #d32f2f;
@@ -48,10 +54,8 @@ export default {
 }
 .headline {
   width: 100%;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 17px !important;
+  font-size: 16px !important;
   line-height: 32px !important;
 }
 .grow >>> .v-list__tile {

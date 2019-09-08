@@ -38,13 +38,12 @@
     </v-footer>
 
     <sub-playerbar />
-    <playerbar :isVisible.sync="isPlayer" @playerClose="setPlayerSwitch({ flag: false })" />
+    <playerbar :isVisible.sync="isPlayer" @playerClose="close" />
     <common-player-ipc-controller />
   </v-app>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import AutoComplate from "@/components/Commons/AutoComplate/autoComplate";
 import CommonPlayerIpcController from "@/components/Commons/PlayerIpc/index";
 import Playerbar from "@/components/Playerbar/index";
@@ -85,6 +84,9 @@ export default {
       } else if (name === "setting") {
         this.$router.push({ name: "sample3" });
       }
+    },
+    close() {
+      this.$store.dispatch("playerSwitch", { flag: false });
     }
   }
 };

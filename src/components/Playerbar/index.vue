@@ -57,8 +57,11 @@
 
         <!-- 옵션 -->
         <v-card-actions>
-          <v-btn flat>Share</v-btn>
-          <v-btn flat color="purple" @click="closePlayer">Close</v-btn>
+          <v-btn flat icon @click="videoRepeat">
+            <v-icon>{{ playRepeat ? 'repeat_one' : 'repeat' }}</v-icon>
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn flat color="red" @click="closePlayer">Close</v-btn>
           <v-spacer></v-spacer>
           <v-btn icon @click="show = !show">
             <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
@@ -172,7 +175,8 @@ export default {
       id: "GET_ID",
       playingVideo: "GET_PLAYING_VIDEO",
       playStatus: "GET_PLAYER_STATUS",
-      isNextToken: "playback/GET_PLAYBACK_TOKEN"
+      isNextToken: "playback/GET_PLAYBACK_TOKEN",
+      playRepeat: "GET_REPEAT"
     }),
 
     // 재생 대기 목록
@@ -256,7 +260,8 @@ export default {
 
     // 플레이어 닫기
     closePlayer() {
-      this.$emit("update:isVisible", false);
+      this.$emit("playerClose", false);
+      // this.$emit("update:isVisible", false);
     },
 
     /**
@@ -353,6 +358,11 @@ export default {
       if (list.length > 0) {
         this.$store.commit("playback/SET_PLAYBACK_LIST", list);
       }
+    },
+
+    videoRepeat() {
+      this.$log.info("반복 설정 | ", !this.playRepeat);
+      this.$store.commit("SET_REPEAT", !this.playRepeat);
     }
   }
 };

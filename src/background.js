@@ -3,10 +3,10 @@
 import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
 import { exec } from "child_process";
 import {
-  createProtocol,
   installVueDevtools
 } from "vue-cli-plugin-electron-builder/lib";
 const isDevelopment = process.env.NODE_ENV !== "production";
+const path = require('path')
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -32,7 +32,8 @@ function createWindow() {
     transparent: true,
     webPreferences: {
       nodeIntegration: true,
-      backgroundThrottling: false
+      backgroundThrottling: false,
+      preload: path.join(__static, 'preload.js')
     }
   });
 

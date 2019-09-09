@@ -253,10 +253,6 @@ export default {
     this.$event.$on("currentTime", this.currentTime);
   },
   methods: {
-    ...mapActions({
-      setVideoSettingDispatch: "playingVideoSetting",
-      setListUpdateDispatch: "playback/setUpdatePlaybackList"
-    }),
 
     onScroll(e) {
       if (typeof window === "undefined") return;

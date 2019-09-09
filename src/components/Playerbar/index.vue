@@ -1,140 +1,147 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog ref="bar" v-model="isVisible" persistent>
-      <v-card>
-        <!-- 비디오 썸네일 -->
-        <v-img :src="getVideoThumbnail" class="thumb"></v-img>
-        <!-- 재생 프로그레스 바 -->
-        <!-- <v-progress-linear color="error" height="3" :value="playTime" @click="playTimeSkip($event)"></v-progress-linear> -->
-        <v-slider
-          class="playTime"
-          height="3"
-          color="red"
-          thumb-color="blue"
-          thumb-label="always"
-          :thumb-size="20"
-          v-model="playTime"
-          @change="playTimeController"
-        />
-        <!-- 비디오 제목 -->
-        <v-card-title primary-title>
-          <div class="playing-video-title">
-            <marquee-text :duration="30">{{ playingVideo.coverData.videoTitle }}</marquee-text>
-            <!-- 총 재생시간 -->
-            <small class="total-play-time">{{ playingVideo.duration }}</small>
-          </div>
-        </v-card-title>
+    <v-dialog v-model="isVisible" persistent>
+      <v-container :style="{padding: '0px'}" id="scrollTarget" class="scroll-y">
+        <v-card ref="bar" max-height="610px" v-scroll:#scrollTarget="onScroll">
+          <!-- 비디오 썸네일 -->
+          <v-img :src="getVideoThumbnail" class="thumb"></v-img>
+          <!-- 재생 프로그레스 바 -->
+          <v-slider
+            class="playTime"
+            height="3"
+            color="red"
+            thumb-color="blue"
+            thumb-label="always"
+            :thumb-size="20"
+            v-model="playTime"
+            @change="playTimeController"
+          />
+          <!-- 비디오 제목 -->
+          <v-card-title primary-title>
+            <div class="playing-video-title">
+              <marquee-text :duration="30">{{ playingVideo.coverData.videoTitle }}</marquee-text>
+              <!-- 총 재생시간 -->
+              <small class="total-play-time">{{ playingVideo.duration }}</small>
+            </div>
+          </v-card-title>
 
-        <!-- 재생 컨트롤 -->
-        <v-list>
-          <v-list-tile class="item-center">
-            <v-list-tile-action class="paly-icon-margin">
-              <v-btn icon @click="previousVideo">
-                <v-icon class="font-40">fast_rewind</v-icon>
-              </v-btn>
-            </v-list-tile-action>
+          <!-- 재생 컨트롤 -->
+          <v-list>
+            <v-list-tile class="item-center">
+              <v-list-tile-action class="paly-icon-margin">
+                <v-btn icon @click="previousVideo">
+                  <v-icon class="font-40">fast_rewind</v-icon>
+                </v-btn>
+              </v-list-tile-action>
 
-            <v-list-tile-action class="paly-icon-margin">
-              <v-btn icon @click="playToggle">
-                <v-icon class="font-40">{{ playStatusIcon }}</v-icon>
-              </v-btn>
-            </v-list-tile-action>
+              <v-list-tile-action class="paly-icon-margin">
+                <v-btn icon @click="playToggle">
+                  <v-icon class="font-40">{{ playStatusIcon }}</v-icon>
+                </v-btn>
+              </v-list-tile-action>
 
-            <v-list-tile-action class="paly-icon-margin">
-              <v-btn icon @click="nextVideo">
-                <v-icon class="font-40">fast_forward</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
-        </v-list>
+              <v-list-tile-action class="paly-icon-margin">
+                <v-btn icon @click="nextVideo">
+                  <v-icon class="font-40">fast_forward</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list>
 
-        <!-- 볼륨 컨트롤 -->
-        <v-card-actions class="volume-slider">
-          <v-icon class="volume-down">volume_down</v-icon>
-          <v-slider class="margin-0" v-model="volume" @change="changeVolume"></v-slider>
-          <v-icon class="volume-up">volume_up</v-icon>
-        </v-card-actions>
+          <!-- 볼륨 컨트롤 -->
+          <v-card-actions class="volume-slider">
+            <v-icon class="volume-down">volume_down</v-icon>
+            <v-slider class="margin-0" v-model="volume" @change="changeVolume"></v-slider>
+            <v-icon class="volume-up">volume_up</v-icon>
+          </v-card-actions>
 
-        <!-- 옵션 -->
-        <v-card-actions>
-          <v-btn flat icon @click="videoRepeat">
-            <v-icon>{{ playRepeat ? 'repeat_one' : 'repeat' }}</v-icon>
+          <!-- 옵션 -->
+          <v-card-actions>
+            <v-btn flat icon @click="videoRepeat">
+              <v-icon>{{ playRepeat ? 'repeat_one' : 'repeat' }}</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn flat color="red" @click="closePlayer">Close</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="show = !show">
+              <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+            </v-btn>
+          </v-card-actions>
+
+          <!-- 재생 대기 목록 헤더 -->
+          <v-divider></v-divider>
+          <v-card-actions class="list-bg">
+            <v-icon>queue_music</v-icon>
+            <v-card-text class="title font-weight-bold playback-list-pd">PLAYBACK WAIT LIST</v-card-text>
+          </v-card-actions>
+          <v-divider></v-divider>
+
+          <v-expand-transition>
+            <div v-show="show">
+              <!-- 재생 대기 목록 -->
+              <draggable
+                tag="v-list"
+                class="list-bg"
+                v-model="playbackWaitList"
+                v-bind="dragOptions"
+                handle=".handle"
+              >
+                <template v-for="(item, index) in playbackWaitList">
+                  <v-list-tile
+                    v-if="filtersVideo(item.listIndex)"
+                    @click="playVideo(item)"
+                    :key="index"
+                    avatar
+                  >
+                    <!-- 썸네일 -->
+                    <v-list-tile-avatar>
+                      <v-badge
+                        class="badge cursor"
+                        color="error"
+                        overlap
+                        @click.native.stop="videoRemove(item)"
+                      >
+                        <template v-slot:badge>
+                          <v-icon class="i-close">close</v-icon>
+                        </template>
+                      </v-badge>
+                      <img :src="item.thumbnails.medium.url" />
+                    </v-list-tile-avatar>
+
+                    <!-- 제목 및 라벨 -->
+                    <v-list-tile-content class="cursor">
+                      <v-list-tile-title class="font-13" v-html="item.title"></v-list-tile-title>
+                      <v-list-tile-sub-title
+                        v-if="item.duration"
+                        class="font-12"
+                      >{{ item.duration }} / {{ item.listIndex }}</v-list-tile-sub-title>
+                    </v-list-tile-content>
+
+                    <!-- 확장메뉴 -->
+                    <v-list-tile-action>
+                      <v-icon class="cursor font-22 handle">menu</v-icon>
+                    </v-list-tile-action>
+                  </v-list-tile>
+                </template>
+              </draggable>
+            </div>
+          </v-expand-transition>
+          <v-btn
+            v-show="fab"
+            fab
+            dark
+            small
+            fixed
+            bottom
+            right
+            color="primary"
+            :style="{right: '60px'}"
+            @click="closePlayer"
+          >
+            <v-icon>close</v-icon>
           </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn flat color="red" @click="closePlayer">Close</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn icon @click="show = !show">
-            <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
-          </v-btn>
-        </v-card-actions>
-
-        <!-- 재생 대기 목록 헤더 -->
-        <v-divider></v-divider>
-        <v-card-actions class="list-bg">
-          <v-icon>queue_music</v-icon>
-          <v-card-text class="title font-weight-bold playback-list-pd">PLAYBACK WAIT LIST</v-card-text>
-        </v-card-actions>
-        <v-divider></v-divider>
-
-        <v-expand-transition>
-          <div v-show="show">
-            <!-- 재생 대기 목록 -->
-            <draggable
-              tag="v-list"
-              class="list-bg"
-              v-model="playbackWaitList"
-              v-bind="dragOptions"
-              handle=".handle"
-            >
-              <template v-for="(item, index) in playbackWaitList">
-                <v-list-tile
-                  v-if="filtersVideo(item.listIndex)"
-                  @click="playVideo(item)"
-                  :key="index"
-                  avatar
-                >
-                  <!-- 썸네일 -->
-                  <v-list-tile-avatar>
-                    <v-badge
-                      class="badge cursor"
-                      color="error"
-                      overlap
-                      @click.native.stop="videoRemove(item)"
-                    >
-                      <template v-slot:badge>
-                        <v-icon class="i-close">close</v-icon>
-                      </template>
-                    </v-badge>
-                    <img :src="item.thumbnails.medium.url" />
-                  </v-list-tile-avatar>
-
-                  <!-- 제목 및 라벨 -->
-                  <v-list-tile-content class="cursor">
-                    <v-list-tile-title class="font-13" v-html="item.title"></v-list-tile-title>
-                    <v-list-tile-sub-title
-                      v-if="item.duration"
-                      class="font-12"
-                    >{{ item.duration }} / {{ item.listIndex }}</v-list-tile-sub-title>
-                  </v-list-tile-content>
-
-                  <!-- 확장메뉴 -->
-                  <v-list-tile-action>
-                    <v-icon class="cursor font-22 handle">menu</v-icon>
-                  </v-list-tile-action>
-                </v-list-tile>
-              </template>
-              <!-- <v-list-tile v-if="lastVideo(index)" :key="item.videoId">
-                <v-list-tile-content class="cursor">
-                  <v-list-tile-title
-                    class="font-13 font-weight-bold"
-                    :style="{textAlign: 'center'}"
-                  >There is no play queue.</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>-->
-            </draggable>
-          </div>
-        </v-expand-transition>
-      </v-card>
+        </v-card>
+      </v-container>
     </v-dialog>
   </v-layout>
 </template>
@@ -160,14 +167,15 @@ export default {
   },
   data() {
     return {
-      show: true,
+      show: false,
       volume: 50,
-      playTime: 0
+      playTime: 0,
+      fab: false
     };
   },
   watch: {
     isVisible() {
-      this.$refs.bar.$refs.dialog.scrollTop = 0;
+      document.getElementById("scrollTarget").scrollTop = 0;
     }
   },
   computed: {
@@ -240,6 +248,8 @@ export default {
     }
   },
   mounted() {
+    // is electron default volume 50
+    this.ipcSendVolumeControl(50);
     this.$event.$on("currentTime", this.currentTime);
   },
   methods: {
@@ -247,6 +257,12 @@ export default {
       setVideoSettingDispatch: "playingVideoSetting",
       setListUpdateDispatch: "playback/setUpdatePlaybackList"
     }),
+
+    onScroll(e) {
+      if (typeof window === "undefined") return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      this.fab = top > 300;
+    },
 
     changeVolume(data) {
       this.ipcSendVolumeControl(data);
@@ -261,7 +277,6 @@ export default {
     // 플레이어 닫기
     closePlayer() {
       this.$emit("playerClose", false);
-      // this.$emit("update:isVisible", false);
     },
 
     /**

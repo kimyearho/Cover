@@ -83,7 +83,7 @@ export default {
 .frame {
   width: 100%;
   position: absolute;
-  top: 566px;
+  top: 542px;
   border-bottom: 1px solid #ddd;
   -webkit-box-shadow: unset;
   box-shadow: unset;

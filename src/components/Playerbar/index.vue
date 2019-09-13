@@ -407,7 +407,7 @@ export default {
 
 <style scoped>
 .thumb {
-  height: 200px;
+  height: 188px;
 }
 .v-card__title--primary {
   padding-top: 5px;

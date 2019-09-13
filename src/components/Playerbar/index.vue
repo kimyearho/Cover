@@ -1,8 +1,8 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="isVisible" persistent>
-      <v-container :style="{padding: '0px'}" id="scrollTarget" class="scroll-y">
-        <v-card ref="bar" max-height="610px" v-scroll:#scrollTarget="onScroll">
+    <v-dialog v-model="isVisible" persistent :style="{overflowX: 'hidden'}">
+      <v-container :style="{padding: '0px', maxWidth: '349px'}" id="scrollTarget" class="scroll-y">
+        <v-card ref="bar" max-height="610px" v-scroll:#scrollTarget="onScrollWatch">
           <!-- 비디오 썸네일 -->
           <v-img :src="getVideoThumbnail" class="thumb"></v-img>
           <!-- 재생 프로그레스 바 -->
@@ -57,28 +57,40 @@
 
           <!-- 옵션 -->
           <v-card-actions>
-            <v-btn flat icon @click="videoRepeat">
-              <v-icon>{{ playRepeat ? 'repeat_one' : 'repeat' }}</v-icon>
-            </v-btn>
+            <v-tooltip top color="info">
+              <template v-slot:activator="{ on }">
+                <v-btn flat icon v-on="on" @click="videoRepeat">
+                  <v-icon>{{ playRepeat ? 'repeat_one' : 'repeat' }}</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ playRepeat ? 'Click to dismiss the loop.' : 'Click to use repeat listening.' }}</span>
+            </v-tooltip>
+
             <v-spacer></v-spacer>
-            <v-btn flat color="red" @click="closePlayer">Close</v-btn>
+            <v-btn flat color="red" @click="closePlayer">Player Hide</v-btn>
             <v-spacer></v-spacer>
-            <v-btn icon @click="show = !show">
-              <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
-            </v-btn>
+
+            <v-tooltip top color="info">
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on" @click="show = !show">
+                  <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ show ? 'Click to close the Playlist.' : 'Click to display the play list' }}</span>
+            </v-tooltip>
           </v-card-actions>
 
           <!-- 재생 대기 목록 헤더 -->
           <v-divider></v-divider>
           <v-card-actions class="list-bg">
             <v-icon>queue_music</v-icon>
-            <v-card-text class="title font-weight-bold playback-list-pd">PLAYBACK WAIT LIST</v-card-text>
+            <v-card-text class="title font-weight-bold playback-list-pd">PLAYBACK LIST</v-card-text>
           </v-card-actions>
           <v-divider></v-divider>
 
+          <!-- 재생 대기 목록 / 기본설정은 닫혀있음 -->
           <v-expand-transition>
             <div v-show="show">
-              <!-- 재생 대기 목록 -->
               <draggable
                 tag="v-list"
                 class="list-bg"
@@ -119,27 +131,40 @@
 
                     <!-- 확장메뉴 -->
                     <v-list-tile-action>
-                      <v-icon class="cursor font-22 handle">menu</v-icon>
+                      <v-tooltip top color="red">
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on" class="cursor font-22 handle">menu</v-icon>
+                        </template>
+                        <span>You can click and drag.</span>
+                      </v-tooltip>
                     </v-list-tile-action>
                   </v-list-tile>
                 </template>
               </draggable>
             </div>
           </v-expand-transition>
-          <v-btn
-            v-show="fab"
-            fab
-            dark
-            small
-            fixed
-            bottom
-            right
-            color="primary"
-            :style="{right: '60px'}"
-            @click="closePlayer"
-          >
-            <v-icon>close</v-icon>
-          </v-btn>
+
+          <!-- 재생대기목록을 하단으로 일정 스크롤하면 닫기 버튼이 표시된다. -->
+          <v-tooltip top color="red">
+            <template v-slot:activator="{ on }">
+              <v-btn
+                v-show="fab"
+                v-on="on"
+                fab
+                dark
+                small
+                fixed
+                bottom
+                right
+                color="primary"
+                :style="{right: '60px'}"
+                @click="closePlayer"
+              >
+                <v-icon>close</v-icon>
+              </v-btn>
+            </template>
+            <span>Click to hide the player</span>
+          </v-tooltip>
         </v-card>
       </v-container>
     </v-dialog>
@@ -147,7 +172,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import playerMixin from "./Mixin/mixin";
 import MarqueeText from "vue-marquee-text-component";
 import Draggable from "vuedraggable";
@@ -253,13 +278,14 @@ export default {
     this.$event.$on("currentTime", this.currentTime);
   },
   methods: {
-
-    onScroll(e) {
+    // 스크롤 감시
+    onScrollWatch(e) {
       if (typeof window === "undefined") return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
       this.fab = top > 300;
     },
 
+    // 볼륨 변경
     changeVolume(data) {
       this.ipcSendVolumeControl(data);
     },
@@ -343,7 +369,7 @@ export default {
       this.$log.info(item);
       this.setVideoSettingDispatch({ data: item }).then(() => {
         this.setListUpdateDispatch().then(() => {
-          this.$refs.bar.$refs.dialog.scrollTop = 0;
+          document.getElementById("scrollTarget").scrollTop = 0;
         });
       });
     },
@@ -402,7 +428,7 @@ export default {
   margin-top: 0px !important;
 }
 .item-center {
-  margin: 0 50px;
+  margin: 0 43px;
 }
 .paly-icon-margin {
   margin: 0 14px;

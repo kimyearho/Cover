@@ -8,6 +8,8 @@
 const state = {
   menuId: 0,
   authKeys: [],
+  token: {},
+  user: {},
   isLoading: false
 };
 const getters = {
@@ -20,8 +22,17 @@ const getters = {
   GET_VIDEO_ITEMS_KEY: state => {
     return state.authKeys[1]
   },
-  GET_IS_LOADING() {
+  GET_IS_LOADING: state => {
     return state.isLoading;
+  },
+  GET_ACCESS_TOKEN: state => {
+    return state.token.access_token
+  },
+  GET_REFRESH_TOKEN: state => {
+    return state.token.refresh_token
+  },
+  GET_USER: state => {
+    return state.user
   }
 };
 const mutations = {
@@ -34,6 +45,12 @@ const mutations = {
   },
   SET_IS_LOADING(state, payload) {
     state.isLoading = payload;
+  },
+  SET_OAUTH2_TOKEN(state, payload) {
+    state.token = payload
+  },
+  SET_USER(state, payload) {
+    state.user = payload.data
   }
 };
 const actions = {
@@ -55,6 +72,15 @@ const actions = {
       }
     })
   },
+
+  setOauth2Token({ commit }, { data }) {
+    commit('SET_OAUTH2_TOKEN', data)
+  },
+
+  setUser({ commit }, { data }) {
+    commit('SET_USER', data)
+  }
+
 };
 
 export default {

@@ -11,6 +11,7 @@ import "../src/assets/index.css";
 import "../src/assets/scss/playerbar.scss";
 
 import axios from "./plugins/request";
+import authAxios from './plugins/oauth'
 import VueScrollTo from "vue-scrollto";
 
 import Loading from "vue-loading-overlay";
@@ -43,6 +44,7 @@ Vue.use(VueScrollTo);
 Vue.config.productionTip = false;
 Vue.prototype._ = lodash;
 Vue.prototype.$axios = axios;
+Vue.prototype.$authAxios = authAxios;
 Vue.prototype.$moment = moment;
 Vue.prototype.$event = new Vue();
 Vue.prototype.isElectron = isElectron()

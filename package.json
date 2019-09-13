@@ -12,11 +12,13 @@
     "postuninstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@getstation/electron-google-oauth2": "^1.1.2",
     "axios-cache-adapter": "^2.4.1",
     "axios-jsonp-pro": "^1.1.4",
     "core-js": "^2.6.5",
     "electron-disable-file-drop": "^1.0.2",
     "is-electron": "^2.2.0",
+    "js-cookie": "^2.2.1",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "nprogress": "^0.2.0",
@@ -29,7 +31,8 @@
     "vue-scrollto": "^2.15.0",
     "vuedraggable": "^2.23.0",
     "vuetify": "^1.5.5",
-    "vuex": "^3.1.1"
+    "vuex": "^3.1.1",
+    "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.9.0",

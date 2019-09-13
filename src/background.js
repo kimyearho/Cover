@@ -5,9 +5,9 @@ import { exec } from "child_process";
 import {
   installVueDevtools
 } from "vue-cli-plugin-electron-builder/lib";
+import ElectronGoogleOAuth2 from '@getstation/electron-google-oauth2';
 const isDevelopment = process.env.NODE_ENV !== "production";
 const path = require('path')
-
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -15,6 +15,7 @@ let win;
 let player;
 
 app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
+app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -37,7 +38,7 @@ function createWindow() {
     }
   });
 
-  win.setMenu(null);
+  // win.setMenu(null);
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
@@ -146,6 +147,29 @@ ipcMain.on("visibleVideoFrame", (e, args) => {
 ipcMain.on("mainFrameAlwaysTop", (e, args) => {
   const flag = args.value
   win.setAlwaysOnTop(flag);
+});
+
+ipcMain.on("googleOauth2", () => {
+  const CLIENT_ID = '935273157610-oeoj199qeuma6qoara2fcfko3v5du2vj.apps.googleusercontent.com'
+  const CLIENT_SECRET = ''
+  const SCOPES = [
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "https://www.googleapis.com/auth/youtube",
+    "https://www.googleapis.com/auth/youtube.force-ssl",
+    "https://www.googleapis.com/auth/youtube.readonly",
+    "https://www.googleapis.com/auth/youtube.upload"
+  ]
+
+  const myApiOauth = new ElectronGoogleOAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    SCOPES
+  );
+
+  myApiOauth.openAuthWindowAndGetTokens()
+    .then(token => {
+      win.webContents.send("googleOauth2_callback", { result: token });
+    });
 });
 
 // Exit cleanly on request from parent process in development mode.

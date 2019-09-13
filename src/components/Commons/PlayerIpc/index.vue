@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import PlayerMixin from "@/components/Playerbar/Mixin/mixin";
 
 export default {
@@ -36,10 +36,8 @@ export default {
               break;
             case 0:
               this.$log.info(eventName, `${eventValue} - (종료)`);
-              if (this.videoRepeat) 
-                this.repeatPlay();
-              else 
-                this.nextVideoPlay()
+              if (this.videoRepeat) this.repeatPlay();
+              else this.nextVideoPlay();
               break;
             case 1:
               this.$log.info(eventName, `${eventValue} - (재생 중)`);
@@ -61,7 +59,6 @@ export default {
     }
   },
   methods: {
-
     // 반복 재생
     repeatPlay() {
       if (this.playingVideo && this.playingVideo.isUse) {
@@ -73,7 +70,7 @@ export default {
     // 다음 곡 재생
     nextVideoPlay() {
       if (this.playingVideo && this.playingVideo.isUse) {
-        this.nextVideo()
+        this.nextVideo();
       }
     }
   }

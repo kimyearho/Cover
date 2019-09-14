@@ -1,5 +1,5 @@
 <template>
-  <div class="text-xs-center" v-if="playingVideo.coverData.videoId && !isPlayer">
+  <div class="text-xs-center" v-if="playingVideo.coverData.videoId">
     <v-card tile class="frame">
       <v-progress-linear :value="playTime" class="my-0" height="3"></v-progress-linear>
       <v-list>

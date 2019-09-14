@@ -459,7 +459,7 @@ export default {
 }
 .total-play-time {
   position: absolute;
-  top: 205px;
+  top: 192px;
   right: 2px;
   font-weight: 400;
   font-size: 12px;

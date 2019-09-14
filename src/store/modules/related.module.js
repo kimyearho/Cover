@@ -1,3 +1,5 @@
+import { convertToSeconds, secondFormat } from "../../plugins/utils"
+
 const state = {
     relatedList: {
         id: "",
@@ -73,10 +75,10 @@ const actions = {
                 let videoId = item.videoId;
                 vm._.forEach(res.data.items, videoIdArray => {
                     if (videoId === videoIdArray.id) {
-                        item.duration_time = vm.convertToSeconds(
+                        item.duration_time = convertToSeconds(
                             videoIdArray.contentDetails.duration
                         );
-                        item.duration = vm.secondFormat(item.duration_time);
+                        item.duration = secondFormat(item.duration_time);
                     }
                 });
                 videos.push(item);

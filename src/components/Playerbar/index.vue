@@ -205,7 +205,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      id: "GET_ID",
       playingVideo: "GET_PLAYING_VIDEO",
       playStatus: "GET_PLAYER_STATUS",
       isNextToken: "playback/GET_PLAYBACK_TOKEN",

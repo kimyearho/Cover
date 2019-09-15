@@ -62,7 +62,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      originalId: "GET_ID",
       playlist: "GET_PLAY_LIST",
       isNextToken: "GET_PLAYLIST_TOKEN",
       playingVideo: "GET_PLAYING_VIDEO"

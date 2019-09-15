@@ -1,5 +1,7 @@
 import axios from "axios-jsonp-pro"
 import { setupCache } from 'axios-cache-adapter'
+// import store from "../store/index"
+
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
 NProgress.configure({ showSpinner: false })

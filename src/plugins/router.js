@@ -12,7 +12,7 @@ const router = new VueRouter({
     },
     {
       path: "/searchList",
-      name: "searchList",
+      name: "Search",
       component: require("@/components/Search/index").default,
       meta: { transition: 'overlay-right-full' }
     },
@@ -35,15 +35,15 @@ const router = new VueRouter({
       meta: { transition: 'overlay-left-full' }
     },
     {
-      path: "/sample2",
-      name: "sample2",
-      component: require("@/components/Sample/index2").default,
+      path: "/userLibrary",
+      name: "UserLibrary",
+      component: require("@/components/Library/userLibrary").default,
       meta: { transition: 'overlay-left-full' }
     },
     {
-      path: "/sample3",
-      name: "sample3",
-      component: require("@/components/Sample/index3").default,
+      path: "/setting",
+      name: "Setting",
+      component: require("@/components/Setting/index").default,
       meta: { transition: 'overlay-left-full' }
     },
   ]

@@ -76,13 +76,13 @@ export default {
     route(name) {
       this.bottomNav = name;
       if (name === "search") {
-        this.$router.push({ name: "searchList" });
+        this.$router.push({ name: "Search" });
       } else if (name === "favorites") {
         this.$router.push({ name: "sample1" });
       } else if (name === "library") {
-        this.$router.push({ name: "sample2" });
+        this.$router.push({ name: "UserLibrary" });
       } else if (name === "setting") {
-        this.$router.push({ name: "sample3" });
+        this.$router.push({ name: "Setting" });
       }
     },
     close() {

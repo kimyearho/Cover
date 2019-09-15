@@ -12,25 +12,11 @@
           <v-icon>close</v-icon>Login
         </v-btn>
 
-        <v-list subheader>
-          <v-subheader>User information</v-subheader>
-          <v-list-tile avatar>
-            <v-list-tile-avatar>
-              <img :src="userData.picture" />
-            </v-list-tile-avatar>
-
-            <v-list-tile-content>
-              <v-list-tile-title>{{ userData.name }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ userData ? userData.email : '' }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-
         <v-divider />
 
         <v-list subheader :style="listStyle">
           <template v-for="(item, index) in userRatingList">
-            <v-list-tile :key="index" avatar @click="detail(item)">
+            <v-list-tile :key="index" avatar>
               <!-- 썸네일 -->
               <v-list-tile-avatar>
                 <img :src="getThumbnail(item)" />
@@ -136,26 +122,6 @@ export default {
       this.ipcRenderer.send("googleOauth2");
     },
 
-    detail(data) {
-      this.$store.commit("SET_PLAYLIST_INFO", data);
-      let params = { vm: this };
-      params.videoId = data.videoId;
-      params.firstVideoData = data;
-
-      this.getRelatedListDispatch(params).then(() => {
-        setTimeout(() => {
-          this.setVideoSettingDispatch({ data: data }).then(result => {
-            if (result) {
-              this.setPlayerSwitchDispatch({ flag: true }).then(() => {
-                this.isLoading = false;
-                this.ipcSendPlayVideo(data);
-              });
-            }
-          });
-        }, 200);
-      });
-    },
-
     successOnCallback(data) {
       this.$store
         .dispatch("common/setOauth2Token", { data: data.result })
@@ -172,7 +138,7 @@ export default {
                 setTimeout(() => {
                   this.userRatingList = this.$store.getters.GET_MY_RATING_LIST;
                   this.$log.info(data);
-                }, 1500);
+                }, 500);
               });
               this.$log.info("userInfo | ", data);
             });

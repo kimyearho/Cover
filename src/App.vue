@@ -30,6 +30,11 @@
           <v-icon>video_library</v-icon>
         </v-btn>
 
+        <v-btn color="pink" flat value="login" @click="route('login')">
+          <span>Signin</span>
+          <v-icon>verified_user</v-icon>
+        </v-btn>
+
         <v-btn color="pink" flat value="setting" @click="route('setting')">
           <span>Setting</span>
           <v-icon>settings</v-icon>
@@ -80,7 +85,9 @@ export default {
       } else if (name === "favorites") {
         this.$router.push({ name: "sample1" });
       } else if (name === "library") {
-        this.$router.push({ name: "UserLibrary" });
+        this.$router.push({ name: "Library" });
+      } else if (name === "login") {
+        this.$router.push({ name: "User" });
       } else if (name === "setting") {
         this.$router.push({ name: "Setting" });
       }

@@ -35,9 +35,15 @@ const router = new VueRouter({
       meta: { transition: 'overlay-left-full' }
     },
     {
-      path: "/userLibrary",
-      name: "UserLibrary",
-      component: require("@/components/Library/userLibrary").default,
+      path: "/user",
+      name: "User",
+      component: require("@/components/Commons/Login/index").default,
+      meta: { transition: 'overlay-left-full' }
+    },
+    {
+      path: "/library",
+      name: "Library",
+      component: require("@/components/Library/index").default,
       meta: { transition: 'overlay-left-full' }
     },
     {

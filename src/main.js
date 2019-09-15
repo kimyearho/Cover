@@ -35,6 +35,14 @@ const options = {
   showConsoleColors: true
 };
 
+import GAuth from 'vue-google-oauth2'
+const gauthOption = {
+  clientId: '935273157610-cdg83657n0i05utaco8l9rntdvv41li2.apps.googleusercontent.com',
+  scope: 'profile email',
+  prompt: 'select_account'
+}
+
+Vue.use(GAuth, gauthOption)
 Vue.use(VueLogger, options);
 Vue.use(VuePageTransition);
 Vue.use(Loading);

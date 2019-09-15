@@ -73,12 +73,17 @@ const actions = {
     })
   },
 
-  setOauth2Token({ commit }, { data }) {
-    commit('SET_OAUTH2_TOKEN', data)
+  async setOauth2Token({ commit, dispatch }, { vm, data }) {
+    commit('SET_OAUTH2_TOKEN', await data)
+    return dispatch('setUser', { vm: vm })
   },
 
-  setUser({ commit }, { data }) {
-    commit('SET_USER', data)
+  setUser({ state, commit }, { vm }) {
+    return vm.$authAxios.get("/userinfo", {
+      headers: { Authorization: 'Bearer ' + state.token.access_token }
+    }).then(data => {
+      commit('SET_USER', data)
+    })
   }
 
 };

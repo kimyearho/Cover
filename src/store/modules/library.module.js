@@ -16,15 +16,26 @@ const mutations = {
     }
 }
 const actions = {
+    getMyRatingCount({ rootGetters }, { vm }) {
+        const token = 'Bearer ' + rootGetters['common/GET_ACCESS_TOKEN']
+        const authHeader = { Authorization: token }
+        const params = {
+            part: 'snippet',
+            myRating: 'like',
+            maxResults: 1
+        }
+        return vm.$axios.get('/videos', { headers: authHeader, params })
+    },
     getMyRatingList({ dispatch, rootGetters }, { vm }) {
-        let token = rootGetters['common/GET_ACCESS_TOKEN']
+        const token = 'Bearer ' + rootGetters['common/GET_ACCESS_TOKEN']
+        const authHeader = { Authorization: token }
         const params = {
             part: 'snippet',
             myRating: 'like',
             maxResults: 30
         }
         vm.$axios
-            .get('/videos', { headers: { Authorization: 'Bearer ' + token }, params })
+            .get('/videos', { headers: authHeader, params })
             .then(({ data }) => {
                 let videos = []
                 vm._.forEach(data.items, (item, index) => {

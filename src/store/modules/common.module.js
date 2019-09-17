@@ -10,6 +10,11 @@ const state = {
   authKeys: [],
   token: {},
   user: {},
+  userData: {
+    ratingCount: 0,
+    playlistCount: 0
+  },
+  cache: [],
   isLoading: false
 };
 const getters = {
@@ -33,6 +38,12 @@ const getters = {
   },
   GET_USER: state => {
     return state.user
+  },
+  GET_USER_RATING_COUNT: state => {
+    return state.userData.ratingCount
+  },
+  GET_CACHE_URI: state => {
+    return state.cache
   }
 };
 const mutations = {
@@ -51,6 +62,12 @@ const mutations = {
   },
   SET_USER(state, payload) {
     state.user = payload.data
+  },
+  SET_USER_RATING_COUNT(state, count) {
+    state.userData.ratingCount = count
+  },
+  SET_CACHE_URI(state, data) {
+    state.cache.push(data)
   }
 };
 const actions = {
@@ -83,6 +100,15 @@ const actions = {
       headers: { Authorization: 'Bearer ' + state.token.access_token }
     }).then(data => {
       commit('SET_USER', data)
+    })
+  },
+
+  setUserRating({ commit, state }, { count }) {
+    commit('SET_USER_RATING_COUNT', count)
+    return new Promise((resolve) => {
+      if (state.userData.ratingCount > 0) {
+        resolve(true)
+      }
     })
   }
 

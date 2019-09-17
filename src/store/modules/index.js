@@ -18,7 +18,7 @@ requireModule.keys().forEach(fileName => {
   moduleName = moduleName.replace('Module', '');
   // create a dynamic object with all modules
 
-  if (moduleName === 'playback' || moduleName === 'common') {
+  if (moduleName === 'playback' || moduleName === 'common' || moduleName === 'library') {
     modules[moduleName] = {
       namespaced: true,
       ...requireModule(fileName).default

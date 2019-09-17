@@ -1,12 +1,27 @@
 <template>
-  <v-layout>
-    <v-flex xs12 sm6 offset-sm3>
-      <v-card>
-        <v-btn @click="login">
-          <v-icon>close</v-icon>Login
-        </v-btn>
-        <v-divider />
-      </v-card>
+  <login v-if="!isVisible" @callback="get" />
+  <v-layout v-else row wrap :style="{height: '570px'}">
+    <v-flex xs12>
+      <v-subheader class="subheader">
+        <v-icon style="color:#ffffff;">verified_user</v-icon>
+        <span style="margin-left: 10px;">User Profile</span>
+      </v-subheader>
+
+      <v-list two-line>
+        <v-subheader>
+          <span style="margin-left: 10px;">User information</span>
+        </v-subheader>
+        <v-list-tile avatar>
+          <v-list-tile-avatar>
+            <img :src="userData.picture" />
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ userData.name }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ userData.email }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+      <v-divider />
     </v-flex>
   </v-layout>
 </template>
@@ -14,10 +29,12 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import playerMixin from "@/components/Playerbar/Mixin/mixin";
+import Login from "@/components/Commons/Login/login";
 
 export default {
-  name: "Sign_in",
+  name: "UserProfile",
   mixins: [playerMixin],
+  components: { Login },
   data() {
     return {
       show: false
@@ -26,17 +43,11 @@ export default {
   computed: {
     ...mapGetters({
       userData: "common/GET_USER",
+      userRatingCount: "common/GET_USER_RATING_COUNT",
       playingVideo: "GET_PLAYING_VIDEO"
     }),
     isVisible() {
       return this.userData.id ? true : false;
-    },
-    getThumbnail() {
-      return item => {
-        return item.thumbnails
-          ? item.thumbnails.medium.url
-          : "https://i.imgur.com/4MqP8kE.jpg";
-      };
     },
     listStyle() {
       if (this.playingVideo.isUse) {
@@ -53,41 +64,24 @@ export default {
     }
   },
   mounted() {
-    if (this.isElectron) {
-      this.ipcRenderer.on("googleOauth2_callback", (ev, data) => {
-        this.successOnCallback(data);
-      });
+    if (this.isVisible) {
+      this.get();
     }
   },
   methods: {
     ...mapActions({
-      oauth2TokenDispatch: "common/setOauth2Token"
+      getUserRatingCount: "library/getMyRatingCount",
+      setUserRatingCount: "common/setUserRating"
     }),
 
-    login() {
-      if (this.isElectron) {
-        // Electron Mode일때는 여기를 사용
-        this.ipcRenderer.send("googleOauth2");
-      } else {
-        // Web Mode일때는 여기를 사용
-        this.$gAuth
-          .signIn()
-          .then(GoogleUser => {
-            this.oauth2TokenDispatch({
-              vm: this,
-              data: GoogleUser.getAuthResponse()
-            }).then(() => {
-              this.$log.info("Login Success | ", this.userData);
-            });
-          })
-          .catch(error => {
-            this.$log.info(error);
-          });
-      }
-    },
-
-    successOnCallback(data) {
-      this.$log.info(data);
+    get() {
+      this.getUserRatingCount({ vm: this }).then(({ data }) => {
+        this.$log.info(data);
+        const totalCount = data.pageInfo.totalResults;
+        this.setUserRatingCount({ count: totalCount }).then(res => {
+          this.$log.info("setUserRatingCount | ", res);
+        });
+      });
     }
   }
 };

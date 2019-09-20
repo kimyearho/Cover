@@ -4826,6 +4826,11 @@ grapheme-splitter@^1.0.2:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
+gsap@^2.0.1:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-2.1.3.tgz#c63ee3a50f0b7dc3b46ed0845bb0f09049feb944"
+  integrity sha512-8RFASCqi2FOCBuv7X4o7M6bLdy+1hbR0azg+MG7zz+EVsI+OmJblYsTk0GEepQd2Jg/ItMPiVTibF7r3EVxjZQ==
+
 gtoken@^2.3.0:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/gtoken/-/gtoken-2.3.3.tgz#8a7fe155c5ce0c4b71c886cfb282a9060d94a641"
@@ -9984,6 +9989,13 @@ vue-marquee-text-component@^1.1.1:
   integrity sha512-ei3OrX6uKPtm+H9GbAlJL3NqTJxXoQsbAMcmuao56Z8rH2mlFkYSGrJGDsX8wyQ/IQtYgMSuf50kaH2mQx8DSQ==
   dependencies:
     vue "^2.5.17"
+
+vue-number-animation@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/vue-number-animation/-/vue-number-animation-1.0.5.tgz#47bf965f0326be582b64027aca83970a3ecd5fc4"
+  integrity sha1-R7+WXwMmvlgrZAJ6yoOXCj7NX8Q=
+  dependencies:
+    gsap "^2.0.1"
 
 vue-page-transition@^0.2.2:
   version "0.2.2"

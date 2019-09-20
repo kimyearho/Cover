@@ -1,7 +1,7 @@
 import axios from "axios-jsonp-pro"
 import { setupCache } from 'axios-cache-adapter'
-import store from "../store/index"
-import lodash from "lodash"
+// import store from "../store/index"
+// import lodash from "lodash"
 
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"

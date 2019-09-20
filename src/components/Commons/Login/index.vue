@@ -22,6 +22,11 @@
         </v-list-tile>
       </v-list>
       <v-divider />
+      <v-flex xs12>
+        <span class="display-1 font-weight-bold">
+          <number ref="number1" :from="0" :to="userRatingCount" delay="0.5" easing="Power1.easeOut" />
+        </span>
+      </v-flex>
     </v-flex>
   </v-layout>
 </template>
@@ -73,6 +78,10 @@ export default {
       getUserRatingCount: "library/getMyRatingCount",
       setUserRatingCount: "common/setUserRating"
     }),
+
+    theFormat(number) {
+      return number.toFixed(2);
+    },
 
     get() {
       this.getUserRatingCount({ vm: this }).then(({ data }) => {

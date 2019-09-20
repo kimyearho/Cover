@@ -19,6 +19,7 @@ import "vue-loading-overlay/dist/vue-loading.css";
 
 import lodash from "lodash";
 import moment from "moment";
+import VueNumber from 'vue-number-animation'
 import VuePageTransition from "vue-page-transition";
 import VueLogger from "vuejs-logger";
 import PouchDB from "pouchdb-browser";
@@ -42,6 +43,7 @@ const gauthOption = {
   prompt: 'select_account'
 }
 
+Vue.use(VueNumber)
 Vue.use(GAuth, gauthOption)
 Vue.use(VueLogger, options);
 Vue.use(VuePageTransition);
